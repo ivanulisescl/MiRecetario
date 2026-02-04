@@ -32,12 +32,13 @@
     </div>
   </header>
   <main class="max-w-5xl mx-auto px-4 py-6"><div id="app"></div></main>
-  <footer class="border-t border-slate-200 dark:border-slate-800 mt-8"><div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500 dark:text-slate-400">Gestiona tus recetas y llévalas contigo en móvil y PC.</div></footer>
+  <footer class="border-t border-slate-200 dark:border-slate-800 mt-8"><div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500 dark:text-slate-400">Gestiona tus recetas y llévalas contigo en móvil y PC. <span id="appVersion" class="ml-1 font-medium"></span></div></footer>
 
   <script>
 (function () {
   'use strict';
 
+  const APP_VERSION = '1.0.1';
   const STORAGE_KEY = 'mirecetario-recetas';
   const state = {
     recipes: [],
@@ -441,6 +442,8 @@
     });
     updateInstallBtn();
   }
+  var versionEl = document.getElementById('appVersion');
+  if (versionEl) versionEl.textContent = 'v' + APP_VERSION;
 })();
   </script>
   <script>
