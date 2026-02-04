@@ -361,7 +361,19 @@
   }
 
   window.addEventListener('hashchange', render);
-  window.addEventListener('load', render);
+  window.addEventListener('load', function () {
+    render();
+    if (state.recipes.length === 0) {
+      fetch('recipes.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (data) {
+        var arr = Array.isArray(data) ? data : (data.recipes || []);
+        if (arr.length > 0) {
+          state.recipes = arr;
+          saveRecipes();
+          render();
+        }
+      }).catch(function () {});
+    }
+  });
 
   document.addEventListener('click', function (e) {
     var id = e.target && e.target.id;
