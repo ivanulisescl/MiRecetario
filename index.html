@@ -29,7 +29,7 @@
         <button type="button" id="btnResetear" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Cargar recipes.json desde el servidor (GitHub)">Resetear</button>
         <button type="button" id="btnActualizar" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Forzar actualización a la última versión">Actualizar</button>
         <input type="file" id="headerImportFile" accept=".json,application/json" class="hidden" />
-        <button id="installBtn" class="hidden px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Instalar</button>
+        <button id="installBtn" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Instalar como aplicación">Instalar</button>
       </div>
     </div>
   </header>
@@ -228,9 +228,7 @@
     app.innerHTML = '<section class="space-y-6">' +
       '<div class="flex items-center justify-between flex-wrap gap-2">' +
       '<h1 class="text-2xl md:text-3xl font-bold">' + name + '</h1>' +
-      '<div class="flex gap-2">' +
       '<a href="#/" class="text-brand">← Volver</a>' +
-      '<a href="#/nueva?categoria=' + slug + '" class="px-3 py-1.5 rounded-lg bg-brand text-white hover:bg-brand-dark text-sm">Añadir receta</a>' +
       '</div></div>' +
       '<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">' + (cards.length ? cards.join('') : '<p class="text-slate-600 dark:text-slate-400 col-span-2">No hay recetas en esta categoría.</p>') +
       '</div></section>';
@@ -442,32 +440,38 @@
 
   var installBtn = document.getElementById('installBtn');
   if (installBtn) {
+    var isEdge = /Edg\//.test(navigator.userAgent);
+    var isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    function getInstallInstructions() {
+      if (isSafari) return 'Safari: Menú Compartir → Añadir a pantalla de inicio';
+      if (isEdge) return 'Edge: Menú ⋮ (arriba derecha) → Aplicaciones → Instalar este sitio como aplicación. O haz clic en el icono ⊕ de la barra de direcciones.';
+      return 'Chrome: Menú ⋮ → Instalar Mi Recetario… o usa el icono ⊕ en la barra de direcciones.';
+    }
     function updateInstallBtn() {
-      var isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-      if (state.installPromptEvent || isSafari) installBtn.classList.remove('hidden');
       if (isSafari) {
         installBtn.textContent = 'Añadir a inicio (Safari)';
-        installBtn.disabled = true;
-        installBtn.title = 'Usa Compartir → Añadir a pantalla de inicio';
+        installBtn.title = getInstallInstructions();
         return;
       }
-      installBtn.disabled = !state.installPromptEvent;
-      installBtn.title = state.installPromptEvent ? 'Instalar PWA' : 'Aún no disponible (navega un poco)';
+      installBtn.disabled = false;
+      installBtn.title = state.installPromptEvent ? 'Instalar aplicación' : getInstallInstructions();
     }
     window.addEventListener('beforeinstallprompt', function (e) {
       e.preventDefault();
       state.installPromptEvent = e;
-      installBtn.classList.remove('hidden');
       updateInstallBtn();
     });
     installBtn.addEventListener('click', async function () {
-      if (!state.installPromptEvent) return;
-      installBtn.disabled = true;
-      try {
-        await state.installPromptEvent.prompt();
-      } finally {
-        state.installPromptEvent = null;
-        updateInstallBtn();
+      if (state.installPromptEvent) {
+        installBtn.disabled = true;
+        try {
+          await state.installPromptEvent.prompt();
+        } finally {
+          state.installPromptEvent = null;
+          updateInstallBtn();
+        }
+      } else {
+        alert(getInstallInstructions());
       }
     });
     updateInstallBtn();
