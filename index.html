@@ -184,6 +184,51 @@
     return Math.max.apply(null, state.recipes.map(function (r) { return Number(r.id) || 0; })) + 1;
   }
 
+  function formatRecipeForShare(rec) {
+    var lines = [];
+    lines.push(rec.title || 'Sin título');
+    lines.push('');
+    if (rec.description && rec.description.trim()) {
+      lines.push(rec.description.trim());
+      lines.push('');
+    }
+    lines.push('Ingredientes:');
+    (rec.ingredients || []).forEach(function (i) { lines.push('- ' + i); });
+    lines.push('');
+    lines.push('Elaboración:');
+    (rec.steps || []).forEach(function (s, idx) { lines.push((idx + 1) + '. ' + s); });
+    return lines.join('\n');
+  }
+
+  function shareRecipe(id) {
+    var rec = state.recipes.find(function (x) { return String(x.id) === String(id); });
+    if (!rec) return;
+    var text = formatRecipeForShare(rec);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        if (window.showShareFeedback) window.showShareFeedback(); else alert('Receta copiada. Pégala donde quieras enviarla.');
+      }).catch(function () { fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      if (window.showShareFeedback) window.showShareFeedback(); else alert('Receta copiada.');
+    } catch (e) {
+      alert('No se pudo copiar. Copia manualmente:\n\n' + text.slice(0, 200) + '…');
+    }
+    document.body.removeChild(ta);
+  }
+
   function route() {
     var h = location.hash || '#/';
     var p = h.slice(2).split('/').filter(Boolean);
@@ -235,6 +280,8 @@
         '<p class="text-white/90 text-sm truncate">' + (r.description || '').replace(/</g, '&lt;') + '</p>' +
         '</div></a>' +
         '<div class="absolute bottom-2 right-2 flex gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">' +
+        '<button type="button" data-share-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-emerald-600 text-white" title="Compartir">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
         '<a href="' + editHref + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-brand text-white" title="Editar" onclick="event.stopPropagation()">' +
         '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>' +
         '<button type="button" data-delete-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-red-600 text-white" title="Eliminar" onclick="event.preventDefault();event.stopPropagation()">' +
@@ -284,6 +331,8 @@
         '<p class="text-white/90 text-sm truncate">' + (r.description || '').replace(/</g, '&lt;') + '</p>' +
         '</div></a>' +
         '<div class="absolute bottom-2 right-2 flex gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">' +
+        '<button type="button" data-share-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-emerald-600 text-white" title="Compartir">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
         '<a href="' + editHref + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-brand text-white" title="Editar" onclick="event.stopPropagation()">' +
         '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>' +
         '<button type="button" data-delete-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-red-600 text-white" title="Eliminar" onclick="event.preventDefault();event.stopPropagation()">' +
@@ -311,8 +360,9 @@
     app.innerHTML = '<article class="space-y-6">' +
       '<div class="flex items-center justify-between flex-wrap gap-2">' +
       '<h1 class="text-2xl md:text-3xl font-bold">' + r.title + '</h1>' +
-      '<div class="flex gap-2">' +
+      '<div class="flex gap-2 flex-wrap">' +
       '<a href="#/categoria/' + (r.category || 'varios') + '" class="text-brand">← Volver</a>' +
+      '<button type="button" data-share-id="' + r.id + '" class="px-3 py-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm">Compartir</button>' +
       '<a href="#/editar/' + r.id + '" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm">Editar</a>' +
       '<button type="button" id="btnEliminar" class="px-3 py-1.5 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 text-sm">Eliminar</button>' +
       '</div></div>' +
@@ -503,6 +553,11 @@
     }
     if (id === 'btnResetear') { e.preventDefault(); closeOperacionesMenu(); resetRecipes(); }
     if (id === 'btnActualizar') { e.preventDefault(); closeOperacionesMenu(); forceUpdate(); }
+    var shareBtn = e.target && (e.target.closest && e.target.closest('[data-share-id]'));
+    if (shareBtn) {
+      e.preventDefault();
+      shareRecipe(shareBtn.getAttribute('data-share-id'));
+    }
     var deleteBtn = e.target && (e.target.closest && e.target.closest('[data-delete-id]'));
     if (deleteBtn) {
       e.preventDefault();
