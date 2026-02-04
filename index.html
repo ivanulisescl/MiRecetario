@@ -8,11 +8,14 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = { theme: { extend: { colors: { brand: { DEFAULT: '#0ea5e9', dark: '#0369a1' } } } }, darkMode: 'media' };
+    tailwind.config = { theme: { extend: { colors: { brand: { DEFAULT: '#0ea5e9', dark: '#0369a1' } } } }, darkMode: 'class' };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
   <style>body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial}</style>
+  <script>
+    (function(){var t=localStorage.getItem('mirecetario-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='light')document.documentElement.classList.remove('dark');else if(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.classList.add('dark');})();
+  </script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
   <header class="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/70 backdrop-blur border-b border-slate-200 dark:border-slate-800">
@@ -21,7 +24,12 @@
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 8h-3v8h-5v-5H11v5H6v-8H3l9-8z" stroke="currentColor" stroke-width="1.5"/></svg>
         <span class="font-semibold text-lg">Mi Recetario</span>
       </a>
-      <div class="flex items-center gap-2 flex-wrap">
+      <div class="flex items-center gap-2 flex-wrap flex-1 justify-end">
+        <input type="search" id="searchInput" placeholder="Buscar recetas…" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm min-w-[140px] max-w-[200px]" aria-label="Buscar recetas" />
+        <button type="button" id="btnDarkMode" class="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700" title="Cambiar tema" aria-label="Modo oscuro/claro">
+          <svg id="iconSun" class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="iconMoon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
         <a href="#/" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm">Inicio</a>
         <div class="relative" id="operacionesWrap">
           <button type="button" id="btnOperaciones" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" aria-expanded="false" aria-haspopup="true">Operaciones</button>
@@ -30,8 +38,7 @@
             <button type="button" id="btnImportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
             <button type="button" id="btnExportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
             <button type="button" id="btnResetear" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recipes.json desde el servidor">Resetear</button>
-            <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Forzar actualización">Actualizar</button>
-            <button id="installBtn" type="button" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Instalar como aplicación">Instalar</button>
+            <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Forzar actualización">Actualizar</button>
           </div>
         </div>
         <input type="file" id="headerImportFile" accept=".json,application/json" class="hidden" />
@@ -45,12 +52,13 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.0.3';
+  const APP_VERSION = '1.0.4';
   const STORAGE_KEY = 'mirecetario-recetas';
+  const THEME_KEY = 'mirecetario-theme';
   const state = {
     recipes: [],
     categories: [],
-    installPromptEvent: null
+    searchQuery: '',
   };
 
   const app = document.querySelector('#app');
@@ -188,6 +196,8 @@
 
   async function render() {
     loadRecipes();
+    var q = (state.searchQuery || '').trim();
+    if (q.length > 0) return renderSearch(q);
     var r = route();
     if (r.n === 'home') return renderHome();
     if (r.n === 'cat') return renderCat(r.slug);
@@ -195,6 +205,45 @@
     if (r.n === 'form') return renderForm(r.id);
     if (r.n === 'importar') return renderImportar();
     render404();
+  }
+
+  function recipeMatchesQuery(rec, query) {
+    var lower = query.toLowerCase();
+    var title = (rec.title || '').toLowerCase();
+    var desc = (rec.description || '').toLowerCase();
+    var ing = (rec.ingredients || []).join(' ').toLowerCase();
+    var steps = (rec.steps || []).join(' ').toLowerCase();
+    return title.indexOf(lower) !== -1 || desc.indexOf(lower) !== -1 || ing.indexOf(lower) !== -1 || steps.indexOf(lower) !== -1;
+  }
+
+  async function renderSearch(query) {
+    var list = state.recipes.filter(function (r) { return recipeMatchesQuery(r, query); });
+    var cards = await Promise.all(list.map(async function (r) {
+      var img = await imgOrPlaceholder(r.image || '');
+      var editHref = '#/editar/' + r.id;
+      var recetaHref = '#/receta/' + r.id;
+      var safeTitle = (r.title || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+      return '<div class="group relative overflow-hidden rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:shadow">' +
+        '<a href="' + recetaHref + '" class="block aspect-[16/9] relative">' +
+        '<img src="' + img + '" alt="' + safeTitle + '" class="w-full h-full object-cover"/>' +
+        '<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>' +
+        '<div class="absolute bottom-3 left-3 right-14">' +
+        '<h3 class="text-white text-lg font-semibold">' + safeTitle + '</h3>' +
+        '<p class="text-white/90 text-sm truncate">' + (r.description || '').replace(/</g, '&lt;') + '</p>' +
+        '</div></a>' +
+        '<div class="absolute bottom-2 right-2 flex gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">' +
+        '<a href="' + editHref + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-brand text-white" title="Editar" onclick="event.stopPropagation()">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>' +
+        '<button type="button" data-delete-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-red-600 text-white" title="Eliminar" onclick="event.preventDefault();event.stopPropagation()">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>' +
+        '</div></div>';
+    }));
+    var tituloBusqueda = 'Buscar: ' + query.replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    app.innerHTML = '<section class="space-y-6">' +
+      '<h1 class="text-2xl md:text-3xl font-bold">' + tituloBusqueda + '</h1>' +
+      '<p class="text-slate-600 dark:text-slate-400">' + list.length + ' receta' + (list.length !== 1 ? 's' : '') + ' encontrada' + (list.length !== 1 ? 's' : '') + '.</p>' +
+      '<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">' + (cards.length ? cards.join('') : '<p class="text-slate-600 dark:text-slate-400 col-span-2">No hay recetas que coincidan.</p>') +
+      '</div></section>';
   }
 
   async function renderHome() {
@@ -451,7 +500,6 @@
     }
     if (id === 'btnResetear') { e.preventDefault(); closeOperacionesMenu(); resetRecipes(); }
     if (id === 'btnActualizar') { e.preventDefault(); closeOperacionesMenu(); forceUpdate(); }
-    if (id === 'installBtn') closeOperacionesMenu();
     var deleteBtn = e.target && (e.target.closest && e.target.closest('[data-delete-id]'));
     if (deleteBtn) {
       e.preventDefault();
@@ -462,6 +510,29 @@
       state.recipes = state.recipes.filter(function (x) { return String(x.id) !== String(recId); });
       saveRecipes();
       render();
+    }
+  });
+
+  var searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      state.searchQuery = searchInput.value.trim();
+      render();
+    });
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { searchInput.value = ''; state.searchQuery = ''; searchInput.blur(); render(); }
+    });
+  }
+
+  document.getElementById('btnDarkMode').addEventListener('click', function () {
+    var root = document.documentElement;
+    var isDark = root.classList.contains('dark');
+    if (isDark) {
+      root.classList.remove('dark');
+      localStorage.setItem(THEME_KEY, 'light');
+    } else {
+      root.classList.add('dark');
+      localStorage.setItem(THEME_KEY, 'dark');
     }
   });
 
@@ -486,44 +557,6 @@
     });
   }
 
-  var installBtn = document.getElementById('installBtn');
-  if (installBtn) {
-    var isEdge = /Edg\//.test(navigator.userAgent);
-    var isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-    function getInstallInstructions() {
-      if (isSafari) return 'Safari: Menú Compartir → Añadir a pantalla de inicio';
-      if (isEdge) return 'Edge: Menú ⋮ (arriba derecha) → Aplicaciones → Instalar este sitio como aplicación. O haz clic en el icono ⊕ de la barra de direcciones.';
-      return 'Chrome: Menú ⋮ → Instalar Mi Recetario… o usa el icono ⊕ en la barra de direcciones.';
-    }
-    function updateInstallBtn() {
-      if (isSafari) {
-        installBtn.textContent = 'Añadir a inicio (Safari)';
-        installBtn.title = getInstallInstructions();
-        return;
-      }
-      installBtn.disabled = false;
-      installBtn.title = state.installPromptEvent ? 'Instalar aplicación' : getInstallInstructions();
-    }
-    window.addEventListener('beforeinstallprompt', function (e) {
-      e.preventDefault();
-      state.installPromptEvent = e;
-      updateInstallBtn();
-    });
-    installBtn.addEventListener('click', async function () {
-      if (state.installPromptEvent) {
-        installBtn.disabled = true;
-        try {
-          await state.installPromptEvent.prompt();
-        } finally {
-          state.installPromptEvent = null;
-          updateInstallBtn();
-        }
-      } else {
-        alert(getInstallInstructions());
-      }
-    });
-    updateInstallBtn();
-  }
   var versionEl = document.getElementById('appVersion');
   if (versionEl) versionEl.textContent = 'v' + APP_VERSION;
 })();
