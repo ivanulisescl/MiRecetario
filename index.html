@@ -26,6 +26,8 @@
         <a href="#/nueva" class="px-3 py-1.5 rounded-lg bg-brand text-white hover:bg-brand-dark text-sm">Nueva receta</a>
         <button type="button" id="btnImportar" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
         <button type="button" id="btnExportar" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
+        <button type="button" id="btnResetear" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Cargar recipes.json desde el servidor (GitHub)">Resetear</button>
+        <button type="button" id="btnActualizar" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Forzar actualización a la última versión">Actualizar</button>
         <input type="file" id="headerImportFile" accept=".json,application/json" class="hidden" />
         <button id="installBtn" class="hidden px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Instalar</button>
       </div>
@@ -38,7 +40,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.0.1';
+  const APP_VERSION = '1.0.2';
   const STORAGE_KEY = 'mirecetario-recetas';
   const state = {
     recipes: [],
@@ -118,6 +120,35 @@
     a.download = 'recipes.json';
     a.click();
     URL.revokeObjectURL(a.href);
+  }
+
+  function resetRecipes() {
+    if (!confirm('¿Restaurar las recetas desde el servidor? Se sustituirán las recetas actuales por las de recipes.json en GitHub.')) return;
+    fetch('recipes.json?t=' + Date.now()).then(function (r) { return r.ok ? r.json() : []; }).then(function (data) {
+      var arr = Array.isArray(data) ? data : (data.recipes || []);
+      state.recipes = arr.length > 0 ? arr : [];
+      saveRecipes();
+      location.hash = '#/';
+      render();
+      alert(arr.length > 0 ? 'Recetas restauradas desde el servidor (' + arr.length + ' recetas).' : 'No se encontraron recetas en el servidor.');
+    }).catch(function () {
+      alert('No se pudo cargar recipes.json. Comprueba la conexión o la URL.');
+    });
+  }
+
+  function forceUpdate() {
+    if (!confirm('¿Actualizar la aplicación a la última versión? Se recargará la página.')) return;
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      }).then(function () {
+        return caches.keys ? caches.keys().then(function (keys) { return Promise.all(keys.map(function (k) { return caches.delete(k); })); }) : Promise.resolve();
+      }).then(function () {
+        window.location.reload(true);
+      });
+    } else {
+      window.location.reload(true);
+    }
   }
 
   function applyImportedRecipes(text) {
@@ -378,15 +409,14 @@
 
   document.addEventListener('click', function (e) {
     var id = e.target && e.target.id;
-    if (id === 'btnExportar') {
-      e.preventDefault();
-      exportRecipes();
-    }
+    if (id === 'btnExportar') { e.preventDefault(); exportRecipes(); }
     if (id === 'btnImportar') {
       e.preventDefault();
       var input = document.getElementById('headerImportFile');
       if (input) input.click();
     }
+    if (id === 'btnResetear') { e.preventDefault(); resetRecipes(); }
+    if (id === 'btnActualizar') { e.preventDefault(); forceUpdate(); }
   });
 
   var headerImportFile = document.getElementById('headerImportFile');
