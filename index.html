@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mi Recetario • Gestiona tus recetas</title>
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: { DEFAULT: '#0ea5e9', dark: '#0369a1' } } } }, darkMode: 'media' };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <style>body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial}</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+  <header class="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/70 backdrop-blur border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#/" class="flex items-center gap-2">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 8h-3v8h-5v-5H11v5H6v-8H3l9-8z" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span class="font-semibold text-lg">Mi Recetario</span>
+      </a>
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="#/" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm">Inicio</a>
+        <a href="#/nueva" class="px-3 py-1.5 rounded-lg bg-brand text-white hover:bg-brand-dark text-sm">Nueva receta</a>
+        <button type="button" id="btnImportar" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
+        <button type="button" id="btnExportar" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
+        <input type="file" id="headerImportFile" accept=".json,application/json" class="hidden" />
+        <button id="installBtn" class="hidden px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Instalar</button>
+      </div>
+    </div>
+  </header>
+  <main class="max-w-5xl mx-auto px-4 py-6"><div id="app"></div></main>
+  <footer class="border-t border-slate-200 dark:border-slate-800 mt-8"><div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500 dark:text-slate-400">Gestiona tus recetas y llévalas contigo en móvil y PC.</div></footer>
+
+  <script>
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'mirecetario-recetas';
+  const state = {
+    recipes: [],
+    categories: [],
+    installPromptEvent: null
+  };
+
+  const app = document.querySelector('#app');
+
+  const placeholder = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><rect width="100%" height="100%" fill="#e2e8f0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#334155" font-family="Inter,Arial" font-size="22">Imagen no disponible</text></svg>'
+  );
+
+  const CATEGORY_LABELS = {
+    'de-cuchara': 'De cuchara', 'pures': 'Puré', 'sopas': 'Sopas', 'ensaladas': 'Ensaladas',
+    'guisos': 'Guisos', 'pescados': 'Pescados', 'postres': 'Postres', 'varios': 'Varios', 'salado': 'Salado'
+  };
+
+  const CATEGORY_SLUGS = Object.keys(CATEGORY_LABELS);
+
+  function imgOrPlaceholder(src) {
+    if (!src || src.trim() === '') return Promise.resolve(placeholder);
+    return new Promise(function (resolve) {
+      var i = new Image();
+      i.onload = function () { resolve(src); };
+      i.onerror = function () { resolve(placeholder); };
+      i.src = src;
+    });
+  }
+
+  function loadRecipes() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        state.recipes = JSON.parse(raw);
+      } else {
+        state.recipes = [];
+      }
+    } catch (e) {
+      state.recipes = [];
+    }
+    var map = new Map();
+    state.recipes.forEach(function (r) {
+      var slug = r.category || 'varios';
+      if (!map.has(slug)) {
+        map.set(slug, {
+          slug: slug,
+          name: CATEGORY_LABELS[slug] || slug,
+          img: 'assets/img/categorias/' + slug + '.jpg'
+        });
+      }
+    });
+    state.categories = Array.from(map.values());
+    if (state.categories.length === 0) {
+      CATEGORY_SLUGS.forEach(function (slug) {
+        state.categories.push({
+          slug: slug,
+          name: CATEGORY_LABELS[slug] || slug,
+          img: 'assets/img/categorias/' + slug + '.jpg'
+        });
+      });
+    }
+    return state.recipes;
+  }
+
+  function saveRecipes() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.recipes));
+    loadRecipes();
+  }
+
+  function exportRecipes() {
+    loadRecipes();
+    var json = JSON.stringify(state.recipes, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'recipes.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function applyImportedRecipes(text) {
+    var data = JSON.parse(text);
+    var arr = Array.isArray(data) ? data : (data.recipes || []);
+    var map = new Map(state.recipes.map(function (r) { return [String(r.id), r]; }));
+    var added = 0, updated = 0;
+    arr.forEach(function (r) {
+      var id = String(r.id);
+      if (map.has(id)) { map.set(id, r); updated++; } else { map.set(id, r); added++; }
+    });
+    state.recipes = Array.from(map.values());
+    return { added: added, updated: updated };
+  }
+
+  function nextId() {
+    if (state.recipes.length === 0) return 1;
+    return Math.max.apply(null, state.recipes.map(function (r) { return Number(r.id) || 0; })) + 1;
+  }
+
+  function route() {
+    var h = location.hash || '#/';
+    var p = h.slice(2).split('/').filter(Boolean);
+    if (!p.length) return { n: 'home' };
+    if (p[0] === 'categoria' && p[1]) return { n: 'cat', slug: p[1] };
+    if (p[0] === 'receta' && p[1]) return { n: 'rec', id: p[1] };
+    if (p[0] === 'nueva') return { n: 'form', id: null };
+    if (p[0] === 'editar' && p[1]) return { n: 'form', id: p[1] };
+    if (p[0] === 'importar') return { n: 'importar' };
+    return { n: '404' };
+  }
+
+  async function render() {
+    loadRecipes();
+    var r = route();
+    if (r.n === 'home') return renderHome();
+    if (r.n === 'cat') return renderCat(r.slug);
+    if (r.n === 'rec') return renderRec(r.id);
+    if (r.n === 'form') return renderForm(r.id);
+    if (r.n === 'importar') return renderImportar();
+    render404();
+  }
+
+  async function renderHome() {
+    var cards = await Promise.all(state.categories.map(async function (c) {
+      var img = await imgOrPlaceholder(c.img);
+      return '<a href="#/categoria/' + c.slug + '" class="block overflow-hidden rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:shadow">' +
+        '<div class="aspect-[16/9] relative">' +
+        '<img src="' + img + '" alt="' + c.name + '" class="w-full h-full object-cover"/>' +
+        '<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>' +
+        '<h2 class="absolute bottom-3 left-3 text-white text-xl font-semibold">' + c.name + '</h2>' +
+        '</div></a>';
+    }));
+
+    app.innerHTML = '<section class="space-y-6">' +
+      '<h1 class="text-2xl md:text-3xl font-bold">Categorías</h1>' +
+      '<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">' + (cards.length ? cards.join('') : '<p class="text-slate-600 dark:text-slate-400 col-span-2">Aún no hay recetas. Usa los botones del menú para añadir o importar.</p>') +
+      '</div></section>';
+  }
+
+  async function renderCat(slug) {
+    var list = state.recipes.filter(function (r) { return (r.category || 'varios') === slug; });
+    var name = state.categories.find(function (c) { return c.slug === slug; })?.name || CATEGORY_LABELS[slug] || slug;
+
+    var cards = await Promise.all(list.map(async function (r) {
+      var img = await imgOrPlaceholder(r.image || '');
+      return '<a href="#/receta/' + r.id + '" class="block overflow-hidden rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:shadow">' +
+        '<div class="aspect-[16/9] relative">' +
+        '<img src="' + img + '" alt="' + r.title + '" class="w-full h-full object-cover"/>' +
+        '<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>' +
+        '<div class="absolute bottom-3 left-3 right-3">' +
+        '<h3 class="text-white text-lg font-semibold">' + r.title + '</h3>' +
+        '<p class="text-white/90 text-sm">' + (r.description || '') + '</p>' +
+        '</div></div></a>';
+    }));
+
+    app.innerHTML = '<section class="space-y-6">' +
+      '<div class="flex items-center justify-between flex-wrap gap-2">' +
+      '<h1 class="text-2xl md:text-3xl font-bold">' + name + '</h1>' +
+      '<div class="flex gap-2">' +
+      '<a href="#/" class="text-brand">← Volver</a>' +
+      '<a href="#/nueva?categoria=' + slug + '" class="px-3 py-1.5 rounded-lg bg-brand text-white hover:bg-brand-dark text-sm">Añadir receta</a>' +
+      '</div></div>' +
+      '<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">' + (cards.length ? cards.join('') : '<p class="text-slate-600 dark:text-slate-400 col-span-2">No hay recetas en esta categoría.</p>') +
+      '</div></section>';
+  }
+
+  async function renderRec(id) {
+    var r = state.recipes.find(function (x) { return String(x.id) === String(id); });
+    if (!r) return render404();
+
+    var img = await imgOrPlaceholder(r.image || '');
+    var steps = r.steps || [];
+    var ing = r.ingredients || [];
+
+    app.innerHTML = '<article class="space-y-6">' +
+      '<div class="flex items-center justify-between flex-wrap gap-2">' +
+      '<h1 class="text-2xl md:text-3xl font-bold">' + r.title + '</h1>' +
+      '<div class="flex gap-2">' +
+      '<a href="#/categoria/' + (r.category || 'varios') + '" class="text-brand">← Volver</a>' +
+      '<a href="#/editar/' + r.id + '" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm">Editar</a>' +
+      '<button type="button" id="btnEliminar" class="px-3 py-1.5 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 text-sm">Eliminar</button>' +
+      '</div></div>' +
+      '<div class="overflow-hidden rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">' +
+      '<img src="' + img + '" alt="' + r.title + '" class="w-full aspect-[16/9] object-cover"/>' +
+      '<div class="p-4 md:p-6 space-y-4">' +
+      '<p class="text-slate-700 dark:text-slate-300">' + (r.description || '') + '</p>' +
+      '<div class="grid grid-cols-1 md:grid-cols-3 gap-6">' +
+      '<section class="md:col-span-1"><h2 class="text-lg font-semibold mb-2">Ingredientes</h2>' +
+      '<ul class="list-disc list-inside space-y-1">' + ing.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul></section>' +
+      '<section class="md:col-span-2"><h2 class="text-lg font-semibold mb-2">Elaboración paso a paso</h2>' +
+      '<ol class="space-y-3">' + steps.map(function (s, i) {
+        return '<li class="flex items-start gap-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-800/60">' +
+          '<span class="inline-flex w-8 h-8 rounded-full bg-brand text-white items-center justify-center font-semibold">' + (i + 1) + '</span>' +
+          '<div class="flex-1"><p>' + s + '</p></div>' +
+          '<label class="ml-auto inline-flex items-center gap-2 text-sm">' +
+          '<input type="checkbox" class="rounded" data-step="' + i + '"/> Hecho</label></li>';
+      }).join('') + '</ol>' +
+      (steps.length ? '<div class="mt-4 flex items-center gap-3"><progress id="progress" max="' + steps.length + '" value="0" class="w-full"></progress><span id="progressText" class="text-sm text-slate-600">0 / ' + steps.length + '</span></div>' : '') +
+      '</section></div></div></div></article>';
+
+    var checks = app.querySelectorAll('input[type="checkbox"][data-step]');
+    var prog = app.querySelector('#progress');
+    var txt = app.querySelector('#progressText');
+    if (prog && txt) {
+      function updateProgress() {
+        var done = Array.from(checks).filter(function (c) { return c.checked; }).length;
+        prog.value = done;
+        txt.textContent = done + ' / ' + steps.length;
+      }
+      checks.forEach(function (c) { c.addEventListener('change', updateProgress); });
+      updateProgress();
+    }
+
+    app.querySelector('#btnEliminar').addEventListener('click', function () {
+      if (!confirm("¿Eliminar la receta \"" + r.title + "\"?")) return;
+      state.recipes = state.recipes.filter(function (x) { return String(x.id) !== String(id); });
+      saveRecipes();
+      location.hash = '#/categoria/' + (r.category || 'varios');
+      render();
+    });
+  }
+
+  function renderForm(id) {
+    var rec = id ? state.recipes.find(function (x) { return String(x.id) === String(id); }) : null;
+    var isNew = !rec;
+    var params = new URLSearchParams(location.hash.split('?')[1] || '');
+    var catPreset = params.get('categoria') || (rec && rec.category) || 'varios';
+
+    var opts = CATEGORY_SLUGS.map(function (s) {
+      return '<option value="' + s + '"' + (catPreset === s ? ' selected' : '') + '>' + (CATEGORY_LABELS[s] || s) + '</option>';
+    }).join('');
+
+    app.innerHTML = '<section class="max-w-2xl space-y-6">' +
+      '<h1 class="text-2xl font-bold">' + (isNew ? 'Nueva receta' : 'Editar receta') + '</h1>' +
+      '<form id="formReceta" class="space-y-4 p-4 rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">' +
+      '<div><label class="block text-sm font-medium mb-1">Título</label><input type="text" name="title" value="' + (rec ? rec.title.replace(/"/g, '&quot;') : '') + '" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Ej: Lentejas"/></div>' +
+      '<div><label class="block text-sm font-medium mb-1">Categoría</label><select name="category" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">' + opts + '</select></div>' +
+      '<div><label class="block text-sm font-medium mb-1">Descripción (opcional)</label><textarea name="description" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Breve descripción">' + (rec ? (rec.description || '').replace(/</g, '&lt;') : '') + '</textarea></div>' +
+      '<div><label class="block text-sm font-medium mb-1">URL de imagen (opcional)</label><input type="text" name="image" value="' + (rec && rec.image ? rec.image.replace(/"/g, '&quot;') : '') + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="https://... o assets/img/recetas/foto.jpg"/></div>' +
+      '<div><label class="block text-sm font-medium mb-1">Ingredientes (uno por línea)</label><textarea name="ingredients" rows="6" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="1 cebolla\n2 dientes de ajo">' + (rec && rec.ingredients ? rec.ingredients.map(function (i) { return i.replace(/</g, '&lt;'); }).join('\n') : '') + '</textarea></div>' +
+      '<div><label class="block text-sm font-medium mb-1">Pasos (uno por línea)</label><textarea name="steps" rows="8" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Paso 1\nPaso 2">' + (rec && rec.steps ? rec.steps.map(function (s) { return s.replace(/</g, '&lt;'); }).join('\n') : '') + '</textarea></div>' +
+      '<div class="flex gap-2">' +
+      '<button type="submit" class="px-4 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark">' + (isNew ? 'Crear receta' : 'Guardar') + '</button>' +
+      '<a href="' + (isNew ? '#/' : '#/receta/' + id) + '" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700">Cancelar</a>' +
+      '</div></form></section>';
+
+    app.querySelector('#formReceta').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var form = e.target;
+      var title = (form.title.value || '').trim();
+      var category = (form.category.value || 'varios').trim();
+      var description = (form.description.value || '').trim();
+      var image = (form.image.value || '').trim();
+      var ingredients = (form.ingredients.value || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+      var steps = (form.steps.value || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+
+      if (isNew) {
+        state.recipes.push({
+          id: nextId(),
+          category: category,
+          title: title,
+          description: description,
+          image: image,
+          ingredients: ingredients,
+          steps: steps
+        });
+        saveRecipes();
+        location.hash = '#/receta/' + state.recipes[state.recipes.length - 1].id;
+      } else {
+        var idx = state.recipes.findIndex(function (x) { return String(x.id) === String(id); });
+        if (idx !== -1) {
+          state.recipes[idx] = {
+            id: state.recipes[idx].id,
+            category: category,
+            title: title,
+            description: description,
+            image: image,
+            ingredients: ingredients,
+            steps: steps
+          };
+          saveRecipes();
+          location.hash = '#/receta/' + id;
+        }
+      }
+      render();
+    });
+  }
+
+  function renderImportar() {
+    app.innerHTML = '<section class="max-w-2xl space-y-6">' +
+      '<h1 class="text-2xl font-bold">Importar recetas desde JSON</h1>' +
+      '<p class="text-slate-600 dark:text-slate-400">Selecciona un archivo <code class="bg-slate-200 dark:bg-slate-700 px-1 rounded">recipes.json</code> (array de recetas). Se fusionarán con las actuales; si una receta tiene el mismo <code class="bg-slate-200 dark:bg-slate-700 px-1 rounded">id</code>, se actualizará.</p>' +
+      '<div class="flex flex-wrap gap-2">' +
+      '<input type="file" id="fileJson" accept=".json,application/json" class="block w-full text-sm"/>' +
+      '<a href="#/" class="text-brand">← Volver al inicio</a>' +
+      '</div>' +
+      '<div id="importResult" class="hidden p-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm"></div></section>';
+
+    app.querySelector('#fileJson').addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      var res = app.querySelector('#importResult');
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          var result = applyImportedRecipes(reader.result);
+          saveRecipes();
+          res.textContent = 'Importado: ' + result.added + ' nuevas, ' + result.updated + ' actualizadas. Total: ' + state.recipes.length + ' recetas.';
+          res.classList.remove('hidden');
+        } catch (err) {
+          res.textContent = 'Error: ' + err.message;
+          res.classList.remove('hidden');
+        }
+      };
+      reader.readAsText(f);
+    });
+  }
+
+  function render404() {
+    app.innerHTML = '<div class="space-y-4"><h1 class="text-2xl font-bold">Página no encontrada</h1><a href="#/" class="text-brand">Ir al inicio</a></div>';
+  }
+
+  window.addEventListener('hashchange', render);
+  window.addEventListener('load', render);
+
+  document.addEventListener('click', function (e) {
+    var id = e.target && e.target.id;
+    if (id === 'btnExportar') {
+      e.preventDefault();
+      exportRecipes();
+    }
+    if (id === 'btnImportar') {
+      e.preventDefault();
+      var input = document.getElementById('headerImportFile');
+      if (input) input.click();
+    }
+  });
+
+  var headerImportFile = document.getElementById('headerImportFile');
+  if (headerImportFile) {
+    headerImportFile.addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          applyImportedRecipes(reader.result);
+          saveRecipes();
+          location.hash = '#/';
+          render();
+        } catch (err) {
+          alert('Error al importar: ' + err.message);
+        }
+        headerImportFile.value = '';
+      };
+      reader.readAsText(f);
+    });
+  }
+
+  var installBtn = document.getElementById('installBtn');
+  if (installBtn) {
+    function updateInstallBtn() {
+      var isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+      if (state.installPromptEvent || isSafari) installBtn.classList.remove('hidden');
+      if (isSafari) {
+        installBtn.textContent = 'Añadir a inicio (Safari)';
+        installBtn.disabled = true;
+        installBtn.title = 'Usa Compartir → Añadir a pantalla de inicio';
+        return;
+      }
+      installBtn.disabled = !state.installPromptEvent;
+      installBtn.title = state.installPromptEvent ? 'Instalar PWA' : 'Aún no disponible (navega un poco)';
+    }
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      state.installPromptEvent = e;
+      installBtn.classList.remove('hidden');
+      updateInstallBtn();
+    });
+    installBtn.addEventListener('click', async function () {
+      if (!state.installPromptEvent) return;
+      installBtn.disabled = true;
+      try {
+        await state.installPromptEvent.prompt();
+      } finally {
+        state.installPromptEvent = null;
+        updateInstallBtn();
+      }
+    });
+    updateInstallBtn();
+  }
+})();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>

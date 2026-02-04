@@ -1,0 +1,407 @@
+[
+  {
+    "id": 1,
+    "category": "pures",
+    "title": "Puré de verduras",
+    "description": "El verde",
+    "image": "assets/img/recetas/pure-verde.jpg",
+    "ingredients": ["Cebolleta", "Puerro", "Calabacín", "Berenjena", "Pimiento verde", "Espinacas", "Brócoli pequeño", "Puñado fréjoles", "Apio (2)"],
+    "steps": ["Sofreír la cebolleta y el puerro con un chorro de aceite sin dorar", "Añadir el resto de ingredientes y agua caliente sin cubrir del todo", "Echar sal y pimienta, cerrar y cocer a presión 6 minutos", "Pasar por el pasapuré o triturar en Thermomix (2 veces, nivel 4, 2:30 min)"]
+  },
+  {
+    "id": 2,
+    "category": "de-cuchara",
+    "title": "Fréjoles con jamón y patatas",
+    "description": "Sin compango pero muy ricos",
+    "image": "assets/img/recetas/frejoles-patatas.jpg",
+    "ingredients": ["Fréjoles", "Patatas", "Jamón en tiras (1 puñado)", "Ajo (3 dientes)", "Salsa de tomate"],
+    "steps": ["Lavar y trocear fréjoles y cortar patatas en trozos", "Echar en olla rápida con 2 cm de agua, añadir sal y cocer 5-6 min", "Dorar el ajo troceado en sartén con poco aceite, añadir jamón y dejar que se haga un poco", "Añadir el refrito a la olla, verter salsa de tomate y dejar reducir 10-15 min"]
+  },
+  {
+    "id": 3,
+    "category": "sopas",
+    "title": "Sopa de quinoa",
+    "description": "La de Ceci",
+    "image": "assets/img/recetas/sopa-quinoa.jpg",
+    "ingredients": ["Medio paquete de lentejas", "2 dientes de ajo", "80 g de cebolla", "Tacos de jamón", "1,5 litros entre agua y caldo", "1 cucharadita de sal", "Pimienta", "40 g de aceite", "Opcional: 1 cucharada de pimentón"],
+    "steps": ["Poner en el vaso el ajo y la cebolla. Programar 4 segundos, velocidad 5. Con la espátula, bajar los restos de las paredes del vaso", "Añadir el aceite y el jamón. Programar 5 minutos, 100º, velocidad 1", "Añadir el pimentón y mezclar con la espátula", "Incorporar el caldo y el agua. Programar 10 minutos, 100º, velocidad 2", "Añadir la soja de quinoa y la pimienta. Programar 25 minutos, 100º, giro a la izquierda, velocidad 1. NOTA: Si se van a añadir fideos, hacerlo cuando falte el tiempo que marca el paquete para su cocción"]
+  },
+  {
+    "id": 4,
+    "category": "sopas",
+    "title": "Caldo",
+    "description": "El de toda la vida",
+    "image": "assets/img/recetas/caldo-jamon-pollo.jpg",
+    "ingredients": ["Hueso de jamón", "Hebra de jamón", "Muslo de gallina", "Trozo de chamón", "Puerro", "Zanahoria", "Sal", "Azafrán"],
+    "steps": ["Llenar la olla rápida con 3/4 de agua, y poner a hervir el jamón, chamón y pollo. Dejar que vaya soltando y vamos desespumando hasta que pare", "Añadimos luego el puerro y la zanahoria y dejamos 45 min con presión", "Destapamos, añadimos azafrán y sal y dejamos otros 20 min sin presión para que reduzca"]
+  },
+  {
+    "id": 5,
+    "category": "pures",
+    "title": "Puré rojo",
+    "description": "El rojo",
+    "image": "assets/img/recetas/pure-rojo.jpg",
+    "ingredients": ["Puerro (4)", "Calabacín", "Calabaza", "Zanahoria (2)", "Pimiento rojo (2)", "Tomate rallado (4)", "Sal", "Pimienta"],
+    "steps": ["Pelar el calabacín para que el puré quede rojo", "Echar el pimiento rojo en dos mitades encima de todo para poder retirar la piel tras la cocción", "Pochar lentamente el puerro sin que dore", "Añadir el calabacín y pochar un poco", "Añadir el resto de elementos, salar y echar agua hasta 2/3 de la pota", "Dejar 6 min en la olla express"]
+  },
+  {
+    "id": 6,
+    "category": "varios",
+    "title": "Guacamole",
+    "description": "El clásico",
+    "image": "assets/img/recetas/guacamole.jpg",
+    "ingredients": ["1 aguacate", "1/4 de cebolla", "1 lima (vinagre como solución de emergencia)", "pellizco de sal", "chorro de aceite", "pimienta", "tabasco"],
+    "steps": ["Preparar y servir"]
+  },
+  {
+    "id": 7,
+    "category": "ensaladas",
+    "title": "Ceviche de coliflor",
+    "description": "Idea de un servidor",
+    "image": "assets/img/recetas/ceviche-coliflor.jpg",
+    "ingredients": ["1 cabeza de coliflor en trocitos", "1/4 de taza de cebolla morada en trocitos", "2 tomates en trocitos", "1 taza de pepino en trocitos", "1 taza de mango fresco en trocitos", "1/4 taza de cilantro finamente picado", "2 limones (ajustar al gusto)", "Sal de mar al gusto", "Pimienta al gusto"],
+    "steps": ["Hervir agua y cocer los floretes de coliflor tapados a fuego mínimo por 4 minutos, escurrir y enfriar", "Cortar cebolla, tomate, pepino y mango en trozos pequeños y mezclar con el jugo de limón y cilantro picado", "Cortar la coliflor fría en trozos muy pequeños e incorporar a la mezcla", "Salpimentar, añadir chile al gusto y dejar reposar en el refrigerador 20 minutos", "Servir con tostadas"]
+  },
+  {
+    "id": 8,
+    "category": "varios",
+    "title": "Berenjenas rellenas",
+    "description": "Mi especialidad",
+    "image": "assets/img/recetas/berenjenas-rellenas.jpg",
+    "ingredients": ["4 berenjenas.", "4 latas de atún en aceite.", "2 cebollas.", "100 gr de salsa de tomate o tomate frito.", "100 gr de queso rallado tipo mozzarella o emmental, que se pueda gratinar bien.", "1/4 de cucharadita de postre de comino en polvo", "1/4 de cucharadita de postre de pimentón dulce.", "Aceite de oliva", "Sal", "Pimienta negra recién molida"],
+    "steps": ["Hornear berenjenas con papel de horno, calor arriba y abajo, a 180°C durante 40-45 min hasta que doren", "Picar y cocinar cebollas en sartén con aceite y sal hasta que transparenten", "Sacar carne de las berenjenas con cuchara sin romper la piel", "Picar la carne de berenjena, añadir a la sartén con cebolla y cocinar 5 min", "Incorporar atún escurrido, tomate, pimentón, sal y pimienta (opcional el comino) y cocinar otros 5 min", "Rellenar las pieles con la mezcla, cubrir con queso rallado y hornear a 180°C unos 10 min hasta gratinar", "Servir con orégano y pimienta por encima."]
+  },
+  {
+    "id": 9,
+    "category": "ensaladas",
+    "title": "Ensalada de col",
+    "description": "Coleslaw que dicen los guiris",
+    "image": "assets/img/recetas/ensalada-col.jpg",
+    "ingredients": ["250g de repollo", "150g de zanahorias", "150g de manzana granny", "Para la salsa:", "1 yogur natural", "10g de vinagre de jerez", "70g de mayonesa", "10g de azúcar", "5g de mostaza", "5g de sal", "5g de cebolla", "5g de aceite de oliva virgen extra"],
+    "steps": ["\"Cortar el repollo en cuatro trozos y programar 3 segundos, velocidad 5"]
+  },
+  {
+    "id": 10,
+    "category": "de-cuchara",
+    "title": "Repollo guisado Thermomix",
+    "description": "El que hice mil veces",
+    "image": "assets/img/recetas/repollo-guisado.jpg",
+    "ingredients": ["350 g de repollo en juliana", "400 g agua", "50 g tomate triturado", "150 g cebolla", "100 g zanahoria", "1 diente de ajo", "100 g pimiento verde", "150 g chorizo o salchicha fresca", "1 cucharadita pimentón", "1 cucharadita granos de pimienta", "1 hoja laurel", "1 cucharadita sal"],
+    "steps": ["Poner en el vaso de Thermomix la zanahoria, el ajo, la cebolla, el pimiento y el aceite", "Triturar 4 segundos a velocidad 4", "Sofreír 5 minutos a 120°C, velocidad 1", "Añadir el chorizo en rodajas y rehogar 2 minutos a 120°C, giro inverso, velocidad 1", "Añadir el repollo, el agua, salpimentar, poner el tomate triturado y programar 20 minutos a 120°C, giro inverso, velocidad cuchara", "Si se hace en olla rápida seguir los mismos pasos y cocinar durante 10 min"]
+  },
+  {
+    "id": 11,
+    "category": "postres",
+    "title": "Cocadas",
+    "description": "Una llambionada buena",
+    "image": "assets/img/recetas/cocadas.jpg",
+    "ingredients": ["Huevos", "Azúcar", "Coco rallado"],
+    "steps": ["Precalentar horno a 250°C sin aire", "Batir huevos ligeramente, añadir azúcar e incorporar el coco removiendo bien", "Con un porcionador de helados pequeño (3,5 cm), una cucharilla, o una manga pastelera, deposita bolitas de masa sobre una bandeja previamente engrasada o una lámina de silicona, separándolas unos 4 cm. Es posible que con esta cantidad tengas que hacer dos bandejas", "Cuando el horno haya alcanzado la temperatura máxima, mete la bandeja en la posición más baja, y hornea unos 4/5 minutos. Cuando empiecen a dorarse, sácalas y déjalas enfriar antes de despegarlas de la bandeja (la forma más fácil es pasar un cuchillo o espátula por la base)", "Están deliciosas, un poco crujientes por fuera y tiernas por dentro, con la base ligeramente caramelizadas. Se conservan entre cuatro y seis semanas en un recipiente hermético, y son ideales para hacer en navidad, o aprovechando que has puesto el horno para otra cosa, ya que la elaboración y horneado son rapidísimos."]
+  },
+  {
+    "id": 12,
+    "category": "postres",
+    "title": "Magdalenas de chocolate y nata",
+    "description": "Mufin que se dice ahora",
+    "image": "assets/img/recetas/magdalenas-chocolate.jpg",
+    "ingredients": ["300g harina", "40g cacao puro", "1 sobre levadura Royal", "4 huevos", "150-250g azúcar", "Ralladura media naranja", "100-120g nata montar o yogur", "250g aceite girasol", "60g pepitas chocolate", "Azúcar para espolvorear"],
+    "steps": ["Tamizar harina, cacao y levadura (30s, v3). Retira y reserva", "Batir huevos y azúcar con mariposa (7 min, 37º, v3)", "Añadir ralladura (6 min, v3), nata y aceite (1 min, v2)", "Quitar mariposa, añadir harina (5s, v6) y pepitas y mezclar con la espátula.", "Vierte el contenido mientras precalienta el horno a 230ºC, con calor arriba y abajo o ventilador", "Reparte la masa en moldes de papel, lleanado hasta 3/4 de su capacidad, espolvorear azúcar y hornear a 210ºC por 15-18 min"]
+  },
+  {
+    "id": 13,
+    "category": "ensaladas",
+    "title": "Escalivada",
+    "description": "Perfecta como acompañamiento",
+    "image": "assets/img/recetas/escalivada.jpg",
+    "ingredients": ["2 pimientos rojos grandes", "1 berenjena", "1 cebolla", "1 diente de ajo", "2 tomates", "Sal", "Aceite de oliva"],
+    "steps": ["Precalentar horno a 210°C arriba y abajo", "Lavar verduras, aceitarlas y asar 30 min", "Dar la vuelta y asar otros 30 min", "Dejar enfriar, pelar y cortar en tiras (cebolla en juliana)", "Aliñar con ajo picado, sal y aceite de oliva"]
+  },
+  {
+    "id": 14,
+    "category": "ensaladas",
+    "title": "Ensalada de ahumados",
+    "description": "Sabrosa y fresquina",
+    "image": "assets/img/recetas/ensalada-ahumados.jpg",
+    "ingredients": ["Canónigos", "Bonito", "Gula", "Salmón o bacalao ahumado", "Palitos de mar", "Aceitunas negras", "Huevo cocido"],
+    "steps": ["Preparar y servir"]
+  },
+  {
+    "id": 15,
+    "category": "ensaladas",
+    "title": "Ensalada de aguacate y mango",
+    "description": "La primera que hicimos con mango",
+    "image": "assets/img/recetas/ensalada-aguacate-mango.jpg",
+    "ingredients": ["Endivia", "Pepino en cuadrados", "Aguacate", "Manzana granny", "Mango en cuadrados", "Feta", "Sésamo", "Vinagre de jerez", "Sal", "Aceite de oliva"],
+    "steps": ["Preparar y servir"]
+  },
+  {
+    "id": 16,
+    "category": "postres",
+    "title": "Selva negra",
+    "description": "Bastante laboriosa",
+    "image": "assets/img/recetas/selva-negra.jpg",
+    "ingredients": ["Bizcocho: 100g harina repostería, 40g cacao, 2 cdta levadura química, 1 cdta azúcar vainillado, sal, 3 huevos, 150g azúcar, 100g mantequilla, 40g kirsch", "Relleno: 250g cerezas al kirsch, 600g nata líquida muy fría, 1 cdta azúcar vainillado, 100g azúcar glas", "Decoración: Virutas de chocolate"],
+    "steps": ["Bizcocho: Precalentar el horno a 180º", "Pulverizar la harina, el cacao, la levadura, el azúcar vainillado y la sal (20s, v5-10). Reservar en un cuenco.", "Batir huevos y azúcar con mariposa (5 min, 37º, v3.5). Después sin temperatura 4 min, v3", "Añadir mantequilla y la mezcla de harina y cacao y mezclar (4s, v1), unir con espátula, añadir licor", "Verter en un molde desmontable de 24cm y hornear a 180ºC (20-25 min).", "Relleno: Colocar mariposa, incorporar nata y azúcar vainillado y programar (v3.5) hasta que esté montado. Luego añadir el azúcar glas y mezclar con la espátula.", "Montaje: Partir el bizcocho por la mitad y pintar el interior con el licor de las cerezas", "Cubrir la superficie con la nata montada y poner encima las cerezas previamente escurridas en papel cocina", "Poner la otra tapa también untada con el licor de las cerezas y cubrir con la nata montada restante, alisándola con la espátula", "Decorar con rosetas de nata con una manga pastelera de boquilla rizada y colocar sobre ellas una cereza", "Cubrir con virutas de chocolate"]
+  },
+  {
+    "id": 17,
+    "category": "de-cuchara",
+    "title": "Lentejas",
+    "description": "Las de toda la vida, sin compango",
+    "image": "assets/img/recetas/lentejas.jpg",
+    "ingredients": ["1 vaso de lentejas (Doraimon)", "8 vasos de agua fría", "Patatas", "1 puerro entero", "1/2 pimiento verde", "2 zanahorias", "Jamón y/o chorizo", "2 tomates triturados", "1 cucharadita de sal", "Sofrito (4 dientes de ajo, 1 cebolla, cda colmada pimentón)"],
+    "steps": ["Echamos en la olla las lentejas, el agua, las patatas cortadas en cuadrados, el pimiento entero, el puerro entero, las zanahorias en rodajas, el jamón y/o chorizo, el tomate triturado y la sal", "Mientras tanto, hacemos un sofrito con ajo, cuando doren echamos la cebolla, y cuando esté lista añadimos una cucharada de postre colmada de pimentón (fuera del fuego para que no se queme)", "Pasados los 20 minutos, abrimos la olla, retiramos el puerro y el pimiento y añadimos el sofrito (quitando antes el exceso de aceite) y dejamos cocinar a fuego lento otros 10-20 minutos"]
+  },
+  {
+    "id": 18,
+    "category": "de-cuchara",
+    "title": "Guisantes con jamón",
+    "description": "Sencillos y sabrosos",
+    "image": "assets/img/recetas/guisantes-jamon.jpg",
+    "ingredients": ["1 kg de guisantes", "Tacos de jamón", "Cebolla", "Harina", "Vino blanco", "Sal", "Pimentón"],
+    "steps": ["Cocer los guisantes según las instrucciones del paquete (pueden quedar duros)", "Pochar la cebolla y añadir los tacos de jamón", "Incorporar la harina, cocinarla y añadir un poco de pimentón", "Verter el vino blanco y un par de garcillas del agua de cocción de los guisantes", "Añadir los guisantes y ajustar el agua si es necesario"]
+  },
+  {
+    "id": 19,
+    "category": "guisos",
+    "title": "Pollo guisado",
+    "description": "No tan bueno como al chilindrón",
+    "image": "assets/img/recetas/pollo-guisado.jpg",
+    "ingredients": ["Pollo", "Ajo", "Cebolla", "Pimiento rojo", "Pimiento verde", "Zanahoria", "Aceite", "Sal", "Vino blanco", "Agua caliente"],
+    "steps": ["\"Salpimentar y dorar el pollo en aceite"]
+  },
+  {
+    "id": 20,
+    "category": "postres",
+    "title": "Brownie",
+    "description": "Con helado de vainilla está que flipas",
+    "image": "assets/img/recetas/brownie.jpg",
+    "ingredients": ["150g de nueces", "150g de chocolate fondant", "150g de azúcar", "2 huevos", "100g de mantequilla a Tª ambiente", "70g de harina de repostería", "1 cucharadita de levadura química", "1 pellizco de sal"],
+    "steps": ["Precalentar el horno a 180º", "Trocear nueces en el vaso (4s, v4) y reservar. Poner chocolate troceado en el vaso (15s, v5-10) y reservar.", "Batir azúcar y huevos con mariposa (5 min, 37º, v3.5).", "Añadir mantequilla y chocolate y mezclar (6s, v2).", "Incorporar harina, levadura y sal (4s, v2) y quitar la mariposa.", "Mezclar nueces con espátula.", "Engrasar un molde y enharinar, volcar la mezcla y hornear durante 20 minutos, hasta que al introducir un cuchillo, salga limpio.", "Desmoldar en una rejilla y, en caliente, cortar en cuadrados al gusto", "Servir con helado de vainilla."]
+  },
+  {
+    "id": 21,
+    "category": "varios",
+    "title": "Sándwich mediterráneo",
+    "description": "Sabor italiano",
+    "image": "assets/img/recetas/sandwich-mediterraneo.jpg",
+    "ingredients": ["Piso inferior: Salami, Jamón York, Queso", "Piso superior: Tomate seco, Aceitunas verdes, Mozzarella, Rúcula, Alcaparras (opcional)", "Nota: Capa fina de pesto por todas las caras del pan"],
+    "steps": ["Montar los dos pisos y listo"]
+  },
+  {
+    "id": 22,
+    "category": "pescados",
+    "title": "Salmón al estuche de vapor",
+    "description": "Sano y nutritivo",
+    "image": "assets/img/recetas/salmon-estuche-vapor.jpg",
+    "ingredients": ["1 cebolleta", "1 puñado de espárragos trigueros", "Salmón", "8 tomates cherry", "Aceite de ajo", "Salsa de soja", "Pimienta", "Cebollino", "Sésamo negro"],
+    "steps": ["Ponemos en el estuche la cebolla picada y los trigueros troceados con un poco de pimienta y 2 cucharadas soperas de aceite de ajo", "Cocinar 4 minutos a potencia máxima", "Añadimos dos cucharadas soperas de soja, los cherrys y el salmón salpimentado", "Cocinar 3 minutos y 20 segundos a potencia máxima", "Adornar con cebollino picado y sésamo negro"]
+  },
+  {
+    "id": 23,
+    "category": "ensaladas",
+    "title": "Ensalada mango 2.0",
+    "description": "La segunda con mango",
+    "image": "assets/img/recetas/ensalada-mango-2.0.jpg",
+    "ingredients": ["Rúcula", "Cebolla roja en juliana y encurtida", "Zanahoria en hilos", "Pepino en hilos", "Aguacate en láminas", "Mango", "Parmesano en lascas", "Aliño: Aceite y 2 limas (proporción 1 a 3), pimienta, sal maldon y cilantro", "Opcional: Cacahuetes"],
+    "steps": ["Disponer la rúcula como base y añadir la cebolla encurtida, la zanahoria, el pepino, el aguacate y el mango", "Esparcir las lascas de parmesano y los cacahuetes si se desea", "Preparar el aliño batiendo el aceite, la lima, la pimienta, la sal y el cilantro picado hasta emulsionar", "Verter el aliño sobre la ensalada justo antes de servir"]
+  },
+  {
+    "id": 24,
+    "category": "pescados",
+    "title": "Patatas con pintarroxa",
+    "description": "Pa ponese las botas",
+    "image": "assets/img/recetas/patatas-pintarroxa.jpg",
+    "ingredients": ["Pintarroja", "16 gambones tigre", "2 dientes de ajo", "1 cebolla", "Harina", "Medio vaso de vino blanco", "Patatas tipo panadera", "Perejil", "Sal", "Aceite"],
+    "steps": ["Caldo: Sofreír cabezas y pieles de gambones, cocer 15 min en agua aplastándolas y colar.", "Caldo: Sofreir y cocer trozos de pescado en agua aparte 15 min y colar", "Pota: Dorar ajos rallados y una cebolleta. Cocinar 2 cucharaditas de harina, añadir medio vaso de vino y evaporar", "Final: Añadir el perejil y las patatas y mezclar un par de minutos. Incoporar el caldo y salar. Cuando las patatas estén casi listas, incorporar la pintarroja y gambones 3 minutos más"]
+  },
+  {
+    "id": 25,
+    "category": "postres",
+    "title": "Torrijas",
+    "description": "Las clásicas",
+    "image": "assets/img/recetas/torrijas.jpg",
+    "ingredients": ["Pan de brioche", "Leche", "Canela en rama", "Piel de limón", "Vino (El Guiso)", "Azúcar", "Huevos"],
+    "steps": ["En un cazo hervimos leche con un par de ramas de canela y unas tiras de piel de limón", "En otro cazo hervimos vino El Guiso mezclado con agua y azúcar y dejamos que se evapore el alcohol", "Mojamos las torrijas en la leche y las empapamos bien, las pasamos por huevo batido y las freímos con el aceite bien caliente", "Las dejamos recudir en papel de cocina y las ponemos en un recipiente, al que añadimos el almíbar que preparamos antes."]
+  },
+  {
+    "id": 26,
+    "category": "varios",
+    "title": "Pollo  para fajitas",
+    "description": "Receta para fajitas elaboradas",
+    "image": "assets/img/recetas/pollo-fajitas.jpg",
+    "ingredients": ["1 pechuga de pollo cuk entera", "1 cebolla grande", "2 zanahorias", "Vino", "Aceite", "Agua", "Sal"],
+    "steps": ["En la olla rápida echamos aceite hasta cubrir el fondo, calentamos y doramos bien las pechugas enteras, una vez saladas.", "Apartamos las pechugas, y en ese aceite echamos la cebolla en trozos grandes y las zanahorias también troceadas.", "Añadimos sal y rehogamos unos 5 minutos.", "Incorporamos la pechuga y añadimos medio vaso de vino blanco y medio vaso de agua.", "Cerramos la olla y dejamos 50 minutos.", "Sacamos la pechuga y reducimos lo necesario la salsa. Una vez reducida la salsa, deshilachamos la pechuga y le añadimos la salsa colada, deshechando las verduras ya que ya dejaron el sabor en la salsa."]
+  },
+  {
+    "id": 27,
+    "category": "pescados",
+    "title": "Patatas con pescado",
+    "description": "También de relamese",
+    "image": "assets/img/recetas/patatas-pescado.jpg",
+    "ingredients": ["Pescado", "Langostinos", "Almejas", "Patatas", "2 cebollas medianas", "2 dientes de ajo", "Vino blanco", "Aceite", "Agua", "Sal"],
+    "steps": ["Caldo de pescado", "En una pota con el culo de aceite echamos las cabezas de langostino y las freimos un poco aplastándolas", "Incorporamos el pescado, una cebolla y agua y cocemos durante 15min (máx 20 para que no enrancie)", "Se cuela primero con colador y luego con el filtro de café para eliminar las impurezas y arenilla", "Reservamos tanto el caldo como los langostinos pelados", "Caldo de almejas", "En un cazo con un poco de agua echamos las almejas para que abran. El líquido que sueltan se puede incorporar al caldo", "Por si acaso conviene dejarlas un rato en agua con sal para que echen la arena que puedan tener", "Patatas", "Rallamos un par de dientes de ajo y dos cebollas medianas, y sofreímos en la paella", "Echamos un poco de harina y la cocinamos, y luego medio vaso de vino blanco", "Incorporamos las patatas tipo panadera, y mezclamos un par de minutos.", "Incorporamos el caldo y salamos, y dejamos que las patatas se hagan", "Cuando queden 5 minutos incorporamos los trozos de pescado", "Cuando quede un minuto echamos los langostinos que ya teníamos pelados", "Cuando esté listo echamos las almejas y tapamos, para que se terminen de hacer los langostinos y las almejas, y repose todo un poco"]
+  },
+  {
+    "id": 28,
+    "category": "ensaladas",
+    "title": "Ensalada de rúcula",
+    "description": "Ensalada de rúcula",
+    "image": "assets/img/recetas/ensalada-rucula.jpg",
+    "ingredients": ["Rúcula", "Tomate", "Aguacate", "Mozzarella", "Aceitunas negras", "Tomate seco", "Vinagreta con pesto (medio vaso de aceite, chorro de vinagre, sal, pimienta y 2 cucharadas de pesto)"],
+    "steps": ["Mezclar en un bol la rúcula con el tomate, el aguacate laminado, la mozzarella, las aceitunas y el tomate seco", "Preparar la vinagreta batiendo el aceite, el vinagre, el pesto, la sal y la pimienta hasta emulsionar", "Verter la vinagreta sobre la ensalada y servir inmediatamente"]
+  },
+  {
+    "id": 29,
+    "category": "varios",
+    "title": "Pesto",
+    "description": "Molto buono",
+    "image": "assets/img/recetas/pesto.jpg",
+    "ingredients": ["1/2 paquete de albahaca fresca", "Aceite de oliva", "Parmesano", "Piñones", "Sal"],
+    "steps": ["Ponemos la albahaca, sin tallos y cortada un poco con las tijeras, en el vaso de la Thermomix y trituramos", "Cubrimos con aceite y le damos otro golpe", "Echamos un puñado de grana padano rallado", "Pizca de sal", "Echamos un puñado de piñones tostados. Justo que cubran el culo de una sartén pequeña. Ojo que se queman fácil"]
+  },
+  {
+    "id": 30,
+    "category": "ensaladas",
+    "title": "Ensalada pollo y bacon",
+    "description": "Una de las estrellas pa un viernes",
+    "image": "assets/img/recetas/ensalada-pollo-bacon.jpg",
+    "ingredients": ["1 paquete de canónigos + rúcula", "Pimiento rojo", "Pimiento verde", "Cebolla morada", "Pollo (asado o plancha)", "Bacon", "Parmesano", "Cherrys"],
+    "steps": ["Se parte en tiras el pimiento rojo, verde y la cebolla y se saltea a fuego fuerte hasta que las verduras ablanden un poco, al estilo wok", "Las pechugas de pollo se pueden hacer al horno a 180º 40 min o a la plancha", "El bacon se fríe y se retira un poco la grasa", "Eso se puede tener todo hecho de antemano, y luego simplemente es echar todos los ingredientes"]
+  },
+  {
+    "id": 31,
+    "category": "postres",
+    "title": "Mousse de queso y yogurt",
+    "description": "De mis postres favoritos",
+    "image": "assets/img/recetas/mousse-queso-yogurt.jpg",
+    "ingredients": ["Base:", "80g mantequilla ambiente", "200g galletas Digestive Gullón sin azúcar", "Mousse:", "2 yogures griegos", "125g queso Philadelphia", "75g azúcar", "125g nata", "Mermelada sin azúcar", "Decoración:", "Arándanos", "Frambuesas", "Menta"],
+    "steps": ["Base:", "Poner las galletas en el vaso y pulverizar 5 segundos, velocidad 10", "Añadir la mantequilla y mezclar 5 segundos, velocidad 5", "Mousse:", "Poner la mariposa en el vaso y añadir el queso y el azúcar. Programar 2min, velocidad 2", "Añadir la nata y programar 20 segundos, velocidad 4", "Echar los yogures griegos y mezclar 5 segundos, velocidad 2"]
+  },
+  {
+    "id": 32,
+    "category": "guisos",
+    "title": "Pollo al limón",
+    "description": "Tampoco supera al chilindrón",
+    "image": "assets/img/recetas/pollo-al-limon.jpg",
+    "ingredients": ["muslos de pollo", "1 cebolla", "1 limón", "100ml de vino blanco", "3 dientes de ajo", "romero seco", "tomillo", "100ml de aceite", "4 patatas medianas", "sal", "pimienta"],
+    "steps": ["Pollo", "Precalentamos el horno a 200ºC", "Pelamos la cebolla y la cortamos en aros de 0,5 cm. Separamos los aros de cebolla y los colocamos en una fuente apta para horno.", "Lavamos y partimos un limón. Troceamos una mitad y exprimimos el zumo de la otra mitad. Bañamos la cebolla con el zumo del medio limón.", "Ponemos los muslos de pollo sobre la cama de cebolla, el limón troceado, el tomillo fresco y los dientes de ajo partidos por la mitad (no es necesario pelarlos).", "En un mortero picamos el romero seco y lo mezclamos con la mitad del vino blanco, los 50 ml. de aceite de oliva virgen extra, la sal y la pimienta.", "Removemos bien para que se mezclen los ingredientes. Pincelamos la carne con la mezcla de romero y bañamos la bandeja con el resto.", "Horneamos con calor arriba y abajo, sin aire caliente para no resecar el pollo. El tiempo más o menos de 60 - 75 minutos a 200º C en la bandeja del medio.", "Tened cuidado porque cada horno es un mundo y el tuyo puede necesitar variar la temperatura. Durante el horneado vamos regando con la mitad que", "nos queda del vino blanco, para que siempre tenga un poco de líquido y no se quede seco.", "Patatas rústicas", "Lavamos bien las patatas y las cortamos en gajos sin pelar.", "Las pasamos a otra fuente de horno y bañamos con los otros 50 ml de aceite. Espolvoreamos sal, pimienta y romero seco.", "Horneamos durante una hora a 200º C, los podemos meter 15 minutos antes de hornear el pollo, así luego serán 45 minutos con el horneado de los muslos.", "Servimos el pollo acompañado de las patatas asadas y un poco de ensalada de tomate, por ejemplo."]
+  },
+  {
+    "id": 33,
+    "category": "ensaladas",
+    "title": "Ensalada de lentejas",
+    "description": "Una delicia pa entre semana",
+    "image": "assets/img/recetas/ensalada-lentejas.jpg",
+    "ingredients": ["Lentejas de bote", "Cebolla morada", "Pepino semipelado", "Pimiento rojo", "Huevo cocido", "Aceite", "Cilantro", "Sal", "Pimienta"],
+    "steps": ["Preparar y servir"]
+  },
+  {
+    "id": 34,
+    "category": "varios",
+    "title": "Fajitas pollo picado",
+    "description": "La opción rápida para fajitas",
+    "image": "assets/img/recetas/fajitas-pollo-picado.jpg",
+    "ingredients": ["Pollo picado", "Vino blanco", "Cebolla", "Queso emmental rallado", "Zanahoria rallada", "Apio", "Maíz", "Jalapeños o tabasco", "Salsa Old El Paso", "Tortitas"],
+    "steps": ["Pochar cebolla", "Añadir el pollo y cocinar bien", "Con el pollo cocinado, añadir chorro de vino blanco", "Reservar y servir con el resto de ingredientes"]
+  },
+  {
+    "id": 35,
+    "category": "de-cuchara",
+    "title": "Repollo salteado con pollo",
+    "description": "Idea sacada de Ire",
+    "image": "assets/img/recetas/repollo-salteado-pollo.jpg",
+    "ingredients": ["Repollo (unas 6 hojas)", "1 cebolla morada mediana grande", "Zanahoria rallada", "Salsa de soja", "Jengibre rallado", "Ralladura de limón o lima", "Opcional: Pollo o gambas"],
+    "steps": ["Pochar cebolla morada en juliana a fuego medio-fuerte. Cuando esté lista añadir el repollo en juliana fina", "Cuando el repollo esté integrado y mezcladocon la cebolla (no muy pasado) se añade la zanahoria rallada y se integra sin que se haga mucho", "Se añade salsa de soja, se integra también, y luego un toque de jengibre rallado y un toque de ralladura de limón o lima.", "Se puede combinar con pollo o con gambas", "En caso de pollo, se hacen filetes no muy finos. Se salan y hacen unos cortes y se untan con jengibre rallado al gusto y un poco de ralladura de limón", "Se pone una hoja de papel de horno encima y se dan golpes con una sartén para que cojan el sabor.", "Quitamos el papel, ponemos un poco de sésamo y a la plancha. Luego se cortan en tiras anchas."]
+  },
+  {
+    "id": 36,
+    "category": "ensaladas",
+    "title": "Ensalada de salmón y naranja",
+    "description": "Sabrosa y refrescante como ninguna",
+    "image": "assets/img/recetas/ensalada-salmon-naranja.jpg",
+    "ingredients": ["Rúcula", "Mozzarella", "Naranja", "Salmón ahumado", "Piñones tostados", "Aliño de mostaza, miel y limón"],
+    "steps": ["Preparar y servir"]
+  },
+  {
+    "id": 37,
+    "category": "guisos",
+    "title": "Albóndigas de pollo",
+    "description": "Albóndigas de pollo",
+    "image": "assets/img/recetas/albondigas-pollo.jpg",
+    "ingredients": ["Albóndigas", "1 pechuga de pollo picada (aprox. 600 gramos)", "ajo molido", "perejil", "miga de pan (leche y escurrir)", "1 huevo", "sal", "Salsa", "1 cebolla", "1 zanahoria", "azafrán", "orégano", "caldo de pollo", "sal"],
+    "steps": ["Albóndigas", "Mezclamos todos los ingredientes con unos guantes de látex y", "hacemos las albóndigas. Enharinamos y freímos.", "Salsa", "Puede ser salsa de tomate o esta otra.", "En la misma olla echamos la cebolla y la zanahoria y pochamos 20 minutos.", "Luego echamos las especias y un poco de harina para que espese.", "Añadimos las albóndigas, cubrimos con caldo de pollo y dejamos que se cocinen unos diez minutos.", "Para el caldo de pollo (4 carcasas de pollo, puerro, cebolla y patata). Cocer 45min, añadir verduras y otros 45 minutos. En 3 litros de agua."]
+  },
+  {
+    "id": 38,
+    "category": "varios",
+    "title": "Granola",
+    "description": "La que prepara Cecilia",
+    "image": "assets/img/recetas/granola.jpg",
+    "ingredients": ["250 g de avena", "200 g de anacardos", "150 g de pipas de calabaza", "40-80 g de miel", "20 g de aceite", "pellizco de sal maldon", "3 cucharadas de café de canela"],
+    "steps": ["Mezclamos todos los ingredientes en una fuente", "Extendemos en la bandeja del horno sobre papel de horno", "Calentamos a 150-160ºC", "Ponemos 12min, removemos y otros 12", "Vigilamos por si se tuesta mucho"]
+  },
+  {
+    "id": 39,
+    "category": "varios",
+    "title": "Dip de alcachofas y espinacas",
+    "description": "Idea del menda",
+    "image": "assets/img/recetas/dip-alcachofas-espinacas.jpg",
+    "ingredients": ["2 tazas espinacas frescas", "1/2 taza corazones de alcachofa partidos en cuartos", "1 taza anacardos remojados previamente", "1/2 cebolleta", "1/2 diente ajo", "1 taza agua", "1 pizca sal", "1 pizca pimienta"],
+    "steps": ["Lo primero que hay que hacer es poner en remojo los anacardos, como mínimo durante 2 horas, también puedes dejarlos una noche.", "Cuando los anacardos estén ya puedes empezar, lava las espinacas frescas y centrifúgalas bien para eliminar bien el agua.", "Corta los corazones de alcachofa en cuartos.", "Corta la cebolla en trocitos y pela el diente de ajo, pártelo por la mitad y quítale la parte central.", "Pon todos los ingredientes en tu robot de cocina o en el vaso de la batidora, añade el agua, la sal y la pimienta.", "Si decides añadir una guindilla, ahora es el momento.", "Tritura todo muy bien, hasta que quede una pasta cremosa. Ya lo tienes, sírvelo y a disfrutar."]
+  },
+  {
+    "id": 40,
+    "category": "varios",
+    "title": "Pulpo a la plancha con verduras asadas",
+    "description": "Otra vuelta de tuerca al pulpo",
+    "image": "assets/img/recetas/pulpo-plancha-verduras-asadas.jpg",
+    "ingredients": ["Pulpo cocido", "2 rodajas de calabaza", "1 zanahoria", "1 calabacín", "1 puerro", "2 patatas pequeñas", "1/2 diente de ajo como mucho", "Aceite de oliva virgen extra", "Perejil fresco", "Sal", "Salsa de mojo picón (opcional)"],
+    "steps": ["Cogemos las verduras que queramos, en este caso, calabaza, zanahoria, patata, calabacín y puerro. Las pelamos, lavamos y cortamos en rodajas o bastones.", "Por otro lado, damos un hervor a las rodajas de patata. Con 5 minutos bastará.", "En una bandeja de horno con papel para hornear, colocamos todas las verduras esparcidas, repártelas bien para que no se monte una sobre otra, y espolvoreamos un poco de sal, pimienta negra molida y un chorrito de aceite de oliva virgen extra.", "Horneamos en el horno previamente caliente a 200ºC durante 20 minutos aproximadamente. Estarán listas cuando estén ligeramente doradas y al pincharlas estén blanditas.", "Para preparar el aceite de ajo y perejil: En un vaso de batidora, ponemos aceite de oliva virgen extra, las hojas de un ramillete de perejil, los ajos pelados y una pizca de sal y batimos hasta conseguir un aceite verde sin grumos.", "Para hacer el pulpo a la plancha, en una parrilla a fuego fuerte, le damos vuelta y vuelta hasta que quede bien doradito, unos dos minutos por cada lado, sin salar.", "Servimos en un plato poniendo una base con las verduras asadas, luego el pulpo a la plancha, y acabamos rociando con el aceite de ajo y perejil."]
+  },
+  {
+    "id": 41,
+    "category": "varios",
+    "title": "Coliflor Asada con Tahini y Menta Fresca",
+    "description": "Feliz descubrimiento de Mauro",
+    "image": "assets/img/recetas/coliflor-asada-tahini-menta.jpg",
+    "ingredients": ["Coliflor Asada: coliflor, aceite y sal", "Tahini: sésamo, aceite, limón, pimienta, ajo (opcional)", "Guarnición: hojas de menta troceadas"],
+    "steps": ["Coliflor", "Precalentar a 230ºC con una bandeja dentro", "Cortar la coliflor en florestes medianos", "En un bol, mezclar bien la coliflor con el aceite, la sal y el pimiento seco", "Precalentar la bandeja durante 5 minutos, sacar y colocar los floretes encima sin tocarse, y con el lado cortado hacia la bandeja", "Asar durante 25 minutos, volteando a la mitad del proceso o cuando estén caramelizados y tiernos", "Tahini", "Tostar las semillas en una sartén durante 3-5 minutos", "Batir hasta formar una pasta", "Añadir el aceite y batir otros 3-5 minutos", "Opcional echar un poco de ajo y/o limón"]
+  },
+  {
+    "id": 42,
+    "category": "varios",
+    "title": "Rollitos de salmón",
+    "description": "Sencilla para un día especial",
+    "image": "assets/img/recetas/rollitos-salmon.jpg",
+    "ingredients": ["4 pepinillos", "20g de alcaparras", "175g de queso crema", "200g de salmón en lonchas", "Pizca de eneldo (o cebollino)"],
+    "steps": ["Picar fino los pepinillos y las alcaparras y mezclarlas con el queso en un bol", "Sobre film transparente, extender el salmón ahumado formando una capa uniforme", "Extender la mezcla anterior sobre el salmón", "Espolvorear el eneldo", "Ayudándonos con el film, enrollamos el salmón, formando un cilindro", "Guardar en la nevera una hora", "Quitar el film, cortar en lonchas, poner sobre tostadas y espolvorear eneldo"]
+  },
+  {
+    "id": 43,
+    "category": "ensaladas",
+    "title": "Ensalada de garbanzos",
+    "description": "Ideal para un día de playa",
+    "image": "assets/img/recetas/ensalada-garbanzos.jpg",
+    "ingredients": ["Garbanzos de bote", "Pimiento rojo picado", "Pimiento verde picado", "Tomate en daditos", "Cebolla morada picada", "Huevo cocido", "Cogollos", "Tacos de jamón frito"],
+    "steps": ["Hacemos una cama con los cogollos", "Añadimos todos los ingedientes", "Aliñar con aceite y vinagre en el momento de comerla"]
+  },
+  {
+    "id": 44,
+    "category": "ensaladas",
+    "title": "Ensalada de garbanzos asados",
+    "description": "A ver qué tal sale",
+    "image": "assets/img/recetas/ensalada-garbanzos-asados.jpg",
+    "ingredients": ["1 bote pequeño de garbanzos", "150 g de queso feta", "10 tomates cherry", "1 pepino pequeño", "1/2 cebolla morada", "Aceite de oliva virgen extra", "Vinagre balsámico", "Sal", "Perejil para decorar"],
+    "steps": ["Lavar y secar los garbanzos, y mezclarlos con 4 cucharadas de AOVE, 1 de comino, 1 de curry, 1 de pimentón, pimienta y sal", "Horneamos 15 minutos a 180ºC, remover y dejar otros 5 minutos", "Cortar el tomarte en trozos de bocado, cortar la cebolla en juliana y cortar el pepino en trozos pequeños", "Trocear el queso feta en cuadrados pequeños", "En un bowl poner los garbanzos tostados con el resto de verduras cortadas", "Preparar una vinagreta con el AOVe, el vinagre balsámico y una pizca de sal. Regar con la mezcla las verduras, y remover muy bien."]
+  },
+  {
+    "id": 45,
+    "category": "postres",
+    "title": "Bizcocho sin azúcar",
+    "description": "Pal desayuno de Ceci",
+    "image": "assets/img/recetas/bizcocho-sin-azucar.jpg",
+    "ingredients": ["4 huevos", "1 yogur natural o griego", "2/3 de vaso de aceite", "1 vaso de harina integral espelta", "125 g de almendra molida", "24 ciruelas", "150 g de nueces", "2 plátanos grandes", "1 sobre levadura química"],
+    "steps": ["Precalentar el horno a 175ºC", "Batir los huevos hasta espumar un poco", "Echar el yogur y mezclar bien", "En el vaso del yogur, echar 2/3 de aceite y añadirlo", "Echar un vaso de café de harina de espelta junto con la levadura, tamizando con el colador", "Echar la almendra y mezclar bien", "Echar las nueces y mezclar bien", "Partir las ciruelas en 4 o 5 trozos, añadirlas y mezclar", "Cortar los plátanos en trozos, añadir y mezclar", "Verter en un molde desmontable, previamente aceitado y enharinado, y con el fondo con papel de horno. Darle unos toques contra la encimera para que quede plano", "Meter en el horno durante media hora, tapar con un albal y dejar 10 minutos más."]
+  }
+]
