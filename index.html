@@ -52,7 +52,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.0.4';
+  const APP_VERSION = '1.0.5';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const state = {
@@ -196,14 +196,15 @@
 
   async function render() {
     loadRecipes();
-    var q = (state.searchQuery || '').trim();
-    if (q.length > 0) return renderSearch(q);
     var r = route();
-    if (r.n === 'home') return renderHome();
     if (r.n === 'cat') return renderCat(r.slug);
     if (r.n === 'rec') return renderRec(r.id);
     if (r.n === 'form') return renderForm(r.id);
     if (r.n === 'importar') return renderImportar();
+    if (r.n === '404') return render404();
+    var q = (state.searchQuery || '').trim();
+    if (q.length > 0) return renderSearch(q);
+    if (r.n === 'home') return renderHome();
     render404();
   }
 
