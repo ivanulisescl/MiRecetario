@@ -54,7 +54,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.0.7';
+  const APP_VERSION = '1.0.8';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const state = {
@@ -279,7 +279,7 @@
         '<h3 class="text-white text-lg font-semibold">' + safeTitle + '</h3>' +
         '<p class="text-white/90 text-sm truncate">' + (r.description || '').replace(/</g, '&lt;') + '</p>' +
         '</div></a>' +
-        '<div class="absolute bottom-2 right-2 flex gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">' +
+        '<div class="absolute bottom-2 right-2 hidden sm:flex gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">' +
         '<button type="button" data-share-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-emerald-600 text-white" title="Compartir">' +
         '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
         '<a href="' + editHref + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-brand text-white" title="Editar" onclick="event.stopPropagation()">' +
@@ -330,7 +330,7 @@
         '<h3 class="text-white text-lg font-semibold">' + safeTitle + '</h3>' +
         '<p class="text-white/90 text-sm truncate">' + (r.description || '').replace(/</g, '&lt;') + '</p>' +
         '</div></a>' +
-        '<div class="absolute bottom-2 right-2 flex gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">' +
+        '<div class="absolute bottom-2 right-2 hidden sm:flex gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">' +
         '<button type="button" data-share-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-emerald-600 text-white" title="Compartir">' +
         '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
         '<a href="' + editHref + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-700/90 hover:bg-brand text-white" title="Editar" onclick="event.stopPropagation()">' +
@@ -343,7 +343,8 @@
     app.innerHTML = '<section class="space-y-6">' +
       '<div class="flex items-center justify-between flex-wrap gap-2">' +
       '<h1 class="text-2xl md:text-3xl font-bold">' + name + '</h1>' +
-      '<a href="#/" class="text-brand">← Volver</a>' +
+      '<a href="#/" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
       '</div></div>' +
       '<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">' + (cards.length ? cards.join('') : '<p class="text-slate-600 dark:text-slate-400 col-span-2">No hay recetas en esta categoría.</p>') +
       '</div></section>';
@@ -361,10 +362,14 @@
       '<div class="flex items-center justify-between flex-wrap gap-2">' +
       '<h1 class="text-2xl md:text-3xl font-bold">' + r.title + '</h1>' +
       '<div class="flex gap-2 flex-wrap">' +
-      '<a href="#/categoria/' + (r.category || 'varios') + '" class="text-brand">← Volver</a>' +
-      '<button type="button" data-share-id="' + r.id + '" class="px-3 py-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm">Compartir</button>' +
-      '<a href="#/editar/' + r.id + '" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm">Editar</a>' +
-      '<button type="button" id="btnEliminar" class="px-3 py-1.5 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 text-sm">Eliminar</button>' +
+      '<a href="#/categoria/' + (r.category || 'varios') + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
+      '<button type="button" data-share-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white" title="Compartir">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
+      '<a href="#/editar/' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white" title="Editar">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>' +
+      '<button type="button" id="btnEliminar" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-red-600 hover:text-white" title="Eliminar">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>' +
       '</div></div>' +
       '<div class="overflow-hidden rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">' +
       '<img src="' + img + '" alt="' + r.title + '" class="w-full aspect-[16/9] object-cover"/>' +
@@ -478,7 +483,8 @@
       '<p class="text-slate-600 dark:text-slate-400">Selecciona un archivo <code class="bg-slate-200 dark:bg-slate-700 px-1 rounded">recipes.json</code> (array de recetas). Se fusionarán con las actuales; si una receta tiene el mismo <code class="bg-slate-200 dark:bg-slate-700 px-1 rounded">id</code>, se actualizará.</p>' +
       '<div class="flex flex-wrap gap-2">' +
       '<input type="file" id="fileJson" accept=".json,application/json" class="block w-full text-sm"/>' +
-      '<a href="#/" class="text-brand">← Volver al inicio</a>' +
+      '<a href="#/" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver al inicio">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
       '</div>' +
       '<div id="importResult" class="hidden p-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm"></div></section>';
 
@@ -503,7 +509,8 @@
   }
 
   function render404() {
-    app.innerHTML = '<div class="space-y-4"><h1 class="text-2xl font-bold">Página no encontrada</h1><a href="#/" class="text-brand">Ir al inicio</a></div>';
+    app.innerHTML = '<div class="space-y-4"><h1 class="text-2xl font-bold">Página no encontrada</h1><a href="#/" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Ir al inicio">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a></div>';
   }
 
   window.addEventListener('hashchange', render);
