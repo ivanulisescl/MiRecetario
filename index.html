@@ -56,7 +56,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.9.0';
+  const APP_VERSION = '1.9.1';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -972,9 +972,12 @@
         window.__planWeeksMap[w.id] = w;
         var comidas = w.comidas || [];
         var cenas = w.cenas || [];
-        var ths = weekdays.map(function (d) { return '<th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">' + (labels[d] || d) + '</th>'; }).join('');
-        var rowComida = weekdays.map(function (_, i) { var t = (comidas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
-        var rowCena = weekdays.map(function (_, i) { var t = (cenas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
+        var dayRows = weekdays.map(function (d, i) {
+          var dayName = labels[d] || d;
+          var comida = (comidas[i] || '').replace(/</g, '&lt;');
+          var cena = (cenas[i] || '').replace(/</g, '&lt;');
+          return '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">' + dayName + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + comida + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + cena + '</td></tr>';
+        }).join('');
         var safeId = String(w.id).replace(/"/g, '&quot;');
         var btns = '<button type="button" data-plan-action="share" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white shrink-0" title="Compartir">' + shareSvg + '</button>' +
           '<button type="button" data-plan-action="edit" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white shrink-0" title="Editar">' + editSvg + '</button>' +
@@ -984,11 +987,8 @@
           '<h2 class="font-semibold text-lg min-w-0">' + formatWeekTitle(w.id, w.label) + '</h2>' +
           '<div class="flex gap-1.5 flex-shrink-0">' + btns + '</div></div>' +
           '<div class="overflow-x-auto"><table class="w-full text-left">' +
-          '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
-          '<tbody>' +
-          '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Comida</td>' + rowComida + '</tr>' +
-          '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Cena</td>' + rowCena + '</tr>' +
-          '</tbody></table></div></div>';
+          '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Comida</th><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Cena</th></tr></thead>' +
+          '<tbody>' + dayRows + '</tbody></table></div></div>';
       });
       if (loading) loading.classList.add('hidden');
       if (content) { content.innerHTML = html; content.classList.remove('hidden'); }
@@ -1021,9 +1021,12 @@
           window.__planWeeksMap[w.id] = w;
           var comidas = w.comidas || [];
           var cenas = w.cenas || [];
-          var ths = weekdays.map(function (d) { return '<th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">' + (labels[d] || d) + '</th>'; }).join('');
-          var rowComida = weekdays.map(function (_, i) { var t = (comidas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
-          var rowCena = weekdays.map(function (_, i) { var t = (cenas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
+          var dayRows = weekdays.map(function (d, i) {
+            var dayName = labels[d] || d;
+            var comida = (comidas[i] || '').replace(/</g, '&lt;');
+            var cena = (cenas[i] || '').replace(/</g, '&lt;');
+            return '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">' + dayName + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + comida + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + cena + '</td></tr>';
+          }).join('');
           var safeId = String(w.id).replace(/"/g, '&quot;');
           var btns = '<button type="button" data-plan-action="share" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white shrink-0" title="Compartir">' + shareSvg + '</button>' +
             '<button type="button" data-plan-action="edit" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white shrink-0" title="Editar">' + editSvg + '</button>' +
@@ -1033,9 +1036,8 @@
             '<h2 class="font-semibold text-lg min-w-0">' + formatWeekTitle(w.id, w.label) + '</h2>' +
             '<div class="flex gap-1.5 flex-shrink-0">' + btns + '</div></div>' +
             '<div class="overflow-x-auto"><table class="w-full text-left">' +
-            '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
-            '<tbody><tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Comida</td>' + rowComida + '</tr>' +
-            '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Cena</td>' + rowCena + '</tr></tbody></table></div></div>';
+            '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Comida</th><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Cena</th></tr></thead>' +
+            '<tbody>' + dayRows + '</tbody></table></div></div>';
         });
         if (content) { content.innerHTML = html; content.classList.remove('hidden'); }
         window.__planDayLabels = labels;
