@@ -56,10 +56,11 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.3.0';
+  const APP_VERSION = '1.4.0';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
+  const PLAN_HIDDEN_KEY = 'mirecetario-plan-hidden';
   const state = {
     recipes: [],
     categories: [],
@@ -75,6 +76,17 @@
 
   function savePlanWeeks(weeks) {
     localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(weeks));
+  }
+
+  function loadHiddenPlanIds() {
+    try {
+      var raw = localStorage.getItem(PLAN_HIDDEN_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+
+  function saveHiddenPlanIds(ids) {
+    localStorage.setItem(PLAN_HIDDEN_KEY, JSON.stringify(ids));
   }
 
   function planWeekLabel(isoDate) {
@@ -541,7 +553,9 @@
       var weekdays = data.weekdays || ['L', 'M', 'X', 'J', 'V'];
       var labels = data.weekdayLabels || { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' };
       var customWeeks = loadPlanWeeks().sort(function (a, b) { return b.id.localeCompare(a.id); });
-      var allWeeks = customWeeks.concat(data.weeks.slice().reverse());
+      var hiddenIds = loadHiddenPlanIds();
+      var jsonWeeks = (data.weeks || []).filter(function (w) { return hiddenIds.indexOf(w.id) === -1; }).reverse();
+      var allWeeks = customWeeks.concat(jsonWeeks);
       window.__planWeeksMap = {};
       var html = '';
       var shareSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
@@ -554,16 +568,14 @@
         var ths = weekdays.map(function (d) { return '<th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">' + (labels[d] || d) + '</th>'; }).join('');
         var rowComida = weekdays.map(function (_, i) { var t = (comidas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
         var rowCena = weekdays.map(function (_, i) { var t = (cenas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
-        var isCustom = /^\d{4}-\d{2}-\d{2}$/.test(String(w.id));
-        var btns = '<button type="button" data-plan-action="share" data-week-id="' + String(w.id).replace(/"/g, '&quot;') + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white" title="Compartir">' + shareSvg + '</button>';
-        if (isCustom) {
-          btns += '<a href="#/plan/editar/' + encodeURIComponent(w.id) + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white" title="Editar">' + editSvg + '</a>';
-          btns += '<button type="button" data-plan-action="delete" data-week-id="' + String(w.id).replace(/"/g, '&quot;') + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-600 hover:text-white" title="Eliminar">' + deleteSvg + '</button>';
-        }
+        var safeId = String(w.id).replace(/"/g, '&quot;');
+        var btns = '<button type="button" data-plan-action="share" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white shrink-0" title="Compartir">' + shareSvg + '</button>' +
+          '<button type="button" data-plan-action="edit" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white shrink-0" title="Editar">' + editSvg + '</button>' +
+          '<button type="button" data-plan-action="delete" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-600 hover:text-white shrink-0" title="Eliminar">' + deleteSvg + '</button>';
         html += '<div class="rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 overflow-hidden">' +
-          '<div class="flex items-center justify-between px-4 py-3 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">' +
-          '<h2 class="font-semibold text-lg">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
-          '<div class="flex gap-1.5">' + btns + '</div></div>' +
+          '<div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">' +
+          '<h2 class="font-semibold text-lg min-w-0">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
+          '<div class="flex gap-1.5 flex-shrink-0">' + btns + '</div></div>' +
           '<div class="overflow-x-auto"><table class="w-full text-left">' +
           '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
           '<tbody>' +
@@ -588,7 +600,9 @@
         var weekdays = data.weekdays || ['L', 'M', 'X', 'J', 'V'];
         var labels = data.weekdayLabels || { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' };
         var customWeeks = loadPlanWeeks().sort(function (a, b) { return b.id.localeCompare(a.id); });
-        var allWeeks = customWeeks.concat(data.weeks.slice().reverse());
+        var hiddenIds = loadHiddenPlanIds();
+        var jsonWeeks = (data.weeks || []).filter(function (w) { return hiddenIds.indexOf(w.id) === -1; }).reverse();
+        var allWeeks = customWeeks.concat(jsonWeeks);
         window.__planWeeksMap = {};
         var shareSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
         var editSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
@@ -601,16 +615,14 @@
           var ths = weekdays.map(function (d) { return '<th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">' + (labels[d] || d) + '</th>'; }).join('');
           var rowComida = weekdays.map(function (_, i) { var t = (comidas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
           var rowCena = weekdays.map(function (_, i) { var t = (cenas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
-          var isCustom = /^\d{4}-\d{2}-\d{2}$/.test(String(w.id));
-          var btns = '<button type="button" data-plan-action="share" data-week-id="' + String(w.id).replace(/"/g, '&quot;') + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white" title="Compartir">' + shareSvg + '</button>';
-          if (isCustom) {
-            btns += '<a href="#/plan/editar/' + encodeURIComponent(w.id) + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white" title="Editar">' + editSvg + '</a>';
-            btns += '<button type="button" data-plan-action="delete" data-week-id="' + String(w.id).replace(/"/g, '&quot;') + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-600 hover:text-white" title="Eliminar">' + deleteSvg + '</button>';
-          }
+          var safeId = String(w.id).replace(/"/g, '&quot;');
+          var btns = '<button type="button" data-plan-action="share" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white shrink-0" title="Compartir">' + shareSvg + '</button>' +
+            '<button type="button" data-plan-action="edit" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white shrink-0" title="Editar">' + editSvg + '</button>' +
+            '<button type="button" data-plan-action="delete" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-600 hover:text-white shrink-0" title="Eliminar">' + deleteSvg + '</button>';
           html += '<div class="rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 overflow-hidden">' +
-            '<div class="flex items-center justify-between px-4 py-3 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">' +
-            '<h2 class="font-semibold text-lg">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
-            '<div class="flex gap-1.5">' + btns + '</div></div>' +
+            '<div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">' +
+            '<h2 class="font-semibold text-lg min-w-0">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
+            '<div class="flex gap-1.5 flex-shrink-0">' + btns + '</div></div>' +
             '<div class="overflow-x-auto"><table class="w-full text-left">' +
             '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
             '<tbody><tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Comida</td>' + rowComida + '</tr>' +
@@ -680,11 +692,27 @@
     var weeks = loadPlanWeeks();
     var w = weeks.find(function (x) { return x.id === id; });
     if (!w) {
+      try {
+        var raw = sessionStorage.getItem('planEditWeek');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && parsed.id === id && parsed.w) {
+            w = parsed.w;
+            sessionStorage.removeItem('planEditWeek');
+          }
+        }
+      } catch (e) {}
+    }
+    if (!w) {
       location.hash = '#/plan';
       return render();
     }
     var days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
-    var dateStr = w.id;
+    var dateStr = /^\d{4}-\d{2}-\d{2}$/.test(String(w.id)) ? w.id : (function () {
+      var d = new Date();
+      d.setDate(d.getDate() - (d.getDay() || 7) + 1);
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    })();
     var rows = days.map(function (d, i) {
       var comidaVal = (w.comidas && w.comidas[i] != null) ? w.comidas[i].replace(/"/g, '&quot;').replace(/</g, '&lt;') : '';
       var cenaVal = (w.cenas && w.cenas[i] != null) ? w.cenas[i].replace(/"/g, '&quot;').replace(/</g, '&lt;') : '';
@@ -830,10 +858,26 @@
           navigator.clipboard.writeText(text).then(function () { alert('Semana copiada al portapapeles.'); }).catch(function () { fallbackCopy(text); });
         } else { fallbackCopy(text); }
       }
+      if (w && action === 'edit') {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(String(weekId))) {
+          location.hash = '#/plan/editar/' + encodeURIComponent(weekId);
+          render();
+        } else {
+          try { sessionStorage.setItem('planEditWeek', JSON.stringify({ id: weekId, w: w })); } catch (e) {}
+          location.hash = '#/plan/editar/' + encodeURIComponent(weekId);
+          render();
+        }
+      }
       if (w && action === 'delete') {
         if (!confirm('¿Eliminar esta semana del plan?')) return;
-        var weeks = loadPlanWeeks().filter(function (x) { return x.id !== weekId; });
-        savePlanWeeks(weeks);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(String(weekId))) {
+          var weeks = loadPlanWeeks().filter(function (x) { return x.id !== weekId; });
+          savePlanWeeks(weeks);
+        } else {
+          var hidden = loadHiddenPlanIds();
+          if (hidden.indexOf(weekId) === -1) hidden.push(weekId);
+          saveHiddenPlanIds(hidden);
+        }
         location.hash = '#/plan';
         render();
       }
