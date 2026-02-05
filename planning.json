@@ -33,6 +33,42 @@
       ]
     },
     {
+      "id": "2026-02-02",
+      "label": "2 feb",
+      "comidas": [
+        "Fabes con verdura",
+        "Ensalada de pasta",
+        "",
+        "",
+        ""
+      ],
+      "cenas": [
+        "Salmón con verduras soja",
+        "Coliflor asada y pollo plancha",
+        "Ensalada y tortilla",
+        "Pixín plancha",
+        ""
+      ]
+    },
+    {
+      "id": "2026-01-10",
+      "label": "10 ene",
+      "comidas": [
+        "Fréjoles",
+        "Garbanzos con setas",
+        "Ensalada de pasta",
+        "Fabes amarilles",
+        "Ensalada de pasta"
+      ],
+      "cenas": [
+        "Salmón con verduras soja",
+        "Champiñones y tortilla",
+        "Bimi y pollo",
+        "Puré rojo y barbada",
+        ""
+      ]
+    },
+    {
       "id": "2025-02-17",
       "label": "17 feb",
       "comidas": [
