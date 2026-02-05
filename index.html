@@ -33,9 +33,14 @@
           <svg id="iconMoon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         </button>
         <a href="#/" class="hidden px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm shrink-0">Inicio</a>
-        <a href="#/plan" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700 shrink-0">Plan</a>
+        <a href="#/plan" class="px-3 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark text-sm font-medium shrink-0">Plan semanal</a>
         <div class="relative shrink-0" id="operacionesWrap">
-          <button type="button" id="btnOperaciones" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" aria-expanded="false" aria-haspopup="true">Operaciones</button>
+          <button type="button" id="btnOperaciones" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 shrink-0" aria-expanded="false" aria-haspopup="true" title="Operaciones">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
+            </svg>
+          </button>
           <div id="operacionesMenu" class="hidden absolute right-0 top-full mt-1 py-1 min-w-[180px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-30">
             <a href="#/nueva" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-t-lg">Nueva receta</a>
             <button type="button" id="btnImportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
@@ -56,7 +61,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.9.2';
+  const APP_VERSION = '1.10.0';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
