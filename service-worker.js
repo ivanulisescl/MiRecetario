@@ -3,6 +3,7 @@ const CORE = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './planning.json',
   'https://cdn.tailwindcss.com'
 ];
 self.addEventListener('install', function (e) {

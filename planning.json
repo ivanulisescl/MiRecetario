@@ -1,0 +1,108 @@
+{
+  "weekdays": ["L", "M", "X", "J", "V"],
+  "weekdayLabels": { "L": "Lunes", "M": "Martes", "X": "Miércoles", "J": "Jueves", "V": "Viernes" },
+  "weeks": [
+    {
+      "id": "17-feb",
+      "label": "17 feb",
+      "comidas": ["Fabes con verdura", "Fabes con verdura", "Ensalada grabanzos", "Fréjoles con patatas", ""],
+      "cenas": ["Verduras con salmón", "Fritos bacalao y coliflor", "Fritos bacalao y ensalada tomate", "Ceviche coliflor y queso fresco", "Fajita rabo de toro y queso curado"]
+    },
+    {
+      "id": "24-feb",
+      "label": "24 feb",
+      "comidas": ["Arroz con salteado variado", "Garbanzos con carne y pollo", "Arroz con salteado variado", "Garbanzos con carne y pollo", "Salmorejo"],
+      "cenas": ["Verduras con salmón", "Puré y jamón york", "Aguacate, tomate, mozzarella, pistachos y pasas", "", ""]
+    },
+    {
+      "id": "03-mar",
+      "label": "3 mar",
+      "comidas": ["", "", "Fabes con verdura", "Ensalada de pasta", "Ensalada de pasta"],
+      "cenas": ["", "", "Gazpacho, jamón york y queso fresco", "Barbada", ""]
+    },
+    {
+      "id": "17-mar",
+      "label": "17 mar",
+      "comidas": ["Garbanzos con bacalao", "", "Menestra", "Garbanzos con bacalao", ""],
+      "cenas": ["Berenjena al horno y pechuga de pollo", "Tomate, aguacate y mozzarella", "Champiñones, trigueros y tortilla", "Bacalao con verduras salteadas", ""]
+    },
+    {
+      "id": "24-mar",
+      "label": "24 mar",
+      "comidas": ["Ensalada de lentejas", "", "Fabes con verdura", "Fabes con verdura", ""],
+      "cenas": ["Verduras salteadas con xarda plancha", "Crema calabacín y pollo plancha", "Berenjenas rellenas con queso", "Crema calabacín y barbada", ""]
+    },
+    {
+      "id": "07-abr",
+      "label": "7 abr",
+      "comidas": ["Ensalada de lentejas", "", "Fabes con verdura", "", ""],
+      "cenas": ["Verduras salteadas con salmón plancha", "Ensalada de tomate, aguacata, perlas, pistachos y pasas", "", "Barbada", ""]
+    },
+    {
+      "id": "26-may",
+      "label": "26 may",
+      "comidas": ["Ensaladilla", "Garbanzos con bacalao", "La Felguera", "", ""],
+      "cenas": ["Verduras salteadas con salmón plancha", "Pixín", "Ensalada mixta", "", ""]
+    },
+    {
+      "id": "02-jun",
+      "label": "2 jun",
+      "comidas": ["Arroz con potarros", "La Felguera", "Menestra", "Menestra", ""],
+      "cenas": ["Verduras salteadas con salmón plancha", "Repollo jengibre con pollo plancha", "Berenjenas rellenas", "Bimi pixín", ""]
+    },
+    {
+      "id": "06-oct",
+      "label": "6 oct",
+      "comidas": ["Lentejas", "La Felguera", "Menestra", "Lentejas", "Menestra"],
+      "cenas": ["Repollo con jengibre y pollo plancha", "Berenjenas rellenas", "Salmón con repollo con jengibre", "Ensalada?", ""]
+    },
+    {
+      "id": "20-oct",
+      "label": "20 oct",
+      "comidas": ["Arroz con verduras", "Guisantes con jamón", "La Felguera y casa Ceci", "Fabes con verdura", "Guisantes con jamón"],
+      "cenas": ["Puré y barbada plancha", "Berenjenas rellenas", "Ensalada y tortilla", "Salmón con verduras soja", ""]
+    },
+    {
+      "id": "27-oct",
+      "label": "27 oct",
+      "comidas": ["Arroz con verduras", "Fabes con verdura", "La Felguera y casa Ceci", "Fabes roxes / Candás", "Fabes roxes / Bea"],
+      "cenas": ["Cena cumple", "Pescado", "Berenjenas rellenas", "Ensalada y tortilla", ""]
+    },
+    {
+      "id": "03-nov",
+      "label": "3 nov",
+      "comidas": ["Arroz con verduras", "Garbanzos con setas", "La Felguera y casa Ceci", "Lentejas", "Lentejas"],
+      "cenas": ["Tosta aguacata, queso y salmón", "Pollo plancha y verduras asadas", "Bimi y barbada", "Salmón con verduras soja", ""]
+    },
+    {
+      "id": "10-nov",
+      "label": "10 nov",
+      "comidas": ["Repollo", "Fabes amarilles / La Felguera", "Fabes amarilles / Casa Ceci", "Garbanzos con setas", "Ensalada pasta"],
+      "cenas": ["Verduras salteadas con salmón plancha", "Puré calabacín y tortilla queso", "Ensalada y pollo plancha", "Bimi y pixín", ""]
+    },
+    {
+      "id": "17-nov",
+      "label": "17 nov",
+      "comidas": ["Ensalada lentejas", "Fabes con verdura", "La Felguera y casa Ceci", "Menestra", "Menestra"],
+      "cenas": ["Berenjenas", "Coliflor y pescado", "Puré y tortilla", "Bimi y pescado plancha", ""]
+    },
+    {
+      "id": "24-nov",
+      "label": "24 nov",
+      "comidas": ["Lentejas", "Fabes amarilles", "La Felguera y casa Ceci", "Fabes con verdura", ""],
+      "cenas": ["Verduras salteadas con salmón plancha", "Tripollo", "", "Bimi y pescado plancha", ""]
+    },
+    {
+      "id": "08-dic",
+      "label": "8 dic",
+      "comidas": ["Fréjoles", "Lentejas", "Fréjoles", "Fabes amarilles", "Lentejas"],
+      "cenas": ["Ensalada de bacalao", "Bimi y pescado plancha", "Puré y tortilla", "Lechuga y pescado", ""]
+    },
+    {
+      "id": "15-dic",
+      "label": "15 dic",
+      "comidas": ["", "Fabes con verdura", "La Felguera y casa Ceci", "Fabes amarilles", ""],
+      "cenas": ["Verduras salteadas con salmón plancha", "Puré y pollo", "Berenjenas", "Bimi y pescado plancha", ""]
+    }
+  ]
+}

@@ -33,6 +33,7 @@
           <svg id="iconMoon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         </button>
         <a href="#/" class="hidden px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm shrink-0">Inicio</a>
+        <a href="#/plan" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700 shrink-0">Plan</a>
         <div class="relative shrink-0" id="operacionesWrap">
           <button type="button" id="btnOperaciones" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm hover:bg-slate-300 dark:hover:bg-slate-700" aria-expanded="false" aria-haspopup="true">Operaciones</button>
           <div id="operacionesMenu" class="hidden absolute right-0 top-full mt-1 py-1 min-w-[180px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-30">
@@ -50,11 +51,12 @@
   <main class="max-w-5xl mx-auto px-4 py-6"><div id="app"></div></main>
   <footer class="border-t border-slate-200 dark:border-slate-800 mt-8"><div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500 dark:text-slate-400">Gestiona tus recetas y llévalas contigo en móvil y PC. <span id="appVersion" class="ml-1 font-medium"></span></div></footer>
 
+  <script type="application/json" id="planning-fallback">{"weekdays":["L","M","X","J","V"],"weekdayLabels":{"L":"Lunes","M":"Martes","X":"Miércoles","J":"Jueves","V":"Viernes"},"weeks":[{"id":"17-feb","label":"17 feb","comidas":["Fabes con verdura","Fabes con verdura","Ensalada grabanzos","Fréjoles con patatas",""],"cenas":["Verduras con salmón","Fritos bacalao y coliflor","Fritos bacalao y ensalada tomate","Ceviche coliflor y queso fresco","Fajita rabo de toro y queso curado"]},{"id":"24-feb","label":"24 feb","comidas":["Arroz con salteado variado","Garbanzos con carne y pollo","Arroz con salteado variado","Garbanzos con carne y pollo","Salmorejo"],"cenas":["Verduras con salmón","Puré y jamón york","Aguacate, tomate, mozzarella, pistachos y pasas","",""]},{"id":"03-mar","label":"3 mar","comidas":["","","Fabes con verdura","Ensalada de pasta","Ensalada de pasta"],"cenas":["","","Gazpacho, jamón york y queso fresco","Barbada",""]},{"id":"17-mar","label":"17 mar","comidas":["Garbanzos con bacalao","","Menestra","Garbanzos con bacalao",""],"cenas":["Berenjena al horno y pechuga de pollo","Tomate, aguacate y mozzarella","Champiñones, trigueros y tortilla","Bacalao con verduras salteadas",""]},{"id":"24-mar","label":"24 mar","comidas":["Ensalada de lentejas","","Fabes con verdura","Fabes con verdura",""],"cenas":["Verduras salteadas con xarda plancha","Crema calabacín y pollo plancha","Berenjenas rellenas con queso","Crema calabacín y barbada",""]},{"id":"07-abr","label":"7 abr","comidas":["Ensalada de lentejas","","Fabes con verdura","",""],"cenas":["Verduras salteadas con salmón plancha","Ensalada de tomate, aguacata, perlas, pistachos y pasas","","Barbada",""]},{"id":"26-may","label":"26 may","comidas":["Ensaladilla","Garbanzos con bacalao","La Felguera","",""],"cenas":["Verduras salteadas con salmón plancha","Pixín","Ensalada mixta","",""]},{"id":"02-jun","label":"2 jun","comidas":["Arroz con potarros","La Felguera","Menestra","Menestra",""],"cenas":["Verduras salteadas con salmón plancha","Repollo jengibre con pollo plancha","Berenjenas rellenas","Bimi pixín",""]},{"id":"06-oct","label":"6 oct","comidas":["Lentejas","La Felguera","Menestra","Lentejas","Menestra"],"cenas":["Repollo con jengibre y pollo plancha","Berenjenas rellenas","Salmón con repollo con jengibre","Ensalada?",""]},{"id":"20-oct","label":"20 oct","comidas":["Arroz con verduras","Guisantes con jamón","La Felguera y casa Ceci","Fabes con verdura","Guisantes con jamón"],"cenas":["Puré y barbada plancha","Berenjenas rellenas","Ensalada y tortilla","Salmón con verduras soja",""]},{"id":"27-oct","label":"27 oct","comidas":["Arroz con verduras","Fabes con verdura","La Felguera y casa Ceci","Fabes roxes / Candás","Fabes roxes / Bea"],"cenas":["Cena cumple","Pescado","Berenjenas rellenas","Ensalada y tortilla",""]},{"id":"03-nov","label":"3 nov","comidas":["Arroz con verduras","Garbanzos con setas","La Felguera y casa Ceci","Lentejas","Lentejas"],"cenas":["Tosta aguacata, queso y salmón","Pollo plancha y verduras asadas","Bimi y barbada","Salmón con verduras soja",""]},{"id":"10-nov","label":"10 nov","comidas":["Repollo","Fabes amarilles / La Felguera","Fabes amarilles / Casa Ceci","Garbanzos con setas","Ensalada pasta"],"cenas":["Verduras salteadas con salmón plancha","Puré calabacín y tortilla queso","Ensalada y pollo plancha","Bimi y pixín",""]},{"id":"17-nov","label":"17 nov","comidas":["Ensalada lentejas","Fabes con verdura","La Felguera y casa Ceci","Menestra","Menestra"],"cenas":["Berenjenas","Coliflor y pescado","Puré y tortilla","Bimi y pescado plancha",""]},{"id":"24-nov","label":"24 nov","comidas":["Lentejas","Fabes amarilles","La Felguera y casa Ceci","Fabes con verdura",""],"cenas":["Verduras salteadas con salmón plancha","Tripollo","","Bimi y pescado plancha",""]},{"id":"08-dic","label":"8 dic","comidas":["Fréjoles","Lentejas","Fréjoles","Fabes amarilles","Lentejas"],"cenas":["Ensalada de bacalao","Bimi y pescado plancha","Puré y tortilla","Lechuga y pescado",""]},{"id":"15-dic","label":"15 dic","comidas":["","Fabes con verdura","La Felguera y casa Ceci","Fabes amarilles",""],"cenas":["Verduras salteadas con salmón plancha","Puré y pollo","Berenjenas","Bimi y pescado plancha",""]}]}</script>
   <script>
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.0.9';
+  const APP_VERSION = '1.1.0';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const state = {
@@ -237,6 +239,7 @@
     if (p[0] === 'receta' && p[1]) return { n: 'rec', id: p[1] };
     if (p[0] === 'nueva') return { n: 'form', id: null };
     if (p[0] === 'editar' && p[1]) return { n: 'form', id: p[1] };
+    if (p[0] === 'plan') return { n: 'plan' };
     if (p[0] === 'importar') return { n: 'importar' };
     return { n: '404' };
   }
@@ -247,6 +250,7 @@
     if (r.n === 'cat') return renderCat(r.slug);
     if (r.n === 'rec') return renderRec(r.id);
     if (r.n === 'form') return renderForm(r.id);
+    if (r.n === 'plan') return renderPlan();
     if (r.n === 'importar') return renderImportar();
     if (r.n === '404') return render404();
     var q = (state.searchQuery || '').trim();
@@ -474,6 +478,88 @@
         }
       }
       render();
+    });
+  }
+
+  function renderPlan() {
+    app.innerHTML = '<section class="space-y-6">' +
+      '<div class="flex items-center justify-between flex-wrap gap-2">' +
+      '<h1 class="text-2xl md:text-3xl font-bold">Plan de comidas</h1>' +
+      '<a href="#/" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
+      '</div>' +
+      '<p class="text-slate-600 dark:text-slate-400" id="planLoading">Cargando plan…</p>' +
+      '<div id="planContent" class="hidden space-y-8"></div>' +
+      '<p id="planError" class="hidden text-red-600 dark:text-red-400"></p></section>';
+    var planUrl = new URL('planning.json', location.href).href;
+    if (location.protocol === 'file:') planUrl = 'planning.json';
+    fetch(planUrl + (planUrl.indexOf('?') !== -1 ? '&' : '?') + 't=' + Date.now()).then(function (r) {
+      if (!r.ok) throw new Error('planning.json no encontrado (' + r.status + ')');
+      return r.json();
+    }).then(function (data) {
+      var loading = app.querySelector('#planLoading');
+      var content = app.querySelector('#planContent');
+      var errEl = app.querySelector('#planError');
+      if (!data || !Array.isArray(data.weeks)) {
+        if (loading) loading.classList.add('hidden');
+        if (errEl) { errEl.textContent = 'El archivo no tiene el formato esperado (falta "weeks").'; errEl.classList.remove('hidden'); }
+        return;
+      }
+      var weekdays = data.weekdays || ['L', 'M', 'X', 'J', 'V'];
+      var labels = data.weekdayLabels || { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' };
+      var html = '';
+      data.weeks.forEach(function (w) {
+        var comidas = w.comidas || [];
+        var cenas = w.cenas || [];
+        var ths = weekdays.map(function (d) { return '<th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">' + (labels[d] || d) + '</th>'; }).join('');
+        var rowComida = weekdays.map(function (_, i) { var t = (comidas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
+        var rowCena = weekdays.map(function (_, i) { var t = (cenas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
+        html += '<div class="rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 overflow-hidden">' +
+          '<h2 class="px-4 py-3 font-semibold text-lg bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
+          '<div class="overflow-x-auto"><table class="w-full text-left">' +
+          '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
+          '<tbody>' +
+          '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Comida</td>' + rowComida + '</tr>' +
+          '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Cena</td>' + rowCena + '</tr>' +
+          '</tbody></table></div></div>';
+      });
+      if (loading) loading.classList.add('hidden');
+      if (content) { content.innerHTML = html; content.classList.remove('hidden'); }
+    }).catch(function (err) {
+      var loading = app.querySelector('#planLoading');
+      var content = app.querySelector('#planContent');
+      var errEl = app.querySelector('#planError');
+      if (loading) loading.classList.add('hidden');
+      var fallbackEl = document.getElementById('planning-fallback');
+      var data = null;
+      if (fallbackEl && fallbackEl.textContent) {
+        try { data = JSON.parse(fallbackEl.textContent); } catch (e) {}
+      }
+      if (data && Array.isArray(data.weeks)) {
+        var weekdays = data.weekdays || ['L', 'M', 'X', 'J', 'V'];
+        var labels = data.weekdayLabels || { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' };
+        var html = '';
+        data.weeks.forEach(function (w) {
+          var comidas = w.comidas || [];
+          var cenas = w.cenas || [];
+          var ths = weekdays.map(function (d) { return '<th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">' + (labels[d] || d) + '</th>'; }).join('');
+          var rowComida = weekdays.map(function (_, i) { var t = (comidas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
+          var rowCena = weekdays.map(function (_, i) { var t = (cenas[i] || '').replace(/</g, '&lt;'); return '<td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + t + '</td>'; }).join('');
+          html += '<div class="rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 overflow-hidden">' +
+            '<h2 class="px-4 py-3 font-semibold text-lg bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
+            '<div class="overflow-x-auto"><table class="w-full text-left">' +
+            '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
+            '<tbody><tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Comida</td>' + rowComida + '</tr>' +
+            '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">Cena</td>' + rowCena + '</tr></tbody></table></div></div>';
+        });
+        if (content) { content.innerHTML = html; content.classList.remove('hidden'); }
+        return;
+      }
+      if (errEl) {
+        var msg = err && err.message ? err.message : 'Error al cargar planning.json.';
+        errEl.textContent = msg;
+        errEl.classList.remove('hidden');
+      }
     });
   }
 
