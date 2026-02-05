@@ -70,7 +70,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.3';
+  const APP_VERSION = '1.10.4';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -990,7 +990,7 @@
         var comidas = w.comidas || [];
         var cenas = w.cenas || [];
         var dayRows = weekdays.map(function (d, i) {
-          var dayName = labels[d] || d;
+          var dayName = d;
           var comida = (comidas[i] || '').replace(/</g, '&lt;');
           var cena = (cenas[i] || '').replace(/</g, '&lt;');
           return '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">' + dayName + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + comida + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + cena + '</td></tr>';
@@ -1039,7 +1039,7 @@
           var comidas = w.comidas || [];
           var cenas = w.cenas || [];
           var dayRows = weekdays.map(function (d, i) {
-            var dayName = labels[d] || d;
+            var dayName = d;
             var comida = (comidas[i] || '').replace(/</g, '&lt;');
             var cena = (cenas[i] || '').replace(/</g, '&lt;');
             return '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700">' + dayName + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + comida + '</td><td class="px-2 py-2 text-sm border-t border-slate-200 dark:border-slate-700">' + cena + '</td></tr>';
