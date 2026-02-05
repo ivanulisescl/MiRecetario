@@ -74,7 +74,7 @@
       "comidas": [
         "Fabes con verdura",
         "Fabes con verdura",
-        "Ensalada grabanzos",
+        "Ensalada de garbanzos",
         "Fréjoles con patatas",
         ""
       ],
@@ -90,9 +90,9 @@
       "id": "2025-02-24",
       "label": "24 feb",
       "comidas": [
-        "Arroz con salteado variado",
+        "Arroz con verduras",
         "Garbanzos con carne y pollo",
-        "Arroz con salteado variado",
+        "Arroz con verduras",
         "Garbanzos con carne y pollo",
         "Salmorejo"
       ],
@@ -153,7 +153,7 @@
       "cenas": [
         "Verduras salteadas con xarda plancha",
         "Crema calabacín y pollo plancha",
-        "Berenjenas rellenas con queso",
+        "Berenjenas rellenas",
         "Crema calabacín y barbada",
         ""
       ]
@@ -169,8 +169,8 @@
         ""
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
-        "Ensalada de tomate, aguacata, perlas, pistachos y pasas",
+        "Verduras con salmón",
+        "Ensalada de tomate, aguacate, perlas, pistachos y pasas",
         "",
         "Barbada",
         ""
@@ -187,8 +187,8 @@
         ""
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
-        "Pixín",
+        "Verduras con salmón",
+        "Pixín plancha",
         "Ensalada mixta",
         "",
         ""
@@ -205,8 +205,8 @@
         ""
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
-        "Repollo jengibre con pollo plancha",
+        "Verduras con salmón",
+        "Repollo con jengibre y pollo plancha",
         "Berenjenas rellenas",
         "Bimi pixín",
         ""
@@ -277,7 +277,7 @@
         "Lentejas"
       ],
       "cenas": [
-        "Tosta aguacata, queso y salmón",
+        "Tosta aguacate, queso y salmón",
         "Pollo plancha y verduras asadas",
         "Bimi y barbada",
         "Salmón con verduras soja",
@@ -289,13 +289,13 @@
       "label": "10 nov",
       "comidas": [
         "Repollo",
-        "Fabes amarilles / La Felguera",
-        "Fabes amarilles / Casa Ceci",
+        "Fabes amarilles",
+        "Fabes amarilles",
         "Garbanzos con setas",
-        "Ensalada pasta"
+        "Ensalada de pasta"
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
+        "Verduras con salmón",
         "Puré calabacín y tortilla queso",
         "Ensalada y pollo plancha",
         "Bimi y pixín",
@@ -306,14 +306,14 @@
       "id": "2025-11-17",
       "label": "17 nov",
       "comidas": [
-        "Ensalada lentejas",
+        "Ensalada de lentejas",
         "Fabes con verdura",
         "La Felguera y casa Ceci",
         "Menestra",
         "Menestra"
       ],
       "cenas": [
-        "Berenjenas",
+        "Berenjenas rellenas",
         "Coliflor y pescado",
         "Puré y tortilla",
         "Bimi y pescado plancha",
@@ -331,7 +331,7 @@
         ""
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
+        "Verduras con salmón",
         "Tripollo",
         "",
         "Bimi y pescado plancha",
@@ -367,9 +367,9 @@
         ""
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
+        "Verduras con salmón",
         "Puré y pollo",
-        "Berenjenas",
+        "Berenjenas rellenas",
         "Bimi y pescado plancha",
         ""
       ]
