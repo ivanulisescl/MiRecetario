@@ -56,7 +56,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.6.0';
+  const APP_VERSION = '1.7.0';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -94,6 +94,28 @@
     var day = d.getDate();
     var months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
     return day + ' ' + months[d.getMonth()];
+  }
+
+  function getAllPlanMeals() {
+    var meals = new Set();
+    var customWeeks = loadPlanWeeks();
+    customWeeks.forEach(function (w) {
+      (w.comidas || []).forEach(function (m) { if (m && m.trim()) meals.add(m.trim()); });
+      (w.cenas || []).forEach(function (m) { if (m && m.trim()) meals.add(m.trim()); });
+    });
+    var fallbackEl = document.getElementById('planning-fallback');
+    if (fallbackEl && fallbackEl.textContent) {
+      try {
+        var fallbackData = JSON.parse(fallbackEl.textContent);
+        if (fallbackData && Array.isArray(fallbackData.weeks)) {
+          fallbackData.weeks.forEach(function (w) {
+            (w.comidas || []).forEach(function (m) { if (m && m.trim()) meals.add(m.trim()); });
+            (w.cenas || []).forEach(function (m) { if (m && m.trim()) meals.add(m.trim()); });
+          });
+        }
+      } catch (e) {}
+    }
+    return Array.from(meals).sort();
   }
 
   function formatWeekTitle(weekId, weekLabel) {
@@ -711,10 +733,13 @@
     var lunes = new Date(hoy);
     lunes.setDate(hoy.getDate() - (hoy.getDay() || 7) + 1);
     var dateStr = lunes.getFullYear() + '-' + String(lunes.getMonth() + 1).padStart(2, '0') + '-' + String(lunes.getDate()).padStart(2, '0');
+    var allMeals = getAllPlanMeals();
+    var datalistId = 'plan-meals-datalist';
+    var datalistHtml = allMeals.length > 0 ? '<datalist id="' + datalistId + '">' + allMeals.map(function (m) { return '<option value="' + m.replace(/"/g, '&quot;') + '">'; }).join('') + '</datalist>' : '';
     var rows = days.map(function (d, i) {
       return '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300">' + d + '</td>' +
-        '<td class="px-2 py-2"><input type="text" name="comida' + i + '" placeholder="Comida" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td>' +
-        '<td class="px-2 py-2"><input type="text" name="cena' + i + '" placeholder="Cena" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td></tr>';
+        '<td class="px-2 py-2"><input type="text" name="comida' + i + '" placeholder="Comida" list="' + datalistId + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td>' +
+        '<td class="px-2 py-2"><input type="text" name="cena' + i + '" placeholder="Cena" list="' + datalistId + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td></tr>';
     }).join('');
     app.innerHTML = '<section class="max-w-2xl space-y-6">' +
       '<div class="flex items-center justify-between flex-wrap gap-2">' +
@@ -726,6 +751,7 @@
       '<form id="formPlanNueva" class="p-4 rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 space-y-4">' +
       '<div><label class="block text-sm font-medium mb-1">Inicio de semana (lunes)</label>' +
       '<input type="date" name="fecha" value="' + dateStr + '" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"/></div>' +
+      datalistHtml +
       '<div class="overflow-x-auto"><table class="w-full"><thead><tr><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Día</th><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Comida</th><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Cena</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<div class="flex gap-2"><button type="submit" class="px-4 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark">Añadir semana</button><a href="#/plan" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700">Cancelar</a></div>' +
       '</form></section>';
@@ -783,12 +809,15 @@
       d.setDate(d.getDate() - (d.getDay() || 7) + 1);
       return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     })();
+    var allMeals = getAllPlanMeals();
+    var datalistId = 'plan-meals-datalist';
+    var datalistHtml = allMeals.length > 0 ? '<datalist id="' + datalistId + '">' + allMeals.map(function (m) { return '<option value="' + m.replace(/"/g, '&quot;') + '">'; }).join('') + '</datalist>' : '';
     var rows = days.map(function (d, i) {
       var comidaVal = (w.comidas && w.comidas[i] != null) ? w.comidas[i].replace(/"/g, '&quot;').replace(/</g, '&lt;') : '';
       var cenaVal = (w.cenas && w.cenas[i] != null) ? w.cenas[i].replace(/"/g, '&quot;').replace(/</g, '&lt;') : '';
       return '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300">' + d + '</td>' +
-        '<td class="px-2 py-2"><input type="text" name="comida' + i + '" placeholder="Comida" value="' + comidaVal + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td>' +
-        '<td class="px-2 py-2"><input type="text" name="cena' + i + '" placeholder="Cena" value="' + cenaVal + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td></tr>';
+        '<td class="px-2 py-2"><input type="text" name="comida' + i + '" placeholder="Comida" value="' + comidaVal + '" list="' + datalistId + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td>' +
+        '<td class="px-2 py-2"><input type="text" name="cena' + i + '" placeholder="Cena" value="' + cenaVal + '" list="' + datalistId + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td></tr>';
     }).join('');
     app.innerHTML = '<section class="max-w-2xl space-y-6">' +
       '<div class="flex items-center justify-between flex-wrap gap-2">' +
@@ -800,6 +829,7 @@
       '<form id="formPlanEditar" class="p-4 rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 space-y-4">' +
       '<div><label class="block text-sm font-medium mb-1">Inicio de semana (lunes)</label>' +
       '<input type="date" name="fecha" value="' + dateStr + '" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"/></div>' +
+      datalistHtml +
       '<div class="overflow-x-auto"><table class="w-full"><thead><tr><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Día</th><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Comida</th><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Cena</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<div class="flex gap-2"><button type="submit" class="px-4 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark">Guardar</button><a href="#/plan" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700">Cancelar</a></div>' +
       '</form></section>';
