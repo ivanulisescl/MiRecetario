@@ -639,10 +639,12 @@
       }
       var weekdays = data.weekdays || ['L', 'M', 'X', 'J', 'V'];
       var labels = data.weekdayLabels || { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' };
-      var customWeeks = loadPlanWeeks().sort(function (a, b) { return b.id.localeCompare(a.id); });
       var hiddenIds = loadHiddenPlanIds();
-      var jsonWeeks = (data.weeks || []).filter(function (w) { return hiddenIds.indexOf(w.id) === -1; }).reverse();
-      var allWeeks = customWeeks.concat(jsonWeeks);
+      var fromServer = (data.weeks || []).filter(function (w) { return hiddenIds.indexOf(w.id) === -1; });
+      var serverIds = {};
+      fromServer.forEach(function (w) { serverIds[w.id] = true; });
+      var localOnly = loadPlanWeeks().filter(function (w) { return !serverIds[w.id]; }).sort(function (a, b) { return b.id.localeCompare(a.id); });
+      var allWeeks = localOnly.concat(fromServer.reverse());
       window.__planWeeksMap = {};
       var html = '';
       var shareSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
@@ -686,10 +688,12 @@
       if (data && Array.isArray(data.weeks)) {
         var weekdays = data.weekdays || ['L', 'M', 'X', 'J', 'V'];
         var labels = data.weekdayLabels || { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' };
-        var customWeeks = loadPlanWeeks().sort(function (a, b) { return b.id.localeCompare(a.id); });
         var hiddenIds = loadHiddenPlanIds();
-        var jsonWeeks = (data.weeks || []).filter(function (w) { return hiddenIds.indexOf(w.id) === -1; }).reverse();
-        var allWeeks = customWeeks.concat(jsonWeeks);
+        var fromServer = (data.weeks || []).filter(function (w) { return hiddenIds.indexOf(w.id) === -1; });
+        var serverIds = {};
+        fromServer.forEach(function (w) { serverIds[w.id] = true; });
+        var localOnly = loadPlanWeeks().filter(function (w) { return !serverIds[w.id]; }).sort(function (a, b) { return b.id.localeCompare(a.id); });
+        var allWeeks = localOnly.concat(fromServer.reverse());
         window.__planWeeksMap = {};
         var shareSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
         var editSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';

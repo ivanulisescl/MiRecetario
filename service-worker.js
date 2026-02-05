@@ -1,11 +1,16 @@
-const CACHE = 'mirecetario-v1';
+const CACHE = 'mirecetario-v2';
 const CORE = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './planning.json',
   'https://cdn.tailwindcss.com'
 ];
+function isPlanningOrRecipesJson(url) {
+  try {
+    var u = new URL(url);
+    return u.pathname.endsWith('planning.json') || u.pathname.endsWith('recipes.json');
+  } catch (e) { return false; }
+}
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) { return c.addAll(CORE); })
@@ -23,6 +28,19 @@ self.addEventListener('activate', function (e) {
   self.clients.claim();
 });
 self.addEventListener('fetch', function (e) {
+  var url = e.request.url;
+  if (isPlanningOrRecipesJson(url)) {
+    e.respondWith(
+      fetch(e.request).then(function (res) {
+        var clone = res.clone();
+        caches.open(CACHE).then(function (c) { c.put(e.request, clone); });
+        return res;
+      }).catch(function () {
+        return caches.match(e.request).then(function (r) { return r || new Response('Offline', { status: 503 }); });
+      })
+    );
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(function (r) {
       if (r) return r;
