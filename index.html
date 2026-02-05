@@ -70,7 +70,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.2';
+  const APP_VERSION = '1.10.3';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -697,6 +697,7 @@
     if (p[0] === 'receta' && p[1]) return { n: 'rec', id: p[1] };
     if (p[0] === 'nueva') return { n: 'form', id: null };
     if (p[0] === 'editar' && p[1]) return { n: 'form', id: p[1] };
+    if (p[0] === 'plan' && p[1] === 'propuesta') return { n: 'planPropuesta' };
     if (p[0] === 'plan' && p[1] === 'nueva') return { n: 'planNueva' };
     if (p[0] === 'plan' && p[1] === 'editar' && p[2]) return { n: 'planEditar', id: p[2] };
     if (p[0] === 'plan') return { n: 'plan' };
@@ -710,6 +711,7 @@
     if (r.n === 'cat') return renderCat(r.slug);
     if (r.n === 'rec') return renderRec(r.id);
     if (r.n === 'form') return renderForm(r.id);
+    if (r.n === 'planPropuesta') return renderPlanPropuesta();
     if (r.n === 'planNueva') return renderPlanNueva();
     if (r.n === 'planEditar') return renderPlanEditar(r.id);
     if (r.n === 'plan') return renderPlan();
@@ -951,6 +953,7 @@
       '<a href="#/" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver">' +
       '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
       '<a href="#/plan/nueva" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white text-xl font-bold leading-none" title="Añadir semana">+</a>' +
+      '<a href="#/plan/propuesta" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white text-sm font-medium shrink-0" title="Generar propuesta">Propuesta</a>' +
       '</div></div>' +
       '<p class="text-slate-600 dark:text-slate-400" id="planLoading">Cargando plan…</p>' +
       '<div id="planContent" class="hidden space-y-8"></div>' +
@@ -1065,7 +1068,68 @@
     });
   }
 
-  function renderPlanNueva() {
+  function generateMealProposals(mode) {
+    var allWeeks = [];
+    var customWeeks = loadPlanWeeks();
+    allWeeks = allWeeks.concat(customWeeks);
+    var hiddenIds = loadHiddenPlanIds();
+    var fallbackEl = document.getElementById('planning-fallback');
+    if (fallbackEl && fallbackEl.textContent) {
+      try {
+        var fallbackData = JSON.parse(fallbackEl.textContent);
+        if (fallbackData && Array.isArray(fallbackData.weeks)) {
+          var serverWeeks = fallbackData.weeks.filter(function (w) { return hiddenIds.indexOf(w.id) === -1; });
+          allWeeks = allWeeks.concat(serverWeeks);
+        }
+      } catch (e) {}
+    }
+    allWeeks = allWeeks.filter(function (w) { return w && w.comidas && Array.isArray(w.comidas) && w.cenas && Array.isArray(w.cenas); });
+    if (allWeeks.length === 0) return { comidas: ['', '', '', '', ''], cenas: ['', '', '', '', ''] };
+    var proposalsComidas = ['', '', '', '', ''];
+    var proposalsCenas = ['', '', '', '', ''];
+    var weeksToAnalyze = allWeeks;
+    if (mode === 'recent') {
+      var sortedWeeks = allWeeks.slice().sort(function (a, b) {
+        var aId = String(a.id || '');
+        var bId = String(b.id || '');
+        if (/^\d{4}-\d{2}-\d{2}$/.test(aId) && /^\d{4}-\d{2}-\d{2}$/.test(bId)) {
+          return bId.localeCompare(aId);
+        }
+        return 0;
+      });
+      weeksToAnalyze = sortedWeeks.slice(0, 3);
+    }
+    var dayMeals = [{}, {}, {}, {}, {}];
+    var dayDinners = [{}, {}, {}, {}, {}];
+    weeksToAnalyze.forEach(function (w) {
+      var comidas = w.comidas || [];
+      var cenas = w.cenas || [];
+      comidas.forEach(function (m, i) {
+        if (i < 5 && m && m.trim()) {
+          if (!dayMeals[i][m.trim()]) dayMeals[i][m.trim()] = 0;
+          dayMeals[i][m.trim()]++;
+        }
+      });
+      cenas.forEach(function (m, i) {
+        if (i < 5 && m && m.trim()) {
+          if (!dayDinners[i][m.trim()]) dayDinners[i][m.trim()] = 0;
+          dayDinners[i][m.trim()]++;
+        }
+      });
+    });
+    dayMeals.forEach(function (meals, dayIdx) {
+      var sorted = Object.keys(meals).map(function (m) { return { meal: m, count: meals[m] }; }).sort(function (a, b) { return b.count - a.count; });
+      if (sorted.length > 0) proposalsComidas[dayIdx] = sorted[0].meal;
+    });
+    dayDinners.forEach(function (dinners, dayIdx) {
+      var sorted = Object.keys(dinners).map(function (m) { return { meal: m, count: dinners[m] }; }).sort(function (a, b) { return b.count - a.count; });
+      if (sorted.length > 0) proposalsCenas[dayIdx] = sorted[0].meal;
+    });
+    return { comidas: proposalsComidas, cenas: proposalsCenas };
+  }
+
+  function renderPlanNueva(proposals, showProposalButtons) {
+    proposals = proposals || { comidas: ['', '', '', '', ''], cenas: ['', '', '', '', ''] };
     var days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
     var hoy = new Date();
     var lunes = new Date(hoy);
@@ -1074,10 +1138,13 @@
     var allMeals = getAllPlanMeals();
     var datalistId = 'plan-meals-datalist';
     var datalistHtml = allMeals.length > 0 ? '<datalist id="' + datalistId + '">' + allMeals.map(function (m) { return '<option value="' + m.replace(/"/g, '&quot;') + '">'; }).join('') + '</datalist>' : '';
+    var proposalButtonsHtml = showProposalButtons ? '<div class="flex gap-2 mb-4"><button type="button" id="btnProposalFrequency" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white text-sm font-medium">Frecuencia</button><button type="button" id="btnProposalRecent" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white text-sm font-medium">Recientes</button></div>' : '';
       var rows = days.map(function (d, i) {
+        var comidaVal = ((proposals.comidas && proposals.comidas[i]) || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+        var cenaVal = ((proposals.cenas && proposals.cenas[i]) || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
       return '<tr><td class="px-2 py-2 text-sm font-medium text-slate-600 dark:text-slate-300">' + d + '</td>' +
-        '<td class="px-2 py-2"><input type="text" name="comida' + i + '" placeholder="Comida" list="' + datalistId + '" autocomplete="off" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td>' +
-        '<td class="px-2 py-2"><input type="text" name="cena' + i + '" placeholder="Cena" list="' + datalistId + '" autocomplete="off" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td></tr>';
+        '<td class="px-2 py-2"><input type="text" name="comida' + i + '" placeholder="Comida" value="' + comidaVal + '" list="' + datalistId + '" autocomplete="off" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td>' +
+        '<td class="px-2 py-2"><input type="text" name="cena' + i + '" placeholder="Cena" value="' + cenaVal + '" list="' + datalistId + '" autocomplete="off" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm"/></td></tr>';
     }).join('');
     app.innerHTML = '<section class="max-w-2xl space-y-6">' +
       '<div class="flex items-center justify-between flex-wrap gap-2">' +
@@ -1089,11 +1156,40 @@
       '<form id="formPlanNueva" class="p-4 rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 space-y-4">' +
       '<div><label class="block text-sm font-medium mb-1">Inicio de semana (lunes)</label>' +
       '<input type="date" name="fecha" value="' + dateStr + '" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"/></div>' +
+      proposalButtonsHtml +
       datalistHtml +
       '<div class="overflow-x-auto"><table class="w-full"><thead><tr><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Día</th><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Comida</th><th class="px-2 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400">Cena</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<div class="flex gap-2"><button type="submit" class="px-4 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark">Añadir semana</button><a href="#/plan" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700">Cancelar</a></div>' +
       '</form></section>';
-    app.querySelector('#formPlanNueva').addEventListener('submit', function (e) {
+    if (showProposalButtons) {
+      var btnFreq = app.querySelector('#btnProposalFrequency');
+      var btnRecent = app.querySelector('#btnProposalRecent');
+      if (btnFreq) {
+        btnFreq.addEventListener('click', function () {
+          var proposals = generateMealProposals('frequency');
+          for (var i = 0; i < 5; i++) {
+            var comidaInput = app.querySelector('input[name="comida' + i + '"]');
+            var cenaInput = app.querySelector('input[name="cena' + i + '"]');
+            if (comidaInput) comidaInput.value = proposals.comidas[i] || '';
+            if (cenaInput) cenaInput.value = proposals.cenas[i] || '';
+          }
+        });
+      }
+      if (btnRecent) {
+        btnRecent.addEventListener('click', function () {
+          var proposals = generateMealProposals('recent');
+          for (var i = 0; i < 5; i++) {
+            var comidaInput = app.querySelector('input[name="comida' + i + '"]');
+            var cenaInput = app.querySelector('input[name="cena' + i + '"]');
+            if (comidaInput) comidaInput.value = proposals.comidas[i] || '';
+            if (cenaInput) cenaInput.value = proposals.cenas[i] || '';
+          }
+        });
+      }
+    }
+    var formEl = app.querySelector('#formPlanNueva');
+    if (formEl) {
+      formEl.addEventListener('submit', function (e) {
       e.preventDefault();
       var form = e.target;
       var fecha = (form.fecha.value || '').trim();
@@ -1114,7 +1210,12 @@
       savePlanWeeks(weeks);
       location.hash = '#/plan';
       render();
-    });
+      });
+    }
+  }
+
+  function renderPlanPropuesta() {
+    renderPlanNueva({ comidas: ['', '', '', '', ''], cenas: ['', '', '', '', ''] }, true);
   }
 
   function renderPlanEditar(id) {
