@@ -56,7 +56,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.8.1';
+  const APP_VERSION = '1.9.0';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -152,6 +152,42 @@
     var monthName = monthNames[d.getMonth()];
     var yearNum = d.getFullYear();
     return 'Semana del <span class="font-bold text-brand dark:text-brand">' + dayNum + ' de ' + monthName + '</span> de ' + yearNum;
+  }
+
+  function formatWeekTitlePlain(weekId, weekLabel) {
+    var d = null;
+    var year = null;
+    var idStr = String(weekId || '');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(idStr)) {
+      d = new Date(idStr + 'T12:00:00');
+      year = d.getFullYear();
+    } else if (/^\d+-(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)$/i.test(idStr)) {
+      var parts = idStr.split('-');
+      var day = parseInt(parts[0], 10);
+      var monthNames = { ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5, jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11 };
+      var month = monthNames[parts[1].toLowerCase()];
+      if (month !== undefined) {
+        year = new Date().getFullYear();
+        d = new Date(year, month, day);
+      }
+    } else if (weekLabel && /^\d+\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)$/i.test(weekLabel)) {
+      var parts = weekLabel.split(' ');
+      var day = parseInt(parts[0], 10);
+      var monthNames = { ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5, jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11 };
+      var month = monthNames[parts[1].toLowerCase()];
+      if (month !== undefined) {
+        year = new Date().getFullYear();
+        d = new Date(year, month, day);
+      }
+    }
+    if (!d || isNaN(d.getTime())) {
+      return 'Semana del ' + (weekLabel || weekId || '');
+    }
+    var dayNum = d.getDate();
+    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    var monthName = monthNames[d.getMonth()];
+    var yearNum = d.getFullYear();
+    return 'Semana del ' + dayNum + ' de ' + monthName + ' de ' + yearNum;
   }
 
   const app = document.querySelector('#app');
@@ -323,14 +359,39 @@
   function shareRecipe(id) {
     var rec = state.recipes.find(function (x) { return String(x.id) === String(id); });
     if (!rec) return;
-    var text = formatRecipeForShare(rec);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () {
-        if (window.showShareFeedback) window.showShareFeedback(); else alert('Receta copiada. Pégala donde quieras enviarla.');
-      }).catch(function () { fallbackCopy(text); });
-    } else {
-      fallbackCopy(text);
-    }
+    generateRecipeImage(rec).then(function (blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = (rec.title || 'receta').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.png';
+      a.click();
+      setTimeout(function () {
+        URL.revokeObjectURL(url);
+        if (navigator.clipboard && navigator.clipboard.write) {
+          blob.arrayBuffer().then(function (buffer) {
+            return navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': new Blob([buffer], { type: 'image/png' }) })
+            ]);
+          }).then(function () {
+            alert('Imagen descargada y copiada al portapapeles.');
+          }).catch(function () {
+            alert('Imagen descargada. No se pudo copiar al portapapeles.');
+          });
+        } else {
+          alert('Imagen descargada.');
+        }
+      }, 100);
+    }).catch(function (err) {
+      console.error('Error generando imagen:', err);
+      var text = formatRecipeForShare(rec);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          alert('No se pudo generar la imagen. Texto copiado al portapapeles.');
+        }).catch(function () { fallbackCopy(text); });
+      } else {
+        fallbackCopy(text);
+      }
+    });
   }
 
   function fallbackCopy(text) {
@@ -355,6 +416,263 @@
     (w.comidas || []).forEach(function (c, i) { lines.push((dayLabels[days[i]] || days[i]) + ' - Comida: ' + (c || '-')); });
     (w.cenas || []).forEach(function (c, i) { lines.push((dayLabels[days[i]] || days[i]) + ' - Cena: ' + (c || '-')); });
     return lines.join('\n');
+  }
+
+  function wrapText(ctx, text, maxWidth, indent) {
+    indent = indent || 0;
+    var words = text.split(' ');
+    var lines = [];
+    var currentLine = '';
+    words.forEach(function (word) {
+      var testLine = currentLine + (currentLine ? ' ' : '') + word;
+      var metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth - indent && currentLine) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    });
+    if (currentLine) lines.push(currentLine);
+    return lines;
+  }
+
+  function generateRecipeImage(rec) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var padding = 40;
+        var lineHeight = 28;
+        var titleSize = 36;
+        var sectionSize = 24;
+        var textSize = 18;
+        var maxWidth = 800;
+        canvas.width = maxWidth;
+        var x = padding;
+        var y = padding;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0ea5e9';
+        ctx.fillRect(0, 0, canvas.width, 8);
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold ' + titleSize + 'px Inter, sans-serif';
+        var title = rec.title || 'Sin título';
+        var titleLines = wrapText(ctx, title, maxWidth - 2 * padding);
+        titleLines.forEach(function (line) {
+          ctx.fillText(line, x, y);
+          y += lineHeight + 8;
+        });
+        y += 10;
+        if (rec.description && rec.description.trim()) {
+          ctx.fillStyle = '#64748b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          var descLines = wrapText(ctx, rec.description.trim(), maxWidth - 2 * padding);
+          descLines.forEach(function (line) {
+            ctx.fillText(line, x, y);
+            y += lineHeight;
+          });
+          y += 20;
+        }
+        if (rec.ingredients && rec.ingredients.length > 0) {
+          ctx.fillStyle = '#0ea5e9';
+          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
+          ctx.fillText('Ingredientes:', x, y);
+          y += lineHeight + 10;
+          ctx.fillStyle = '#1e293b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          rec.ingredients.forEach(function (ing) {
+            var ingLines = wrapText(ctx, '• ' + ing, maxWidth - 2 * padding, x + 20);
+            ingLines.forEach(function (line) {
+              ctx.fillText(line, x + 20, y);
+              y += lineHeight;
+            });
+          });
+          y += 20;
+        }
+        if (rec.steps && rec.steps.length > 0) {
+          ctx.fillStyle = '#0ea5e9';
+          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
+          ctx.fillText('Elaboración:', x, y);
+          y += lineHeight + 10;
+          ctx.fillStyle = '#1e293b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          rec.steps.forEach(function (step, idx) {
+            var stepText = (idx + 1) + '. ' + step;
+            var stepLines = wrapText(ctx, stepText, maxWidth - 2 * padding, x + 20);
+            stepLines.forEach(function (line) {
+              ctx.fillText(line, x + 20, y);
+              y += lineHeight;
+            });
+            y += 8;
+          });
+        }
+        canvas.height = y + padding;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0ea5e9';
+        ctx.fillRect(0, 0, canvas.width, 8);
+        y = padding;
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold ' + titleSize + 'px Inter, sans-serif';
+        titleLines.forEach(function (line) {
+          ctx.fillText(line, x, y);
+          y += lineHeight + 8;
+        });
+        y += 10;
+        if (rec.description && rec.description.trim()) {
+          ctx.fillStyle = '#64748b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          var descLines2 = wrapText(ctx, rec.description.trim(), maxWidth - 2 * padding);
+          descLines2.forEach(function (line) {
+            ctx.fillText(line, x, y);
+            y += lineHeight;
+          });
+          y += 20;
+        }
+        if (rec.ingredients && rec.ingredients.length > 0) {
+          ctx.fillStyle = '#0ea5e9';
+          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
+          ctx.fillText('Ingredientes:', x, y);
+          y += lineHeight + 10;
+          ctx.fillStyle = '#1e293b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          rec.ingredients.forEach(function (ing) {
+            var ingLines2 = wrapText(ctx, '• ' + ing, maxWidth - 2 * padding, x + 20);
+            ingLines2.forEach(function (line) {
+              ctx.fillText(line, x + 20, y);
+              y += lineHeight;
+            });
+          });
+          y += 20;
+        }
+        if (rec.steps && rec.steps.length > 0) {
+          ctx.fillStyle = '#0ea5e9';
+          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
+          ctx.fillText('Elaboración:', x, y);
+          y += lineHeight + 10;
+          ctx.fillStyle = '#1e293b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          rec.steps.forEach(function (step, idx) {
+            var stepText2 = (idx + 1) + '. ' + step;
+            var stepLines2 = wrapText(ctx, stepText2, maxWidth - 2 * padding, x + 20);
+            stepLines2.forEach(function (line) {
+              ctx.fillText(line, x + 20, y);
+              y += lineHeight;
+            });
+            y += 8;
+          });
+        }
+        canvas.toBlob(function (blob) {
+          if (blob) resolve(blob); else reject(new Error('Error generando imagen'));
+        }, 'image/png');
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  function generateWeekImage(w, dayLabels) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var padding = 40;
+        var lineHeight = 28;
+        var titleSize = 32;
+        var daySize = 20;
+        var textSize = 18;
+        var maxWidth = 900;
+        canvas.width = maxWidth;
+        var x = padding;
+        var y = padding;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0ea5e9';
+        ctx.fillRect(0, 0, canvas.width, 8);
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold ' + titleSize + 'px Inter, sans-serif';
+        var title = formatWeekTitlePlain(w.id, w.label);
+        ctx.fillText(title, x, y);
+        y += lineHeight + 30;
+        var days = ['L', 'M', 'X', 'J', 'V'];
+        var dayNames = days.map(function (d) { return dayLabels[d] || d; });
+        var colWidth = (maxWidth - 2 * padding) / 3;
+        ctx.fillStyle = '#0ea5e9';
+        ctx.font = 'bold ' + daySize + 'px Inter, sans-serif';
+        ctx.fillText('Día', x, y);
+        ctx.fillText('Comida', x + colWidth, y);
+        ctx.fillText('Cena', x + colWidth * 2, y);
+        y += lineHeight + 15;
+        ctx.fillStyle = '#1e293b';
+        ctx.font = textSize + 'px Inter, sans-serif';
+        days.forEach(function (d, i) {
+          var dayName = dayNames[i];
+          var comida = (w.comidas && w.comidas[i]) || '-';
+          var cena = (w.cenas && w.cenas[i]) || '-';
+          var dayY = y;
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'bold ' + daySize + 'px Inter, sans-serif';
+          ctx.fillText(dayName, x, dayY);
+          ctx.fillStyle = '#1e293b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          var comidaLines = wrapText(ctx, comida, colWidth - 20);
+          var cenaLines = wrapText(ctx, cena, colWidth - 20);
+          var maxLines = Math.max(comidaLines.length, cenaLines.length, 1);
+          comidaLines.forEach(function (line, idx) {
+            ctx.fillText(line, x + colWidth, dayY + idx * lineHeight);
+          });
+          cenaLines.forEach(function (line, idx) {
+            ctx.fillText(line, x + colWidth * 2, dayY + idx * lineHeight);
+          });
+          y += maxLines * lineHeight + 20;
+        });
+        canvas.height = y + padding;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0ea5e9';
+        ctx.fillRect(0, 0, canvas.width, 8);
+        y = padding;
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold ' + titleSize + 'px Inter, sans-serif';
+        ctx.fillText(title, x, y);
+        y += lineHeight + 30;
+        ctx.fillStyle = '#0ea5e9';
+        ctx.font = 'bold ' + daySize + 'px Inter, sans-serif';
+        ctx.fillText('Día', x, y);
+        ctx.fillText('Comida', x + colWidth, y);
+        ctx.fillText('Cena', x + colWidth * 2, y);
+        y += lineHeight + 15;
+        ctx.fillStyle = '#1e293b';
+        ctx.font = textSize + 'px Inter, sans-serif';
+        days.forEach(function (d, i) {
+          var dayName2 = dayNames[i];
+          var comida2 = (w.comidas && w.comidas[i]) || '-';
+          var cena2 = (w.cenas && w.cenas[i]) || '-';
+          var dayY2 = y;
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'bold ' + daySize + 'px Inter, sans-serif';
+          ctx.fillText(dayName2, x, dayY2);
+          ctx.fillStyle = '#1e293b';
+          ctx.font = textSize + 'px Inter, sans-serif';
+          var comidaLines2 = wrapText(ctx, comida2, colWidth - 20);
+          var cenaLines2 = wrapText(ctx, cena2, colWidth - 20);
+          var maxLines2 = Math.max(comidaLines2.length, cenaLines2.length, 1);
+          comidaLines2.forEach(function (line, idx) {
+            ctx.fillText(line, x + colWidth, dayY2 + idx * lineHeight);
+          });
+          cenaLines2.forEach(function (line, idx) {
+            ctx.fillText(line, x + colWidth * 2, dayY2 + idx * lineHeight);
+          });
+          y += maxLines2 * lineHeight + 20;
+        });
+        canvas.toBlob(function (blob) {
+          if (blob) resolve(blob); else reject(new Error('Error generando imagen'));
+        }, 'image/png');
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
   function route() {
@@ -957,10 +1275,36 @@
       var w = window.__planWeeksMap && weekId && window.__planWeeksMap[weekId];
       var labels = window.__planDayLabels || { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' };
       if (w && action === 'share') {
-        var text = formatWeekForShare(w, labels);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(function () { alert('Semana copiada al portapapeles.'); }).catch(function () { fallbackCopy(text); });
-        } else { fallbackCopy(text); }
+        generateWeekImage(w, labels).then(function (blob) {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          var weekTitle = (w.label || w.id || 'semana').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+          a.download = weekTitle + '.png';
+          a.click();
+          setTimeout(function () {
+            URL.revokeObjectURL(url);
+            if (navigator.clipboard && navigator.clipboard.write) {
+              blob.arrayBuffer().then(function (buffer) {
+                return navigator.clipboard.write([
+                  new ClipboardItem({ 'image/png': new Blob([buffer], { type: 'image/png' }) })
+                ]);
+              }).then(function () {
+                alert('Imagen descargada y copiada al portapapeles.');
+              }).catch(function () {
+                alert('Imagen descargada. No se pudo copiar al portapapeles.');
+              });
+            } else {
+              alert('Imagen descargada.');
+            }
+          }, 100);
+        }).catch(function (err) {
+          console.error('Error generando imagen:', err);
+          var text = formatWeekForShare(w, labels);
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { alert('No se pudo generar la imagen. Texto copiado al portapapeles.'); }).catch(function () { fallbackCopy(text); });
+          } else { fallbackCopy(text); }
+        });
       }
       if (action === 'edit') {
         if (!w && window.__planWeeksMap && weekId) {
