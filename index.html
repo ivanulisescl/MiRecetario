@@ -56,7 +56,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.4.0';
+  const APP_VERSION = '1.5.0';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -168,6 +168,33 @@
     a.download = 'recipes.json';
     a.click();
     URL.revokeObjectURL(a.href);
+    var customWeeks = loadPlanWeeks();
+    var hiddenIds = loadHiddenPlanIds();
+    var fallbackEl = document.getElementById('planning-fallback');
+    var jsonWeeks = [];
+    if (fallbackEl && fallbackEl.textContent) {
+      try {
+        var fallbackData = JSON.parse(fallbackEl.textContent);
+        if (fallbackData && Array.isArray(fallbackData.weeks)) {
+          jsonWeeks = fallbackData.weeks.filter(function (w) { return hiddenIds.indexOf(w.id) === -1; });
+        }
+      } catch (e) {}
+    }
+    var allWeeks = customWeeks.concat(jsonWeeks);
+    var planData = {
+      weekdays: ['L', 'M', 'X', 'J', 'V'],
+      weekdayLabels: { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' },
+      weeks: allWeeks
+    };
+    var planJson = JSON.stringify(planData, null, 2);
+    var planBlob = new Blob([planJson], { type: 'application/json' });
+    setTimeout(function () {
+      var planA = document.createElement('a');
+      planA.href = URL.createObjectURL(planBlob);
+      planA.download = 'planning.json';
+      planA.click();
+      URL.revokeObjectURL(planA.href);
+    }, 300);
   }
 
   function resetRecipes() {
@@ -696,12 +723,17 @@
         var raw = sessionStorage.getItem('planEditWeek');
         if (raw) {
           var parsed = JSON.parse(raw);
-          if (parsed && parsed.id === id && parsed.w) {
-            w = parsed.w;
-            sessionStorage.removeItem('planEditWeek');
+          if (parsed && parsed.w) {
+            if (!parsed.id || parsed.id === id) {
+              w = parsed.w;
+              sessionStorage.removeItem('planEditWeek');
+            }
           }
         }
       } catch (e) {}
+    }
+    if (!w && window.__planWeeksMap && id) {
+      w = window.__planWeeksMap[id];
     }
     if (!w) {
       location.hash = '#/plan';
@@ -858,14 +890,16 @@
           navigator.clipboard.writeText(text).then(function () { alert('Semana copiada al portapapeles.'); }).catch(function () { fallbackCopy(text); });
         } else { fallbackCopy(text); }
       }
-      if (w && action === 'edit') {
-        if (/^\d{4}-\d{2}-\d{2}$/.test(String(weekId))) {
-          location.hash = '#/plan/editar/' + encodeURIComponent(weekId);
-          render();
-        } else {
+      if (action === 'edit') {
+        if (!w && window.__planWeeksMap && weekId) {
+          w = window.__planWeeksMap[weekId];
+        }
+        if (w) {
           try { sessionStorage.setItem('planEditWeek', JSON.stringify({ id: weekId, w: w })); } catch (e) {}
           location.hash = '#/plan/editar/' + encodeURIComponent(weekId);
           render();
+        } else {
+          alert('No se pudo cargar la semana. Recarga la página e inténtalo de nuevo.');
         }
       }
       if (w && action === 'delete') {
