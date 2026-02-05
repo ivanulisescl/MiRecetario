@@ -56,7 +56,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.5.0';
+  const APP_VERSION = '1.6.0';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -94,6 +94,42 @@
     var day = d.getDate();
     var months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
     return day + ' ' + months[d.getMonth()];
+  }
+
+  function formatWeekTitle(weekId, weekLabel) {
+    var d = null;
+    var year = null;
+    var idStr = String(weekId || '');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(idStr)) {
+      d = new Date(idStr + 'T12:00:00');
+      year = d.getFullYear();
+    } else if (/^\d+-(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)$/i.test(idStr)) {
+      var parts = idStr.split('-');
+      var day = parseInt(parts[0], 10);
+      var monthNames = { ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5, jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11 };
+      var month = monthNames[parts[1].toLowerCase()];
+      if (month !== undefined) {
+        year = new Date().getFullYear();
+        d = new Date(year, month, day);
+      }
+    } else if (weekLabel && /^\d+\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)$/i.test(weekLabel)) {
+      var parts = weekLabel.split(' ');
+      var day = parseInt(parts[0], 10);
+      var monthNames = { ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5, jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11 };
+      var month = monthNames[parts[1].toLowerCase()];
+      if (month !== undefined) {
+        year = new Date().getFullYear();
+        d = new Date(year, month, day);
+      }
+    }
+    if (!d || isNaN(d.getTime())) {
+      return 'Semana del ' + (weekLabel || weekId || '').replace(/</g, '&lt;');
+    }
+    var dayNum = d.getDate();
+    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    var monthName = monthNames[d.getMonth()];
+    var yearNum = d.getFullYear();
+    return 'Semana del <span class="font-bold text-brand dark:text-brand">' + dayNum + ' de ' + monthName + '</span> de ' + yearNum;
   }
 
   const app = document.querySelector('#app');
@@ -198,14 +234,16 @@
   }
 
   function resetRecipes() {
-    if (!confirm('¿Restaurar las recetas desde el servidor? Se sustituirán las recetas actuales por las de recipes.json en GitHub.')) return;
+    if (!confirm('¿Restaurar recetas y plan desde el servidor? Se sustituirán las recetas actuales por recipes.json y el plan se restablecerá con planning.json (se quitarán semanas añadidas y ocultas).')) return;
+    savePlanWeeks([]);
+    saveHiddenPlanIds([]);
     fetch('recipes.json?t=' + Date.now()).then(function (r) { return r.ok ? r.json() : []; }).then(function (data) {
       var arr = Array.isArray(data) ? data : (data.recipes || []);
       state.recipes = arr.length > 0 ? arr : [];
       saveRecipes();
       location.hash = '#/';
       render();
-      alert(arr.length > 0 ? 'Recetas restauradas desde el servidor (' + arr.length + ' recetas).' : 'No se encontraron recetas en el servidor.');
+      alert('Recetas y plan restaurados desde el servidor.' + (arr.length > 0 ? ' ' + arr.length + ' recetas.' : ''));
     }).catch(function () {
       alert('No se pudo cargar recipes.json. Comprueba la conexión o la URL.');
     });
@@ -601,7 +639,7 @@
           '<button type="button" data-plan-action="delete" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-600 hover:text-white shrink-0" title="Eliminar">' + deleteSvg + '</button>';
         html += '<div class="rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 overflow-hidden">' +
           '<div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">' +
-          '<h2 class="font-semibold text-lg min-w-0">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
+          '<h2 class="font-semibold text-lg min-w-0">' + formatWeekTitle(w.id, w.label) + '</h2>' +
           '<div class="flex gap-1.5 flex-shrink-0">' + btns + '</div></div>' +
           '<div class="overflow-x-auto"><table class="w-full text-left">' +
           '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
@@ -648,7 +686,7 @@
             '<button type="button" data-plan-action="delete" data-week-id="' + safeId + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-red-600 hover:text-white shrink-0" title="Eliminar">' + deleteSvg + '</button>';
           html += '<div class="rounded-xl border bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 overflow-hidden">' +
             '<div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">' +
-            '<h2 class="font-semibold text-lg min-w-0">Semana del ' + (w.label || w.id || '').replace(/</g, '&lt;') + '</h2>' +
+            '<h2 class="font-semibold text-lg min-w-0">' + formatWeekTitle(w.id, w.label) + '</h2>' +
             '<div class="flex gap-1.5 flex-shrink-0">' + btns + '</div></div>' +
             '<div class="overflow-x-auto"><table class="w-full text-left">' +
             '<thead><tr><th class="px-2 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 w-24"></th>' + ths + '</tr></thead>' +
