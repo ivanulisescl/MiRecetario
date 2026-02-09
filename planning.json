@@ -51,24 +51,6 @@
       ]
     },
     {
-      "id": "2025-06-02",
-      "label": "2 jun",
-      "comidas": [
-        "Arroz con potarros",
-        "La Felguera",
-        "Menestra",
-        "Menestra",
-        ""
-      ],
-      "cenas": [
-        "Salmón con verduras soja",
-        "Repollo jengibre con pollo plancha",
-        "Berenjenas rellenas",
-        "Bimi pixín",
-        ""
-      ]
-    },
-    {
       "id": "2025-11-24",
       "label": "24 nov",
       "comidas": [
@@ -79,7 +61,7 @@
         ""
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
+        "Salmón con verduras soja",
         "Tripollo",
         "",
         "Bimi y pescado plancha",
@@ -97,9 +79,9 @@
         ""
       ],
       "cenas": [
-        "Verduras salteadas con salmón plancha",
+        "Salmón con verduras soja",
         "Puré y pollo",
-        "Berenjenas",
+        "Berenjenas rellenas",
         "Bimi y pescado plancha",
         ""
       ]
@@ -141,24 +123,6 @@
       ]
     },
     {
-      "id": "2026-01-10",
-      "label": "10 ene",
-      "comidas": [
-        "Fréjoles",
-        "Garbanzos con setas",
-        "Ensalada de pasta",
-        "Fabes amarilles",
-        "Ensalada de pasta"
-      ],
-      "cenas": [
-        "Salmón con verduras soja",
-        "Champiñones y tortilla",
-        "Bimi y pollo",
-        "Puré rojo y barbada",
-        ""
-      ]
-    },
-    {
       "id": "2025-02-17",
       "label": "17 feb",
       "comidas": [
@@ -169,7 +133,7 @@
         ""
       ],
       "cenas": [
-        "Verduras con salmón",
+        "Salmón con verduras soja",
         "Fritos bacalao y coliflor",
         "Fritos bacalao y ensalada tomate",
         "Ceviche coliflor y queso fresco",
@@ -187,7 +151,7 @@
         "Salmorejo"
       ],
       "cenas": [
-        "Verduras con salmón",
+        "Salmón con verduras soja",
         "Puré y jamón york",
         "Aguacate, tomate, mozzarella, pistachos y pasas",
         "",
@@ -259,8 +223,8 @@
         ""
       ],
       "cenas": [
-        "Verduras con salmón",
-        "Ensalada de tomate, aguacata, perlas, pistachos y pasas",
+        "Salmón con verduras soja",
+        "Ensalada de tomate, aguacate, perlas, pistachos y pasas",
         "",
         "Barbada",
         ""
@@ -277,7 +241,7 @@
         ""
       ],
       "cenas": [
-        "Verduras con salmón",
+        "Salmón con verduras soja",
         "Pixín plancha",
         "Ensalada mixta",
         "",
@@ -295,28 +259,10 @@
         ""
       ],
       "cenas": [
-        "Verduras con salmón",
+        "Salmón con verduras soja",
         "Repollo con jengibre y pollo plancha",
         "Berenjenas rellenas",
         "Bimi pixín",
-        ""
-      ]
-    },
-    {
-      "id": "2025-10-06",
-      "label": "6 oct",
-      "comidas": [
-        "Lentejas",
-        "La Felguera",
-        "Menestra",
-        "Lentejas",
-        "Menestra"
-      ],
-      "cenas": [
-        "Repollo con jengibre y pollo plancha",
-        "Berenjenas rellenas",
-        "Salmón con repollo con jengibre",
-        "Ensalada?",
         ""
       ]
     },
@@ -367,7 +313,7 @@
         "Lentejas"
       ],
       "cenas": [
-        "Tosta aguacata, queso y salmón",
+        "Tosta aguacate, queso y salmón",
         "Pollo plancha y verduras asadas",
         "Bimi y barbada",
         "Salmón con verduras soja",
@@ -385,7 +331,7 @@
         "Ensalada de pasta"
       ],
       "cenas": [
-        "Verduras con salmón",
+        "Salmón con verduras soja",
         "Puré calabacín y tortilla queso",
         "Ensalada y pollo plancha",
         "Bimi y pixín",
@@ -421,7 +367,7 @@
         ""
       ],
       "cenas": [
-        "Verduras con salmón",
+        "Salmón con verduras soja",
         "Tripollo",
         "",
         "Bimi y pescado plancha",
@@ -457,7 +403,7 @@
         ""
       ],
       "cenas": [
-        "Verduras con salmón",
+        "Salmón con verduras soja",
         "Puré y pollo",
         "Berenjenas rellenas",
         "Bimi y pescado plancha",
