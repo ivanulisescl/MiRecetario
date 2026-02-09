@@ -51,6 +51,114 @@
       ]
     },
     {
+      "id": "2025-06-02",
+      "label": "2 jun",
+      "comidas": [
+        "Arroz con potarros",
+        "La Felguera",
+        "Menestra",
+        "Menestra",
+        ""
+      ],
+      "cenas": [
+        "Salmón con verduras soja",
+        "Repollo jengibre con pollo plancha",
+        "Berenjenas rellenas",
+        "Bimi pixín",
+        ""
+      ]
+    },
+    {
+      "id": "2025-11-24",
+      "label": "24 nov",
+      "comidas": [
+        "Lentejas",
+        "Fabes amarilles",
+        "Comemos fuera",
+        "Fabes con verdura",
+        ""
+      ],
+      "cenas": [
+        "Verduras salteadas con salmón plancha",
+        "Tripollo",
+        "",
+        "Bimi y pescado plancha",
+        ""
+      ]
+    },
+    {
+      "id": "2025-12-15",
+      "label": "15 dic",
+      "comidas": [
+        "",
+        "Fabes con verdura",
+        "Comemos fuera",
+        "Fabes amarilles",
+        ""
+      ],
+      "cenas": [
+        "Verduras salteadas con salmón plancha",
+        "Puré y pollo",
+        "Berenjenas",
+        "Bimi y pescado plancha",
+        ""
+      ]
+    },
+    {
+      "id": "2025-10-06",
+      "label": "6 oct",
+      "comidas": [
+        "Lentejas",
+        "La Felguera",
+        "Menestra",
+        "Lentejas",
+        "Menestra"
+      ],
+      "cenas": [
+        "Repollo con jengibre y pollo plancha",
+        "Berenjenas rellenas",
+        "Salmón con repollo con jengibre",
+        "Ensalada",
+        ""
+      ]
+    },
+    {
+      "id": "2026-02-09",
+      "label": "9 feb",
+      "comidas": [
+        "Fabes amarilles",
+        "Arroz con verduras",
+        "",
+        "",
+        ""
+      ],
+      "cenas": [
+        "Lubina con verduras soja",
+        "Berenjenas rellenas",
+        "Ensalada y tortilla",
+        "Bimi y barbada",
+        "Ensalada pollo y bacon"
+      ]
+    },
+    {
+      "id": "2026-01-10",
+      "label": "10 ene",
+      "comidas": [
+        "Fréjoles",
+        "Garbanzos con setas",
+        "Ensalada de pasta",
+        "Fabes amarilles",
+        "Ensalada de pasta"
+      ],
+      "cenas": [
+        "Salmón con verduras soja",
+        "Champiñones y tortilla",
+        "Bimi y pollo",
+        "Puré rojo y barbada",
+        ""
+      ]
+    },
+    {
       "id": "2025-02-17",
       "label": "17 feb",
       "comidas": [
@@ -152,7 +260,7 @@
       ],
       "cenas": [
         "Verduras con salmón",
-        "Ensalada de tomate, aguacate, perlas, pistachos y pasas",
+        "Ensalada de tomate, aguacata, perlas, pistachos y pasas",
         "",
         "Barbada",
         ""
@@ -259,7 +367,7 @@
         "Lentejas"
       ],
       "cenas": [
-        "Tosta aguacate, queso y salmón",
+        "Tosta aguacata, queso y salmón",
         "Pollo plancha y verduras asadas",
         "Bimi y barbada",
         "Salmón con verduras soja",
