@@ -15,6 +15,24 @@
   },
   "weeks": [
     {
+      "id": "2026-02-23",
+      "label": "23 feb",
+      "comidas": [
+        "Ensalada de lentejas",
+        "",
+        "Fabes con verdura",
+        "Fabes amarilles",
+        "Arroz con verduras"
+      ],
+      "cenas": [
+        "Bacalao con pisto",
+        "Babaganoush con apio y huevos cocidos",
+        "Berenjenas rellenas",
+        "Bimi y pescado plancha",
+        ""
+      ]
+    },
+    {
       "id": "2026-01-10",
       "label": "10 ene",
       "comidas": [
@@ -33,96 +51,6 @@
       ]
     },
     {
-      "id": "2026-02-02",
-      "label": "2 feb",
-      "comidas": [
-        "Fabes con verdura",
-        "Ensalada de pasta",
-        "",
-        "",
-        ""
-      ],
-      "cenas": [
-        "Salmón con verduras soja",
-        "Coliflor asada y pollo plancha",
-        "Ensalada y tortilla",
-        "Pixín plancha",
-        ""
-      ]
-    },
-    {
-      "id": "2025-11-24",
-      "label": "24 nov",
-      "comidas": [
-        "Lentejas",
-        "Fabes amarilles",
-        "Comemos fuera",
-        "Fabes con verdura",
-        ""
-      ],
-      "cenas": [
-        "Salmón con verduras soja",
-        "Tripollo",
-        "",
-        "Bimi y pescado plancha",
-        ""
-      ]
-    },
-    {
-      "id": "2025-12-15",
-      "label": "15 dic",
-      "comidas": [
-        "",
-        "Fabes con verdura",
-        "Comemos fuera",
-        "Fabes amarilles",
-        ""
-      ],
-      "cenas": [
-        "Salmón con verduras soja",
-        "Puré y pollo",
-        "Berenjenas rellenas",
-        "Bimi y pescado plancha",
-        ""
-      ]
-    },
-    {
-      "id": "2025-10-06",
-      "label": "6 oct",
-      "comidas": [
-        "Lentejas",
-        "La Felguera",
-        "Menestra",
-        "Lentejas",
-        "Menestra"
-      ],
-      "cenas": [
-        "Repollo con jengibre y pollo plancha",
-        "Berenjenas rellenas",
-        "Salmón con repollo con jengibre",
-        "Ensalada",
-        ""
-      ]
-    },
-    {
-      "id": "2026-02-09",
-      "label": "9 feb",
-      "comidas": [
-        "Fabes amarilles",
-        "Arroz con verduras",
-        "",
-        "",
-        ""
-      ],
-      "cenas": [
-        "Lubina con verduras soja",
-        "Berenjenas rellenas",
-        "Ensalada y tortilla",
-        "Bimi y barbada",
-        "Ensalada pollo y bacon"
-      ]
-    },
-    {
       "id": "2025-02-17",
       "label": "17 feb",
       "comidas": [
@@ -133,7 +61,7 @@
         ""
       ],
       "cenas": [
-        "Salmón con verduras soja",
+        "Verduras con salmón",
         "Fritos bacalao y coliflor",
         "Fritos bacalao y ensalada tomate",
         "Ceviche coliflor y queso fresco",
@@ -151,7 +79,7 @@
         "Salmorejo"
       ],
       "cenas": [
-        "Salmón con verduras soja",
+        "Verduras con salmón",
         "Puré y jamón york",
         "Aguacate, tomate, mozzarella, pistachos y pasas",
         "",
@@ -223,8 +151,8 @@
         ""
       ],
       "cenas": [
-        "Salmón con verduras soja",
-        "Ensalada de tomate, aguacate, perlas, pistachos y pasas",
+        "Verduras con salmón",
+        "Ensalada de tomate, aguacata, perlas, pistachos y pasas",
         "",
         "Barbada",
         ""
@@ -241,7 +169,7 @@
         ""
       ],
       "cenas": [
-        "Salmón con verduras soja",
+        "Verduras con salmón",
         "Pixín plancha",
         "Ensalada mixta",
         "",
@@ -259,10 +187,28 @@
         ""
       ],
       "cenas": [
-        "Salmón con verduras soja",
+        "Verduras con salmón",
         "Repollo con jengibre y pollo plancha",
         "Berenjenas rellenas",
         "Bimi pixín",
+        ""
+      ]
+    },
+    {
+      "id": "2025-10-06",
+      "label": "6 oct",
+      "comidas": [
+        "Lentejas",
+        "La Felguera",
+        "Menestra",
+        "Lentejas",
+        "Menestra"
+      ],
+      "cenas": [
+        "Repollo con jengibre y pollo plancha",
+        "Berenjenas rellenas",
+        "Salmón con repollo con jengibre",
+        "Ensalada?",
         ""
       ]
     },
@@ -291,8 +237,8 @@
         "Arroz con verduras",
         "Fabes con verdura",
         "La Felguera y casa Ceci",
-        "Fabes amarilles / Candás",
-        "Fabes amarilles / Bea"
+        "Fabes roxes / Candás",
+        "Fabes roxes / Bea"
       ],
       "cenas": [
         "Cena cumple",
@@ -313,7 +259,7 @@
         "Lentejas"
       ],
       "cenas": [
-        "Tosta aguacate, queso y salmón",
+        "Tosta aguacata, queso y salmón",
         "Pollo plancha y verduras asadas",
         "Bimi y barbada",
         "Salmón con verduras soja",
@@ -331,7 +277,7 @@
         "Ensalada de pasta"
       ],
       "cenas": [
-        "Salmón con verduras soja",
+        "Verduras con salmón",
         "Puré calabacín y tortilla queso",
         "Ensalada y pollo plancha",
         "Bimi y pixín",
@@ -367,7 +313,7 @@
         ""
       ],
       "cenas": [
-        "Salmón con verduras soja",
+        "Verduras con salmón",
         "Tripollo",
         "",
         "Bimi y pescado plancha",
@@ -403,7 +349,7 @@
         ""
       ],
       "cenas": [
-        "Salmón con verduras soja",
+        "Verduras con salmón",
         "Puré y pollo",
         "Berenjenas rellenas",
         "Bimi y pescado plancha",
