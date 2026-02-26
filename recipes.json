@@ -1107,5 +1107,25 @@
       "Verter en un molde desmontable, previamente aceitado y enharinado, y con el fondo con papel de horno. Darle unos toques contra la encimera para que quede plano",
       "Meter en el horno durante media hora, tapar con un albal y dejar 10 minutos más."
     ]
+  },
+  {
+    "id": 46,
+    "category": "pures",
+    "title": "Crema de apio",
+    "description": "Sabrosa y healthy",
+    "image": "assets/img/recetas/crema-apio.jpg",
+    "ingredients": [
+      "500 g de apio",
+      "600 g de calabacín",
+      "2 vasos de leche",
+      "2 vasos de caldo de verduras"
+    ],
+    "steps": [
+      "Cortar el calabacín y el apio en trozos",
+      "Saltear en la pota con un poco de aceite",
+      "Tapar y dejar otros 5 minutos a fuego suave",
+      "Echar la lecha y el caldo, y cocer lentamente 30 minutos",
+      "Triturar bien y sazonar al gusto"
+    ]
   }
 ]
