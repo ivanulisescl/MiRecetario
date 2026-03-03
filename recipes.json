@@ -1127,5 +1127,42 @@
       "Echar la lecha y el caldo, y cocer lentamente 30 minutos",
       "Triturar bien y sazonar al gusto"
     ]
+  },
+  {
+    "id": 47,
+    "category": "varios",
+    "title": "Tabulé",
+    "description": "Surgida en el collao Unqueru",
+    "image": "assets/img/recetas/tabule.png",
+    "ingredients": [
+      "150g de perejil fresco",
+      "400g de tomates maduros",
+      "1/2 cebolleta",
+      "2 limones",
+      "50g de bulgur fino (o normal)",
+      "50g de menta fresca",
+      "1/2 cucharadita comino",
+      "1/2 cucharadita semillas cilantro molidas",
+      "1/4 cucharadita nuez moscada en polvo",
+      "1/4 cucharadita jengibre molido",
+      "1/2 cucharadita pimienta negra molida",
+      "1/2 cucharadita canela en polvo",
+      "6 cucharadas AOVE",
+      "Sal",
+      "Unos granos de granada"
+    ],
+    "steps": [
+      "Opcional. Picar la cebolleta y ponerla en un bol pequeño con agua y un buen chorro de zumo de limón para que pierda fuerza.",
+      "Poner el bulgur fino en un colador grande y lavarlo con agua fría hasta que salga limpia. Escurrirlo muy bien.",
+      "Poner el bulgur en un bol y desmigarlo con un tenedor para que los granos queden más sueltos.",
+      "Cortar los tomates en dados pequeños y añadirlos al bulgur con todo su jugo.",
+      "Añadir el zumo de un limón. Mezclar todo bien.",
+      "Mezclar en un cuenco las especias molidas: pimienta negra, canela, coriandro, nuez moscada, clavo y jengibre. Añadir una cucharadita de esta mezcla al bol.",
+      "Lavar el perejil y la menta, sacudirlos y envolverlos en un paño de cocina limpio para retirarles el exceso de humedad.",
+      "Picar fino el perejil con un cuchillo bien afilado, desechando buena parte de los tallos.",
+      "Picar menos la menta, que es más delicada.",
+      "Añadir las hierbas y la cebolla bien escurrida al tabulé, y aliñar con aceite de oliva virgen extra y sal. Probar y rectificar con más limón, especias o sal.",
+      "Puedes rematar el tabulé con unos granos de granada por encima."
+    ]
   }
 ]
