@@ -15,39 +15,21 @@
   },
   "weeks": [
     {
-      "id": "2026-02-23",
-      "label": "23 feb",
-      "comidas": [
-        "Ensalada de lentejas",
-        "",
-        "Fabes amarilles",
-        "Fabes amarilles",
-        "Arroz con verduras"
-      ],
-      "cenas": [
-        "Bacalao con pisto",
-        "Babaganoush con apio y huevos cocidos",
-        "Crema de apio, huevo cocido y queso fresco",
-        "Crema de apio y gallo plancha",
-        ""
-      ]
-    },
-    {
-      "id": "2026-03-02",
-      "label": "2 mar",
+      "id": "2026-03-09",
+      "label": "9 mar",
       "comidas": [
         "Fabes con verdura",
-        "La Felguera",
-        "Menestra",
-        "Garbanzos con setas",
-        "Menestra"
+        "Fréjoles con patatas",
+        "La Felguera/Frejoles o pasta",
+        "Fabes con verdura",
+        ""
       ],
       "cenas": [
-        "Salpicón y ensalada tomate",
-        "Crema de apio y pescado plancha",
-        "Tortilla y ensalada lechuga",
-        "Bimi y pescado plancha",
-        "Berenjenas rellenas"
+        "Crema marisco y ensalada tomate",
+        "Ensalada mango 2.0",
+        "Bimi y barbada",
+        "Ensalada lechuga y pollo plancha",
+        ""
       ]
     },
     {
