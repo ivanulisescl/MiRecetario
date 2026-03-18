@@ -1164,5 +1164,35 @@
       "Añadir las hierbas y la cebolla bien escurrida al tabulé, y aliñar con aceite de oliva virgen extra y sal. Probar y rectificar con más limón, especias o sal.",
       "Puedes rematar el tabulé con unos granos de granada por encima."
     ]
+  },
+  {
+    "id": 48,
+    "category": "varios",
+    "title": "Brócoli frito al estilo Kentucky",
+    "description": "",
+    "image": "assets/img/recetas/brocoli-kentucky.jpg",
+    "ingredients": [
+      "500 g de brócoli",
+      "3 cucharadas de pimentón dulce",
+      "1 cucharada de pimentón picante de la Vera",
+      "1 cucharadita de ajo en polvo",
+      "2 cucharaditas de curry",
+      "2 cucharaditas de eneldo",
+      "2 cucharaditas de tomillo",
+      "400 g de harina de garbanzo",
+      "Sal",
+      "Aceite de girasol",
+      "Mahonesa",
+      "Sriracha",
+      "Mostaza",
+      "Lima"
+    ],
+    "steps": [
+      "Cortamos el brócoli en pequeños arbolitos.",
+      "En un bol incorporamos las especial, con la mitad de la harina, agua y mezclamos bien con ayuda de una varilla, introducimos los arbolitos de brócoli y dejamos que marinen durante unos minutos.",
+      "Ponemos una olla con aceite de girasol al fuego y dejamos que caliente bien.",
+      "Sacamos los trozos de brócoli y los pasamos por un poco más de harina de garbanzo sin escurrir demasiado de la masa anterior.",
+      "Acompañamos con una mahonesa que tuneamos con sriracha, mostaza y lima."
+    ]
   }
 ]
