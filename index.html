@@ -45,19 +45,13 @@
             <a href="#/nueva" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-t-lg">Nueva receta</a>
             <button type="button" id="btnImportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
             <button type="button" id="btnExportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
+            <button type="button" id="btnSubirGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Subir recipes.json y planning.json al repositorio">Subir a GitHub</button>
+            <button type="button" id="btnConfigTokenGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Configurar token de GitHub para subir cambios">Configurar token GitHub</button>
             <button type="button" id="btnResetear" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recipes.json desde el servidor">Resetear</button>
             <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Forzar actualización">Actualizar</button>
           </div>
         </div>
         <a href="#/plan" class="px-3 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark text-sm font-medium shrink-0">Plan semanal</a>
-          <div id="operacionesMenu" class="hidden absolute right-0 top-full mt-1 py-1 min-w-[180px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-30">
-            <a href="#/nueva" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-t-lg">Nueva receta</a>
-            <button type="button" id="btnImportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
-            <button type="button" id="btnExportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
-            <button type="button" id="btnResetear" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recipes.json desde el servidor">Resetear</button>
-            <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Forzar actualización">Actualizar</button>
-          </div>
-        </div>
         <input type="file" id="headerImportFile" accept=".json,application/json" class="hidden" />
       </div>
     </div>
@@ -70,16 +64,99 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.8';
+  const APP_VERSION = '1.10.9';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
   const PLAN_HIDDEN_KEY = 'mirecetario-plan-hidden';
+  const GITHUB_TOKEN_STORAGE_KEY = 'mirecetarioGitHubToken';
+  const GITHUB_REPO = 'ivanulisescl/MiRecetario';
   const state = {
     recipes: [],
     categories: [],
     searchQuery: '',
   };
+
+  function showHeaderStatus(msg, isError) {
+    try {
+      var existing = document.getElementById('githubStatusToast');
+      if (existing) existing.remove();
+      var el = document.createElement('div');
+      el.id = 'githubStatusToast';
+      el.className = 'fixed left-1/2 -translate-x-1/2 bottom-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm ' +
+        (isError ? 'bg-red-600 text-white' : 'bg-slate-900 text-white');
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(function () { if (el && el.parentNode) el.parentNode.removeChild(el); }, isError ? 6500 : 3500);
+    } catch (e) {}
+  }
+
+  /**
+   * Sube un archivo al repositorio de GitHub vía Contents API.
+   * @param {string} filename
+   * @param {string|object} content
+   * @param {string} tokenStorageKey
+   * @param {string} repo
+   * @param {function} onStatus
+   * @returns {Promise<boolean>} true si sube OK
+   */
+  async function uploadToGitHub(filename, content, tokenStorageKey, repo, onStatus) {
+    let token = localStorage.getItem(tokenStorageKey);
+    if (!token || !token.trim()) {
+      token = prompt('Introduce tu GitHub Personal Access Token (permiso repo):');
+      if (!token || !token.trim()) return false;
+      token = token.trim();
+      localStorage.setItem(tokenStorageKey, token);
+    }
+    if (onStatus) onStatus(`Subiendo ${filename}...`, false);
+    try {
+      const contentStr = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
+      const contentBase64 = btoa(unescape(encodeURIComponent(contentStr)));
+      const apiUrl = `https://api.github.com/repos/${repo}/contents/${filename}`;
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json'
+      };
+      let sha = null;
+      const getRes = await fetch(apiUrl, { headers });
+      if (getRes.ok) {
+        const getData = await getRes.json();
+        sha = getData.sha;
+      } else if (getRes.status !== 404) {
+        const errData = await getRes.json().catch(() => ({}));
+        if (getRes.status === 401) {
+          localStorage.removeItem(tokenStorageKey);
+          throw new Error('Token inválido o expirado. Configura uno nuevo.');
+        }
+        throw new Error(errData.message || `Error ${getRes.status}: ${getRes.statusText}`);
+      }
+      const putBody = {
+        message: `Actualizar ${filename} (${new Date().toISOString().slice(0, 10)})`,
+        content: contentBase64
+      };
+      if (sha) putBody.sha = sha;
+      const putRes = await fetch(apiUrl, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(putBody)
+      });
+      if (!putRes.ok) {
+        const errData = await putRes.json().catch(() => ({}));
+        if (putRes.status === 401) {
+          localStorage.removeItem(tokenStorageKey);
+          throw new Error('Token inválido o expirado. Configura uno nuevo.');
+        }
+        throw new Error(errData.message || `Error ${putRes.status}: ${putRes.statusText}`);
+      }
+      if (onStatus) onStatus(`✅ ${filename} subido.`, false);
+      return true;
+    } catch (err) {
+      if (onStatus) onStatus(`❌ ${err.message}`, true);
+      return false;
+    }
+  }
 
   function loadPlanWeeks() {
     try {
@@ -267,15 +344,7 @@
     loadRecipes();
   }
 
-  function exportRecipes() {
-    loadRecipes();
-    var json = JSON.stringify(state.recipes, null, 2);
-    var blob = new Blob([json], { type: 'application/json' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'recipes.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
+  function buildPlanningJson() {
     var customWeeks = loadPlanWeeks();
     var hiddenIds = loadHiddenPlanIds();
     var fallbackEl = document.getElementById('planning-fallback');
@@ -289,11 +358,23 @@
       } catch (e) {}
     }
     var allWeeks = customWeeks.concat(jsonWeeks);
-    var planData = {
+    return {
       weekdays: ['L', 'M', 'X', 'J', 'V'],
       weekdayLabels: { L: 'Lunes', M: 'Martes', X: 'Miércoles', J: 'Jueves', V: 'Viernes' },
       weeks: allWeeks
     };
+  }
+
+  function exportRecipes() {
+    loadRecipes();
+    var json = JSON.stringify(state.recipes, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'recipes.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    var planData = buildPlanningJson();
     var planJson = JSON.stringify(planData, null, 2);
     var planBlob = new Blob([planJson], { type: 'application/json' });
     setTimeout(function () {
@@ -303,6 +384,29 @@
       planA.click();
       URL.revokeObjectURL(planA.href);
     }, 300);
+  }
+
+  async function uploadRecipesAndPlanning() {
+    loadRecipes();
+    var okRecipes = await uploadToGitHub('recipes.json', state.recipes, GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+    if (!okRecipes) return;
+    var planData = buildPlanningJson();
+    await uploadToGitHub('planning.json', planData, GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+  }
+
+  function configureGitHubToken() {
+    var current = (localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '').trim();
+    var currentHint = current ? ' (ya hay uno guardado)' : ' (no hay token guardado)';
+    var val = prompt('Pega tu GitHub Personal Access Token (permiso repo).\nDeja vacío para borrar el token.' + currentHint, '');
+    if (val === null) return;
+    val = String(val).trim();
+    if (!val) {
+      localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+      showHeaderStatus('Token de GitHub borrado.', false);
+      return;
+    }
+    localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, val);
+    showHeaderStatus('Token de GitHub guardado.', false);
   }
 
   function resetRecipes() {
@@ -1377,6 +1481,8 @@
       var input = document.getElementById('headerImportFile');
       if (input) input.click();
     }
+    if (id === 'btnSubirGitHub') { e.preventDefault(); closeOperacionesMenu(); uploadRecipesAndPlanning(); }
+    if (id === 'btnConfigTokenGitHub') { e.preventDefault(); closeOperacionesMenu(); configureGitHubToken(); }
     if (id === 'btnResetear') { e.preventDefault(); closeOperacionesMenu(); resetRecipes(); }
     if (id === 'btnActualizar') { e.preventDefault(); closeOperacionesMenu(); forceUpdate(); }
     var shareBtn = e.target && (e.target.closest && e.target.closest('[data-share-id]'));
