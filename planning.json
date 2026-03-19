@@ -15,6 +15,24 @@
   },
   "weeks": [
     {
+      "id": "2026-03-16",
+      "label": "16 mar",
+      "comidas": [
+        "Arroz con carne guisada",
+        "Fabes amarilles",
+        "",
+        "",
+        ""
+      ],
+      "cenas": [
+        "Ensalada varios y barbada",
+        "Berenjenas rellenas",
+        "Bimi y pescado plancha",
+        "Repollo con jengibre y pollo plancha",
+        ""
+      ]
+    },
+    {
       "id": "2026-01-10",
       "label": "10 ene",
       "comidas": [
