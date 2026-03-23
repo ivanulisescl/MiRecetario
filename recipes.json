@@ -1194,5 +1194,27 @@
       "Sacamos los trozos de brócoli y los pasamos por un poco más de harina de garbanzo sin escurrir demasiado de la masa anterior.",
       "Acompañamos con una mahonesa que tuneamos con sriracha, mostaza y lima."
     ]
+  },
+  {
+    "id": 49,
+    "category": "ensaladas",
+    "title": "Ensalada de bacalao y pimientos asados",
+    "description": "Sencilla y rica",
+    "image": "",
+    "ingredients": [
+      "1 paquete de escarola o mezclum",
+      "1 paquete de bacalao al punto de sal \"El Barquero\"",
+      "pimientos rojos asados",
+      "Tomate",
+      "Aceitunas negras",
+      "Jamoncitos"
+    ],
+    "steps": [
+      "Se pone la cama con la escarola",
+      "Se añade el tomate y los pimientos asados",
+      "Se echa el bacalao desmigao",
+      "Se añaden las aceitunas negras",
+      "Se echa el jamón frito"
+    ]
   }
 ]
