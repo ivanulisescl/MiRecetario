@@ -15,6 +15,60 @@
   },
   "weeks": [
     {
+      "id": "2026-03-30",
+      "label": "30 mar",
+      "comidas": [
+        "Fabes amarilles",
+        "",
+        "Ensalada de pasta",
+        "",
+        ""
+      ],
+      "cenas": [
+        "Coliflor asada y pechuga pavo",
+        "Pescado",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "2026-04-13",
+      "label": "13 abr",
+      "comidas": [
+        "Fréjoles",
+        "Lentejas",
+        "",
+        "Fréjoles",
+        "Lentejas"
+      ],
+      "cenas": [
+        "Ceviche coliflor y queso fresco",
+        "Bimi y pescado plancha",
+        "Albóndigas de pollo",
+        "Ensalada tomate y barbada",
+        ""
+      ]
+    },
+    {
+      "id": "2026-04-27",
+      "label": "27 abr",
+      "comidas": [
+        "Ensalada de lentejas",
+        "Guisantes con jamón",
+        "",
+        "Garbanzos con setas",
+        ""
+      ],
+      "cenas": [
+        "Salmón con verduras soja",
+        "Coleslaw y pollo plancha",
+        "Coleslaw y tortilla",
+        "Bimi y barbada",
+        ""
+      ]
+    },
+    {
       "id": "2026-03-16",
       "label": "16 mar",
       "comidas": [
