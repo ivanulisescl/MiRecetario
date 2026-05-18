@@ -15,6 +15,24 @@
   },
   "weeks": [
     {
+      "id": "2026-05-18",
+      "label": "18 may",
+      "comidas": [
+        "Fabes con verdura",
+        "Fabes amarilles",
+        "Ensalada lentejas",
+        "Fréjoles",
+        ""
+      ],
+      "cenas": [
+        "Ensalada de bacalao",
+        "Revuelto de espinacas con gambas",
+        "Ensalada mixta",
+        "Bimi y pescado plancha",
+        ""
+      ]
+    },
+    {
       "id": "2026-03-30",
       "label": "30 mar",
       "comidas": [
