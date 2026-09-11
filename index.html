@@ -2,9 +2,13 @@
 <html lang="es" class="h-full">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover, interactive-widget=resizes-content" />
   <title>Mi Recetario • Gestiona tus recetas</title>
   <meta name="theme-color" content="#0ea5e9" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mi Recetario" />
   <link rel="manifest" href="manifest.webmanifest" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -12,7 +16,19 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
-  <style>body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial}</style>
+  <style>
+    html, body {
+      height: 100%;
+      min-height: 100%;
+      min-height: 100dvh;
+      width: 100%;
+      margin: 0;
+    }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial; }
+    header { padding-top: env(safe-area-inset-top, 0px); }
+    footer { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    #githubStatusToast { bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  </style>
   <script>
     (function(){var t=localStorage.getItem('mirecetario-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='light')document.documentElement.classList.remove('dark');else if(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.classList.add('dark');})();
   </script>
@@ -64,7 +80,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.11';
+  const APP_VERSION = '1.10.12';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
