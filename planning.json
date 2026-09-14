@@ -15,6 +15,24 @@
   },
   "weeks": [
     {
+      "id": "2026-09-14",
+      "label": "14 sep",
+      "comidas": [
+        "Garbanzos con setas",
+        "",
+        "Carne guisada con arroz",
+        "Pasta con verduras",
+        "Lentejas"
+      ],
+      "cenas": [
+        "Tomate, coliflor y huevos cocidos",
+        "Verduras salteadas con salmón",
+        "Revuelto y ensalada",
+        "Bimi y pescado plancha",
+        "Empanada"
+      ]
+    },
+    {
       "id": "2026-03-30",
       "label": "30 mar",
       "comidas": [
