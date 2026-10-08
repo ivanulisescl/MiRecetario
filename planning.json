@@ -22,6 +22,24 @@
         "La Felguera",
         "Menestra",
         "Arroz con verduras",
+        "Menestra"
+      ],
+      "cenas": [
+        "Ensalada de bacalao",
+        "Salmón con verduras soja",
+        "Pollo plancha y espinacas",
+        "LTC, guacamole y barbada",
+        ""
+      ]
+    },
+    {
+      "id": "2026-10-05",
+      "label": "5 oct",
+      "comidas": [
+        "Fabes con verdura",
+        "La Felguera",
+        "Menestra",
+        "Arroz con verduras",
         ""
       ],
       "cenas": [
