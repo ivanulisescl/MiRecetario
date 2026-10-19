@@ -1216,5 +1216,25 @@
       "Se añaden las aceitunas negras",
       "Se echa el jamón frito"
     ]
+  },
+  {
+    "id": 50,
+    "category": "sopas",
+    "title": "Caldo express",
+    "description": "Receta rápida de caldo",
+    "image": "",
+    "ingredients": [
+      "1 muslo de pollo",
+      "1 zanahoria",
+      "1 puerro",
+      "1 huevo cocido",
+      "Fideos"
+    ],
+    "steps": [
+      "Poner a cocer el muslo de pollo, el puerro y la zanahoria durante 30-40 min, desespumando lo necesario.",
+      "Sacar los ingredientes, troceado y añadirlos.",
+      "Corregir de sal y echar azafrán.",
+      "Picar y añadir el huevo."
+    ]
   }
 ]
