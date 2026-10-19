@@ -1236,5 +1236,31 @@
       "Corregir de sal y echar azafrán.",
       "Picar y añadir el huevo."
     ]
+  },
+  {
+    "id": 51,
+    "category": "varios",
+    "title": "Calabacines rellenos de verduras y gambas",
+    "description": "La alternativa a las beren",
+    "image": "assets/img/recetas/calabacines-rellenos-gambas.jpg",
+    "ingredients": [
+      "2 calabacines",
+      "2 zanahorias",
+      "2 cebollas",
+      "1 pimiento verde",
+      "2 tomates",
+      "1 diente de ajo",
+      "1 ramita de perejil",
+      "150 gramos de colas de gamba cocidas",
+      "aceite de oliva",
+      "pimienta",
+      "sal"
+    ],
+    "steps": [
+      "Lava los calabacines y escáldalos 1 minuto en agua salada. Escúrrelos, déjalos templar, despúntalos y pártelos por la mitad a lo largo. Vacíalos un poco, pica la pulpa y resérvala.",
+      "Raspa y lava las zanahorias y pela los tomates. Lava el pimiento y límpialo. Parte los 3 en daditos. Pela las cebollas y el ajo, y pícalos por separado.",
+      "Rehoga la cebolla en una sartén con 3 cucharadas de aceite, 5 minutos. Añade las zanahorias, los pimientos, el tomate, el perejil lavado y picado, el ajo y la pulpa del calabacín. Cuece unos 10 minutos, añade las gambas, salpimienta y remueve.",
+      "Rellena los calabacines con esta preparación, cuécelos en el horno a 180°, unos 10 minutos, y listo. Ya tienes tus calabacines rellenos de gambas y verduras para servir."
+    ]
   }
 ]
