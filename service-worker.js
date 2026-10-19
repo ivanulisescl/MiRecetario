@@ -1,4 +1,4 @@
-const CACHE = 'mirecetario-v6';
+const CACHE = 'mirecetario-v9';
 const CORE = [
   './',
   './index.html',

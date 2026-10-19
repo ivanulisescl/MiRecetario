@@ -28,6 +28,26 @@
     header { padding-top: env(safe-area-inset-top, 0px); }
     footer { padding-bottom: env(safe-area-inset-bottom, 0px); }
     #githubStatusToast { bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+    .step-item .step-text,
+    .step-item .step-num {
+      transition: opacity 0.28s ease, filter 0.28s ease;
+    }
+    .step-item.step-done .step-text {
+      opacity: 0.32;
+      filter: blur(0.7px);
+    }
+    .step-item.step-done .step-num {
+      opacity: 0.4;
+      filter: grayscale(0.5);
+    }
+    .step-item.step-current {
+      box-shadow: 0 0 0 2px #0ea5e9;
+      background-color: #e0f2fe;
+    }
+    .dark .step-item.step-current {
+      box-shadow: 0 0 0 2px #38bdf8;
+      background-color: rgba(12, 74, 110, 0.55);
+    }
   </style>
   <script>
     (function(){var t=localStorage.getItem('mirecetario-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='light')document.documentElement.classList.remove('dark');else if(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.classList.add('dark');})();
@@ -73,14 +93,14 @@
     </div>
   </header>
   <main class="max-w-5xl mx-auto px-4 py-6"><div id="app"></div></main>
-  <footer class="border-t border-slate-200 dark:border-slate-800 mt-8"><div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500 dark:text-slate-400">Gestiona tus recetas y llévalas contigo en móvil y PC. <span id="appVersion" class="ml-1 font-medium"></span></div></footer>
+  <footer class="border-t border-slate-200 dark:border-slate-800 mt-8"><div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500 dark:text-slate-400"><span id="appVersion" class="font-medium"></span></div></footer>
 
   <script type="application/json" id="planning-fallback">{"weekdays":["L","M","X","J","V"],"weekdayLabels":{"L":"Lunes","M":"Martes","X":"Miércoles","J":"Jueves","V":"Viernes"},"weeks":[{"id":"2026-01-10","label":"10 ene","comidas":["Fréjoles","Garbanzos con setas","Ensalada de pasta","Fabes amarilles","Ensalada de pasta"],"cenas":["Salmón con verduras soja","Champiñones y tortilla","Bimi y pollo","Puré rojo y barbada",""]},{"id":"2025-02-17","label":"17 feb","comidas":["Fabes con verdura","Fabes con verdura","Ensalada de garbanzos","Fréjoles con patatas",""],"cenas":["Verduras con salmón","Fritos bacalao y coliflor","Fritos bacalao y ensalada tomate","Ceviche coliflor y queso fresco","Fajita rabo de toro y queso curado"]},{"id":"2025-02-24","label":"24 feb","comidas":["Arroz con verduras","Garbanzos con carne y pollo","Arroz con verduras","Garbanzos con carne y pollo","Salmorejo"],"cenas":["Verduras con salmón","Puré y jamón york","Aguacate, tomate, mozzarella, pistachos y pasas","",""]},{"id":"2025-03-03","label":"3 mar","comidas":["","","Fabes con verdura","Ensalada de pasta","Ensalada de pasta"],"cenas":["","","Gazpacho, jamón york y queso fresco","Barbada",""]},{"id":"2025-03-17","label":"17 mar","comidas":["Garbanzos con bacalao","","Menestra","Garbanzos con bacalao",""],"cenas":["Berenjena al horno y pechuga de pollo","Tomate, aguacate y mozzarella","Champiñones, trigueros y tortilla","Bacalao con verduras salteadas",""]},{"id":"2025-03-24","label":"24 mar","comidas":["Ensalada de lentejas","","Fabes con verdura","Fabes con verdura",""],"cenas":["Verduras salteadas con xarda plancha","Crema calabacín y pollo plancha","Berenjenas rellenas","Crema calabacín y barbada",""]},{"id":"2025-04-07","label":"7 abr","comidas":["Ensalada de lentejas","","Fabes con verdura","",""],"cenas":["Verduras con salmón","Ensalada de tomate, aguacata, perlas, pistachos y pasas","","Barbada",""]},{"id":"2025-05-26","label":"26 may","comidas":["Ensaladilla","Garbanzos con bacalao","La Felguera","",""],"cenas":["Verduras con salmón","Pixín plancha","Ensalada mixta","",""]},{"id":"2025-06-02","label":"2 jun","comidas":["Arroz con potarros","La Felguera","Menestra","Menestra",""],"cenas":["Verduras con salmón","Repollo con jengibre y pollo plancha","Berenjenas rellenas","Bimi pixín",""]},{"id":"2025-10-06","label":"6 oct","comidas":["Lentejas","La Felguera","Menestra","Lentejas","Menestra"],"cenas":["Repollo con jengibre y pollo plancha","Berenjenas rellenas","Salmón con repollo con jengibre","Ensalada?",""]},{"id":"2025-10-20","label":"20 oct","comidas":["Arroz con verduras","Guisantes con jamón","La Felguera y casa Ceci","Fabes con verdura","Guisantes con jamón"],"cenas":["Puré y barbada plancha","Berenjenas rellenas","Ensalada y tortilla","Salmón con verduras soja",""]},{"id":"2025-10-27","label":"27 oct","comidas":["Arroz con verduras","Fabes con verdura","La Felguera y casa Ceci","Fabes roxes / Candás","Fabes roxes / Bea"],"cenas":["Cena cumple","Pescado","Berenjenas rellenas","Ensalada y tortilla",""]},{"id":"2025-11-03","label":"3 nov","comidas":["Arroz con verduras","Garbanzos con setas","La Felguera y casa Ceci","Lentejas","Lentejas"],"cenas":["Tosta aguacata, queso y salmón","Pollo plancha y verduras asadas","Bimi y barbada","Salmón con verduras soja",""]},{"id":"2025-11-10","label":"10 nov","comidas":["Repollo","Fabes amarilles","Fabes amarilles","Garbanzos con setas","Ensalada de pasta"],"cenas":["Verduras con salmón","Puré calabacín y tortilla queso","Ensalada y pollo plancha","Bimi y pixín",""]},{"id":"2025-11-17","label":"17 nov","comidas":["Ensalada de lentejas","Fabes con verdura","La Felguera y casa Ceci","Menestra","Menestra"],"cenas":["Berenjenas rellenas","Coliflor y pescado","Puré y tortilla","Bimi y pescado plancha",""]},{"id":"2025-11-24","label":"24 nov","comidas":["Lentejas","Fabes amarilles","La Felguera y casa Ceci","Fabes con verdura",""],"cenas":["Verduras con salmón","Tripollo","","Bimi y pescado plancha",""]},{"id":"2025-12-08","label":"8 dic","comidas":["Fréjoles","Lentejas","Fréjoles","Fabes amarilles","Lentejas"],"cenas":["Ensalada de bacalao","Bimi y pescado plancha","Puré y tortilla","Lechuga y pescado",""]},{"id":"2025-12-15","label":"15 dic","comidas":["","Fabes con verdura","La Felguera y casa Ceci","Fabes amarilles",""],"cenas":["Verduras con salmón","Puré y pollo","Berenjenas rellenas","Bimi y pescado plancha",""]}]}</script>
   <script>
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.12';
+  const APP_VERSION = '1.10.15';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
@@ -108,34 +128,67 @@
     } catch (e) {}
   }
 
+  function bytesToBase64(bytes) {
+    var bin = '';
+    var chunk = 0x8000;
+    for (var i = 0; i < bytes.length; i += chunk) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + chunk, bytes.length)));
+    }
+    return btoa(bin);
+  }
+
+  function githubContentsUrl(filename) {
+    var path = String(filename).split('/').map(function (seg) { return encodeURIComponent(seg); }).join('/');
+    return 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + path;
+  }
+
+  function githubAuthHeaders(token) {
+    return {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json'
+    };
+  }
+
+  async function getGitHubToken() {
+    var token = localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY);
+    if (!token || !token.trim()) {
+      token = prompt('Introduce tu GitHub Personal Access Token (permiso repo):');
+      if (!token || !token.trim()) return '';
+      token = token.trim();
+      localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, token);
+    }
+    return token.trim();
+  }
+
+  function githubRawUrl(src) {
+    if (!src || /^(https?:|data:|blob:)/.test(src)) return '';
+    return 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/' + String(src).replace(/^\.\//, '');
+  }
+
   /**
    * Sube un archivo al repositorio de GitHub vía Contents API.
    * @param {string} filename
-   * @param {string|object} content
+   * @param {string|object|Uint8Array} content
    * @param {string} tokenStorageKey
    * @param {string} repo
    * @param {function} onStatus
    * @returns {Promise<boolean>} true si sube OK
    */
   async function uploadToGitHub(filename, content, tokenStorageKey, repo, onStatus) {
-    let token = localStorage.getItem(tokenStorageKey);
-    if (!token || !token.trim()) {
-      token = prompt('Introduce tu GitHub Personal Access Token (permiso repo):');
-      if (!token || !token.trim()) return false;
-      token = token.trim();
-      localStorage.setItem(tokenStorageKey, token);
-    }
-    if (onStatus) onStatus(`Subiendo ${filename}...`, false);
+    let token = await getGitHubToken();
+    if (!token) return false;
+    if (onStatus) onStatus('Subiendo ' + filename + '...', false);
     try {
-      const contentStr = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
-      const contentBase64 = btoa(unescape(encodeURIComponent(contentStr)));
-      const apiUrl = `https://api.github.com/repos/${repo}/contents/${filename}`;
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Content-Type': 'application/json'
-      };
+      var contentBase64;
+      if (content instanceof Uint8Array) contentBase64 = bytesToBase64(content);
+      else {
+        var contentStr = typeof content === 'object' ? JSON.stringify(content, null, 2) : content;
+        contentBase64 = btoa(unescape(encodeURIComponent(contentStr)));
+      }
+      const apiUrl = githubContentsUrl(filename);
+      const headers = githubAuthHeaders(token);
       let sha = null;
       const getRes = await fetch(apiUrl, { headers });
       if (getRes.ok) {
@@ -173,6 +226,72 @@
       if (onStatus) onStatus(`❌ ${err.message}`, true);
       return false;
     }
+  }
+
+  async function githubFileExists(filename) {
+    var token = await getGitHubToken();
+    if (!token) return null;
+    var res = await fetch(githubContentsUrl(filename), { headers: githubAuthHeaders(token) });
+    if (res.status === 404) return false;
+    if (res.status === 401) {
+      localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+      throw new Error('Token inválido o expirado. Configura uno nuevo.');
+    }
+    if (!res.ok) {
+      var errData = await res.json().catch(function () { return {}; });
+      throw new Error(errData.message || ('Error ' + res.status));
+    }
+    return true;
+  }
+
+  function slugifyTitle(title) {
+    var s = (title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    s = s.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return s || 'receta';
+  }
+
+  function prepareRecipeImage(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var maxSide = 1600;
+        var scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(function (blob) {
+          URL.revokeObjectURL(url);
+          if (!blob) { reject(new Error('No se pudo procesar la imagen.')); return; }
+          blob.arrayBuffer().then(function (buf) { resolve(new Uint8Array(buf)); }).catch(reject);
+        }, 'image/jpeg', 0.82);
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        reject(new Error('No se pudo leer la imagen. Usa JPG, PNG o WebP.'));
+      };
+      img.src = url;
+    });
+  }
+
+  async function uniqueRecipeImagePath(slug, currentImage) {
+    var used = {};
+    state.recipes.forEach(function (r) {
+      if (r.image && r.image !== currentImage) used[r.image] = true;
+    });
+    for (var n = 1; n < 40; n++) {
+      var path = 'assets/img/recetas/' + slug + (n > 1 ? '-' + n : '') + '.jpg';
+      if (path === currentImage) return path;
+      if (used[path]) continue;
+      var exists = await githubFileExists(path);
+      if (exists === null) return '';
+      if (!exists) return path;
+    }
+    return 'assets/img/recetas/' + slug + '-' + Date.now() + '.jpg';
   }
 
   function loadPlanWeeks() {
@@ -339,12 +458,15 @@
 
   function imgOrPlaceholder(src) {
     if (!src || src.trim() === '') return Promise.resolve(placeholder);
-    return new Promise(function (resolve) {
-      var i = new Image();
-      i.onload = function () { resolve(src); };
-      i.onerror = function () { resolve(placeholder); };
-      i.src = src;
-    });
+    function load(url, fallback) {
+      return new Promise(function (resolve) {
+        var i = new Image();
+        i.onload = function () { resolve(url); };
+        i.onerror = function () { resolve(fallback ? load(fallback, '') : placeholder); };
+        i.src = url;
+      });
+    }
+    return load(src, githubRawUrl(src));
   }
 
   function loadRecipes() {
@@ -990,11 +1112,11 @@
       '<ul class="list-disc list-inside space-y-1">' + ing.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul></section>' +
       '<section class="md:col-span-2"><h2 class="text-lg font-semibold mb-2">Elaboración paso a paso</h2>' +
       '<ol class="space-y-3">' + steps.map(function (s, i) {
-        return '<li class="flex items-start gap-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-800/60">' +
-          '<span class="inline-flex w-8 h-8 rounded-full bg-brand text-white items-center justify-center font-semibold">' + (i + 1) + '</span>' +
-          '<div class="flex-1"><p>' + s + '</p></div>' +
-          '<label class="ml-auto inline-flex items-center gap-2 text-sm">' +
-          '<input type="checkbox" class="rounded" data-step="' + i + '"/> Hecho</label></li>';
+        return '<li class="step-item flex items-start gap-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-800/60">' +
+          '<span class="step-num inline-flex w-8 h-8 shrink-0 rounded-full bg-brand text-white items-center justify-center font-semibold">' + (i + 1) + '</span>' +
+          '<div class="flex-1"><p class="step-text">' + s + '</p></div>' +
+          '<label class="ml-auto inline-flex items-center shrink-0">' +
+          '<input type="checkbox" class="rounded" data-step="' + i + '" aria-label="Hecho"/></label></li>';
       }).join('') + '</ol>' +
       (steps.length ? '<div class="mt-4 flex items-center gap-3"><progress id="progress" max="' + steps.length + '" value="0" class="w-full"></progress><span id="progressText" class="text-sm text-slate-600">0 / ' + steps.length + '</span></div>' : '') +
       '</section></div></div></div></article>';
@@ -1003,13 +1125,26 @@
     var prog = app.querySelector('#progress');
     var txt = app.querySelector('#progressText');
     if (prog && txt) {
-      function updateProgress() {
+      function updateProgress(scrollToCurrent) {
         var done = Array.from(checks).filter(function (c) { return c.checked; }).length;
         prog.value = done;
         txt.textContent = done + ' / ' + steps.length;
+        var currentLi = null;
+        checks.forEach(function (c) {
+          var li = c.closest('li');
+          if (!li) return;
+          var isDone = c.checked;
+          var isCurrent = !isDone && !currentLi;
+          li.classList.toggle('step-done', isDone);
+          li.classList.toggle('step-current', isCurrent);
+          if (isCurrent) currentLi = li;
+        });
+        if (scrollToCurrent && currentLi) {
+          currentLi.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
       }
-      checks.forEach(function (c) { c.addEventListener('change', updateProgress); });
-      updateProgress();
+      checks.forEach(function (c) { c.addEventListener('change', function () { updateProgress(true); }); });
+      updateProgress(false);
     }
 
     app.querySelector('#btnEliminar').addEventListener('click', function () {
@@ -1037,7 +1172,11 @@
       '<div><label class="block text-sm font-medium mb-1">Título</label><input type="text" name="title" value="' + (rec ? rec.title.replace(/"/g, '&quot;') : '') + '" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Ej: Lentejas"/></div>' +
       '<div><label class="block text-sm font-medium mb-1">Categoría</label><select name="category" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">' + opts + '</select></div>' +
       '<div><label class="block text-sm font-medium mb-1">Descripción (opcional)</label><textarea name="description" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Breve descripción">' + (rec ? (rec.description || '').replace(/</g, '&lt;') : '') + '</textarea></div>' +
-      '<div><label class="block text-sm font-medium mb-1">URL de imagen (opcional)</label><input type="text" name="image" value="' + (rec && rec.image ? rec.image.replace(/"/g, '&quot;') : '') + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="https://... o assets/img/recetas/foto.jpg"/></div>' +
+      '<div><label class="block text-sm font-medium mb-1">Imagen (opcional)</label>' +
+      '<input type="file" id="imageFile" name="imageFile" accept="image/*" class="hidden"/>' +
+      '<button type="button" id="btnElegirImagen" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm">Seleccionar imagen</button>' +
+      '<p id="imageFileName" class="mt-2 text-sm text-slate-500 dark:text-slate-400">' + (rec && rec.image ? rec.image.replace(/</g, '&lt;') : 'Al guardar se renombra y se sube a GitHub.') + '</p>' +
+      '<img id="imagePreview" alt="" class="mt-3 max-h-48 w-full object-cover rounded-lg hidden"/></div>' +
       '<div><label class="block text-sm font-medium mb-1">Ingredientes (uno por línea)</label><textarea name="ingredients" rows="6" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="1 cebolla\n2 dientes de ajo">' + (rec && rec.ingredients ? rec.ingredients.map(function (i) { return i.replace(/</g, '&lt;'); }).join('\n') : '') + '</textarea></div>' +
       '<div><label class="block text-sm font-medium mb-1">Pasos (uno por línea)</label><textarea name="steps" rows="8" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800" placeholder="Paso 1\nPaso 2">' + (rec && rec.steps ? rec.steps.map(function (s) { return s.replace(/</g, '&lt;'); }).join('\n') : '') + '</textarea></div>' +
       '<div class="flex gap-2">' +
@@ -1045,15 +1184,59 @@
       '<a href="' + (isNew ? '#/' : '#/receta/' + id) + '" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700">Cancelar</a>' +
       '</div></form></section>';
 
-    app.querySelector('#formReceta').addEventListener('submit', function (e) {
+    var preview = app.querySelector('#imagePreview');
+    var nameEl = app.querySelector('#imageFileName');
+    var fileInput = app.querySelector('#imageFile');
+    app.querySelector('#btnElegirImagen').addEventListener('click', function () { fileInput.click(); });
+    if (rec && rec.image) {
+      imgOrPlaceholder(rec.image).then(function (src) {
+        if (!preview || !src || src === placeholder) return;
+        preview.src = src;
+        preview.classList.remove('hidden');
+      });
+    }
+    fileInput.addEventListener('change', function () {
+      var f = fileInput.files && fileInput.files[0];
+      if (!f) return;
+      if (nameEl) nameEl.textContent = f.name;
+      if (preview) {
+        preview.src = URL.createObjectURL(f);
+        preview.classList.remove('hidden');
+      }
+    });
+
+    app.querySelector('#formReceta').addEventListener('submit', async function (e) {
       e.preventDefault();
       var form = e.target;
+      var submitBtn = form.querySelector('button[type="submit"]');
       var title = (form.title.value || '').trim();
       var category = (form.category.value || 'varios').trim();
       var description = (form.description.value || '').trim();
-      var image = (form.image.value || '').trim();
+      var image = (rec && rec.image) ? rec.image : '';
       var ingredients = (form.ingredients.value || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
       var steps = (form.steps.value || '').split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+      var file = fileInput.files && fileInput.files[0];
+
+      if (file) {
+        var prevLabel = submitBtn ? submitBtn.textContent : '';
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Subiendo imagen…'; }
+        try {
+          var bytes = await prepareRecipeImage(file);
+          var path = await uniqueRecipeImagePath(slugifyTitle(title), image);
+          if (!path) {
+            showHeaderStatus('No se subió la imagen: falta el token de GitHub.', true);
+            return;
+          }
+          var ok = await uploadToGitHub(path, bytes, GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+          if (!ok) return;
+          image = path;
+        } catch (err) {
+          showHeaderStatus(err.message || 'No se pudo preparar la imagen.', true);
+          return;
+        } finally {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = prevLabel; }
+        }
+      }
 
       if (isNew) {
         state.recipes.push({
