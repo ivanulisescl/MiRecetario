@@ -26,7 +26,7 @@
     }
     body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial; }
     header { padding-top: env(safe-area-inset-top, 0px); }
-    footer { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    body { padding-bottom: env(safe-area-inset-bottom, 0px); }
     #githubStatusToast { bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
     .step-item .step-text,
     .step-item .step-num {
@@ -56,11 +56,15 @@
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
   <header class="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/70 backdrop-blur border-b border-slate-200 dark:border-slate-800">
     <div class="max-w-5xl mx-auto px-4">
-      <div class="py-3 flex items-center justify-center sm:justify-start">
-        <a href="#/" class="flex items-center gap-2">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 8h-3v8h-5v-5H11v5H6v-8H3l9-8z" stroke="currentColor" stroke-width="1.5"/></svg>
-          <span class="font-semibold text-lg">Mi Recetario</span>
+      <div class="py-3 flex items-center justify-between gap-3">
+        <a href="#/" class="flex items-center gap-2 min-w-0" title="Inicio">
+          <img src="assets/img/logo-cubiertos.jpg" alt="" width="40" height="40" class="w-10 h-10 rounded-md object-cover shrink-0" />
+          <span class="min-w-0 leading-tight">
+            <span class="block font-semibold text-lg truncate">Mi Recetario</span>
+            <span id="appVersion" class="block text-xs font-normal text-slate-500 dark:text-slate-400"></span>
+          </span>
         </a>
+        <a href="#/plan" class="inline-flex items-center px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 text-sm font-medium shrink-0">Plan semanal</a>
       </div>
       <div class="pb-3 flex flex-wrap items-center gap-2">
         <input type="search" id="searchInput" placeholder="Buscar recetas…" class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm max-w-[220px] sm:max-w-none" aria-label="Buscar recetas" />
@@ -87,20 +91,18 @@
             <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Forzar actualización">Actualizar</button>
           </div>
         </div>
-        <a href="#/plan" class="px-3 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark text-sm font-medium shrink-0">Plan semanal</a>
         <input type="file" id="headerImportFile" accept=".json,application/json" class="hidden" />
       </div>
     </div>
   </header>
   <main class="max-w-5xl mx-auto px-4 py-6"><div id="app"></div></main>
-  <footer class="border-t border-slate-200 dark:border-slate-800 mt-8"><div class="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500 dark:text-slate-400"><span id="appVersion" class="font-medium"></span></div></footer>
 
   <script type="application/json" id="planning-fallback">{"weekdays":["L","M","X","J","V"],"weekdayLabels":{"L":"Lunes","M":"Martes","X":"Miércoles","J":"Jueves","V":"Viernes"},"weeks":[{"id":"2026-01-10","label":"10 ene","comidas":["Fréjoles","Garbanzos con setas","Ensalada de pasta","Fabes amarilles","Ensalada de pasta"],"cenas":["Salmón con verduras soja","Champiñones y tortilla","Bimi y pollo","Puré rojo y barbada",""]},{"id":"2025-02-17","label":"17 feb","comidas":["Fabes con verdura","Fabes con verdura","Ensalada de garbanzos","Fréjoles con patatas",""],"cenas":["Verduras con salmón","Fritos bacalao y coliflor","Fritos bacalao y ensalada tomate","Ceviche coliflor y queso fresco","Fajita rabo de toro y queso curado"]},{"id":"2025-02-24","label":"24 feb","comidas":["Arroz con verduras","Garbanzos con carne y pollo","Arroz con verduras","Garbanzos con carne y pollo","Salmorejo"],"cenas":["Verduras con salmón","Puré y jamón york","Aguacate, tomate, mozzarella, pistachos y pasas","",""]},{"id":"2025-03-03","label":"3 mar","comidas":["","","Fabes con verdura","Ensalada de pasta","Ensalada de pasta"],"cenas":["","","Gazpacho, jamón york y queso fresco","Barbada",""]},{"id":"2025-03-17","label":"17 mar","comidas":["Garbanzos con bacalao","","Menestra","Garbanzos con bacalao",""],"cenas":["Berenjena al horno y pechuga de pollo","Tomate, aguacate y mozzarella","Champiñones, trigueros y tortilla","Bacalao con verduras salteadas",""]},{"id":"2025-03-24","label":"24 mar","comidas":["Ensalada de lentejas","","Fabes con verdura","Fabes con verdura",""],"cenas":["Verduras salteadas con xarda plancha","Crema calabacín y pollo plancha","Berenjenas rellenas","Crema calabacín y barbada",""]},{"id":"2025-04-07","label":"7 abr","comidas":["Ensalada de lentejas","","Fabes con verdura","",""],"cenas":["Verduras con salmón","Ensalada de tomate, aguacata, perlas, pistachos y pasas","","Barbada",""]},{"id":"2025-05-26","label":"26 may","comidas":["Ensaladilla","Garbanzos con bacalao","La Felguera","",""],"cenas":["Verduras con salmón","Pixín plancha","Ensalada mixta","",""]},{"id":"2025-06-02","label":"2 jun","comidas":["Arroz con potarros","La Felguera","Menestra","Menestra",""],"cenas":["Verduras con salmón","Repollo con jengibre y pollo plancha","Berenjenas rellenas","Bimi pixín",""]},{"id":"2025-10-06","label":"6 oct","comidas":["Lentejas","La Felguera","Menestra","Lentejas","Menestra"],"cenas":["Repollo con jengibre y pollo plancha","Berenjenas rellenas","Salmón con repollo con jengibre","Ensalada?",""]},{"id":"2025-10-20","label":"20 oct","comidas":["Arroz con verduras","Guisantes con jamón","La Felguera y casa Ceci","Fabes con verdura","Guisantes con jamón"],"cenas":["Puré y barbada plancha","Berenjenas rellenas","Ensalada y tortilla","Salmón con verduras soja",""]},{"id":"2025-10-27","label":"27 oct","comidas":["Arroz con verduras","Fabes con verdura","La Felguera y casa Ceci","Fabes roxes / Candás","Fabes roxes / Bea"],"cenas":["Cena cumple","Pescado","Berenjenas rellenas","Ensalada y tortilla",""]},{"id":"2025-11-03","label":"3 nov","comidas":["Arroz con verduras","Garbanzos con setas","La Felguera y casa Ceci","Lentejas","Lentejas"],"cenas":["Tosta aguacata, queso y salmón","Pollo plancha y verduras asadas","Bimi y barbada","Salmón con verduras soja",""]},{"id":"2025-11-10","label":"10 nov","comidas":["Repollo","Fabes amarilles","Fabes amarilles","Garbanzos con setas","Ensalada de pasta"],"cenas":["Verduras con salmón","Puré calabacín y tortilla queso","Ensalada y pollo plancha","Bimi y pixín",""]},{"id":"2025-11-17","label":"17 nov","comidas":["Ensalada de lentejas","Fabes con verdura","La Felguera y casa Ceci","Menestra","Menestra"],"cenas":["Berenjenas rellenas","Coliflor y pescado","Puré y tortilla","Bimi y pescado plancha",""]},{"id":"2025-11-24","label":"24 nov","comidas":["Lentejas","Fabes amarilles","La Felguera y casa Ceci","Fabes con verdura",""],"cenas":["Verduras con salmón","Tripollo","","Bimi y pescado plancha",""]},{"id":"2025-12-08","label":"8 dic","comidas":["Fréjoles","Lentejas","Fréjoles","Fabes amarilles","Lentejas"],"cenas":["Ensalada de bacalao","Bimi y pescado plancha","Puré y tortilla","Lechuga y pescado",""]},{"id":"2025-12-15","label":"15 dic","comidas":["","Fabes con verdura","La Felguera y casa Ceci","Fabes amarilles",""],"cenas":["Verduras con salmón","Puré y pollo","Berenjenas rellenas","Bimi y pescado plancha",""]}]}</script>
   <script>
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.15';
+  const APP_VERSION = '1.10.16';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const PLAN_STORAGE_KEY = 'mirecetario-plan-weeks';
