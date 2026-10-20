@@ -48,6 +48,14 @@
       box-shadow: 0 0 0 2px #38bdf8;
       background-color: rgba(12, 74, 110, 0.55);
     }
+    .step-item.step-speaking {
+      box-shadow: 0 0 0 2px #0ea5e9;
+      background-color: #e0f2fe;
+    }
+    .dark .step-item.step-speaking {
+      box-shadow: 0 0 0 2px #38bdf8;
+      background-color: rgba(12, 74, 110, 0.55);
+    }
   </style>
   <script>
     (function(){var t=localStorage.getItem('mirecetario-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='light')document.documentElement.classList.remove('dark');else if(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.classList.add('dark');})();
@@ -104,7 +112,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.17';
+  const APP_VERSION = '1.10.18';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const CATEGORY_VIEW_KEY = 'mirecetario-cat-view';
@@ -996,6 +1004,7 @@
   }
 
   async function render() {
+    stopRecipeSpeech();
     syncPlanButton();
     loadRecipes();
     var r = route();
@@ -1165,6 +1174,103 @@
       '</div></section>';
   }
 
+  var recipeSpeakToken = 0;
+  var recipeSpeaking = false;
+
+  function spanishVoice() {
+    if (!window.speechSynthesis) return null;
+    var voices = speechSynthesis.getVoices() || [];
+    var es = voices.filter(function (v) { return (v.lang || '').toLowerCase().indexOf('es') === 0; });
+    return es.filter(function (v) { return /es-ES/i.test(v.lang); })[0] || es[0] || null;
+  }
+
+  function setSpeakButton(on) {
+    var btn = document.getElementById('btnLeer');
+    if (!btn) return;
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.title = on ? 'Detener lectura' : 'Leer receta';
+    btn.setAttribute('aria-label', btn.title);
+    btn.classList.toggle('bg-brand', on);
+    btn.classList.toggle('text-white', on);
+    btn.classList.toggle('hover:bg-brand-dark', on);
+    btn.classList.toggle('bg-slate-200', !on);
+    btn.classList.toggle('dark:bg-slate-800', !on);
+    btn.classList.toggle('text-slate-700', !on);
+    btn.classList.toggle('dark:text-slate-200', !on);
+  }
+
+  function clearSpeakingStep() {
+    document.querySelectorAll('.step-speaking').forEach(function (el) { el.classList.remove('step-speaking'); });
+  }
+
+  function stopRecipeSpeech() {
+    recipeSpeakToken++;
+    recipeSpeaking = false;
+    if (window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending)) {
+      window.speechSynthesis.cancel();
+    }
+    setSpeakButton(false);
+    clearSpeakingStep();
+  }
+
+  function speakRecipe(r) {
+    if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') {
+      alert('Este navegador no puede leer en voz alta.');
+      return;
+    }
+    var restart = recipeSpeaking || speechSynthesis.speaking || speechSynthesis.pending;
+    stopRecipeSpeech();
+    var token = recipeSpeakToken;
+    recipeSpeaking = true;
+    setSpeakButton(true);
+    var queue = [];
+    queue.push({ text: r.title || 'Receta' });
+    if (r.description) queue.push({ text: r.description });
+    var ing = (r.ingredients || []).filter(Boolean);
+    if (ing.length) {
+      queue.push({ text: 'Ingredientes.' });
+      ing.forEach(function (item) { queue.push({ text: item }); });
+    }
+    var steps = (r.steps || []).filter(Boolean);
+    if (steps.length) {
+      queue.push({ text: 'Elaboración.' });
+      steps.forEach(function (step, i) { queue.push({ text: 'Paso ' + (i + 1) + '. ' + step, stepIndex: i }); });
+    }
+    function finish() {
+      if (token !== recipeSpeakToken) return;
+      recipeSpeaking = false;
+      setSpeakButton(false);
+      clearSpeakingStep();
+    }
+    function run(i) {
+      if (token !== recipeSpeakToken) return;
+      if (i >= queue.length) return finish();
+      clearSpeakingStep();
+      var item = queue[i];
+      if (item.stepIndex != null) {
+        var input = app.querySelector('input[data-step="' + item.stepIndex + '"]');
+        var row = input && input.closest('li');
+        if (row) {
+          row.classList.add('step-speaking');
+          row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+      var u = new SpeechSynthesisUtterance(item.text);
+      u.lang = 'es-ES';
+      var voice = spanishVoice();
+      if (voice) u.voice = voice;
+      u.onend = function () { run(i + 1); };
+      u.onerror = function (ev) {
+        if (token !== recipeSpeakToken) return;
+        if (ev && ev.error === 'interrupted') return;
+        finish();
+      };
+      speechSynthesis.speak(u);
+    }
+    if (restart) setTimeout(function () { run(0); }, 80);
+    else run(0);
+  }
+
   async function renderRec(id) {
     var r = state.recipes.find(function (x) { return String(x.id) === String(id); });
     if (!r) return render404();
@@ -1179,6 +1285,8 @@
       '<div class="flex gap-2 flex-wrap">' +
       '<a href="#/categoria/' + (r.category || 'varios') + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver">' +
       '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
+      '<button type="button" id="btnLeer" aria-pressed="false" aria-label="Leer receta" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white" title="Leer receta">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>' +
       '<button type="button" data-share-id="' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white" title="Compartir">' +
       '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
       '<a href="#/editar/' + r.id + '" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-brand hover:text-white" title="Editar">' +
@@ -1229,6 +1337,11 @@
       checks.forEach(function (c) { c.addEventListener('change', function () { updateProgress(true); }); });
       updateProgress(false);
     }
+
+    app.querySelector('#btnLeer').addEventListener('click', function () {
+      if (recipeSpeaking) stopRecipeSpeech();
+      else speakRecipe(r);
+    });
 
     app.querySelector('#btnEliminar').addEventListener('click', function () {
       if (!confirm("¿Eliminar la receta \"" + r.title + "\"?")) return;
