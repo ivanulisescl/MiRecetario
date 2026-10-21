@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "de-cuchara",
+    "name": "De cuchara"
+  },
+  {
+    "slug": "pures",
+    "name": "Purés y cremas"
+  },
+  {
+    "slug": "sopas",
+    "name": "Sopas y caldos"
+  },
+  {
+    "slug": "ensaladas",
+    "name": "Ensaladas"
+  },
+  {
+    "slug": "guisos",
+    "name": "Guisos"
+  },
+  {
+    "slug": "pescados",
+    "name": "Pescados"
+  },
+  {
+    "slug": "postres",
+    "name": "Postres"
+  },
+  {
+    "slug": "varios",
+    "name": "Varios"
+  },
+  {
+    "slug": "salado",
+    "name": "Salado"
+  }
+]
