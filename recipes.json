@@ -1262,5 +1262,23 @@
       "Rehoga la cebolla en una sartén con 3 cucharadas de aceite, 5 minutos. Añade las zanahorias, los pimientos, el tomate, el perejil lavado y picado, el ajo y la pulpa del calabacín. Cuece unos 10 minutos, añade las gambas, salpimienta y remueve.",
       "Rellena los calabacines con esta preparación, cuécelos en el horno a 180°, unos 10 minutos, y listo. Ya tienes tus calabacines rellenos de gambas y verduras para servir."
     ]
+  },
+  {
+    "id": 52,
+    "category": "desayunos",
+    "title": "Bowl de avena",
+    "description": "No lo mejores, iguálalo",
+    "image": "assets/img/recetas/bowl-de-avena.jpg",
+    "ingredients": [
+      "2 cucharadas de avena (hidratada en leche durante 12h)",
+      "1 plátano",
+      "1 puñado de nueces troceadas",
+      "Topping a elegir (arándanos, granada, orejones, pasas, ciruelas pasas, arándanos deshidratados, mango, ...)",
+      "1 cucharada de miel"
+    ],
+    "steps": [
+      "Mezclar en bowl a temperatura ambiente y a disfrutar.",
+      "También se puede sustituir parte de la avena por gofio (de tueste ligero), o simplemente añadirle un poco a la avena para darle un toque."
+    ]
   }
 ]
