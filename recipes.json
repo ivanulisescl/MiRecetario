@@ -117,7 +117,7 @@
   },
   {
     "id": 6,
-    "category": "varios",
+    "category": "salsas-o-entradas",
     "title": "Guacamole",
     "description": "El clásico",
     "image": "assets/img/recetas/guacamole.jpg",
@@ -670,7 +670,7 @@
   },
   {
     "id": 29,
-    "category": "varios",
+    "category": "salsas-o-entradas",
     "title": "Pesto",
     "description": "Molto buono",
     "image": "assets/img/recetas/pesto.jpg",
@@ -828,7 +828,7 @@
   },
   {
     "id": 35,
-    "category": "de-cuchara",
+    "category": "varios",
     "title": "Repollo salteado con pollo",
     "description": "Idea sacada de Ire",
     "image": "assets/img/recetas/repollo-salteado-pollo.jpg",
@@ -905,7 +905,7 @@
   },
   {
     "id": 38,
-    "category": "varios",
+    "category": "desayunos",
     "title": "Granola",
     "description": "La que prepara Cecilia",
     "image": "assets/img/recetas/granola.jpg",
@@ -928,7 +928,7 @@
   },
   {
     "id": 39,
-    "category": "varios",
+    "category": "salsas-o-entradas",
     "title": "Dip de alcachofas y espinacas",
     "description": "Idea del menda",
     "image": "assets/img/recetas/dip-alcachofas-espinacas.jpg",
@@ -1079,7 +1079,7 @@
   },
   {
     "id": 45,
-    "category": "postres",
+    "category": "desayunos",
     "title": "Bizcocho sin azúcar",
     "description": "Pal desayuno de Ceci",
     "image": "assets/img/recetas/bizcocho-sin-azucar.jpg",
@@ -1130,7 +1130,7 @@
   },
   {
     "id": 47,
-    "category": "varios",
+    "category": "ensaladas",
     "title": "Tabulé",
     "description": "Surgida en el collao Unqueru",
     "image": "assets/img/recetas/tabule.png",
