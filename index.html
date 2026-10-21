@@ -66,7 +66,7 @@
     <div class="max-w-5xl mx-auto px-4">
       <div class="pt-3">
         <div class="flex items-stretch rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-sm">
-          <div class="flex min-w-0 flex-1 items-center gap-2 py-2 pl-3 pr-2">
+          <div class="flex min-w-0 flex-1 items-center py-2 pl-3 pr-2">
             <a href="#/" class="flex min-w-0 flex-1 items-center gap-2" title="Inicio">
               <img src="assets/img/logo-cubiertos.jpg" alt="" width="40" height="40" class="w-10 h-10 rounded-md object-cover shrink-0" />
               <span class="min-w-0 leading-tight">
@@ -74,33 +74,33 @@
                 <span id="appVersion" class="block text-xs font-normal text-slate-500 dark:text-slate-400"></span>
               </span>
             </a>
-            <div class="ml-auto flex shrink-0 items-center gap-1.5">
-              <button type="button" id="btnDarkMode" class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 shrink-0" title="Cambiar tema" aria-label="Modo oscuro/claro">
-                <svg id="iconSun" class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                <svg id="iconMoon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-              </button>
-              <div class="relative shrink-0" id="operacionesWrap">
-                <button type="button" id="btnOperaciones" class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 shrink-0" aria-expanded="false" aria-haspopup="true" title="Operaciones">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="1"/>
-                    <circle cx="12" cy="5" r="1"/>
-                    <circle cx="12" cy="19" r="1"/>
-                  </svg>
-                </button>
-                <div id="operacionesMenu" class="hidden absolute right-0 top-full mt-1 py-1 min-w-[180px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-30">
-                  <a href="#/nueva" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-t-lg">Nueva receta</a>
-                  <a href="#/categorias" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700">Categorías</a>
-                  <button type="button" id="btnImportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
-                  <button type="button" id="btnExportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
-                  <button type="button" id="btnSubirGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Subir recipes.json, planning.json y categories.json al repositorio">Subir a GitHub</button>
-                  <button type="button" id="btnConfigTokenGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Configurar token de GitHub para subir cambios">Configurar token GitHub</button>
-                  <button type="button" id="btnResetear" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recipes.json, planning.json y categories.json desde el servidor">Resetear</button>
-                  <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Forzar actualización">Actualizar</button>
-                </div>
-              </div>
+          </div>
+          <button type="button" id="btnDarkMode" class="inline-flex flex-col items-center justify-center gap-0.5 self-stretch border-l border-slate-200 dark:border-slate-600 px-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-semibold leading-none shrink-0" title="Cambiar tema" aria-label="Modo oscuro/claro">
+            <svg id="iconSun" class="w-4 h-4 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg id="iconMoon" class="w-4 h-4 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <span>Tema</span>
+          </button>
+          <div class="relative flex shrink-0 self-stretch" id="operacionesWrap">
+            <button type="button" id="btnOperaciones" class="inline-flex h-full flex-col items-center justify-center gap-0.5 border-l border-slate-200 dark:border-slate-600 px-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-semibold leading-none" aria-expanded="false" aria-haspopup="true" aria-label="Operaciones" title="Operaciones">
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="1"/>
+                <circle cx="12" cy="5" r="1"/>
+                <circle cx="12" cy="19" r="1"/>
+              </svg>
+              <span>Menú</span>
+            </button>
+            <div id="operacionesMenu" class="hidden absolute right-0 top-full mt-1 py-1 min-w-[180px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-30">
+              <a href="#/nueva" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-t-lg">Nueva receta</a>
+              <a href="#/categorias" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700">Categorías</a>
+              <button type="button" id="btnImportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
+              <button type="button" id="btnExportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
+              <button type="button" id="btnSubirGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Subir recipes.json, planning.json y categories.json al repositorio">Subir a GitHub</button>
+              <button type="button" id="btnConfigTokenGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Configurar token de GitHub para subir cambios">Configurar token GitHub</button>
+              <button type="button" id="btnResetear" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recipes.json, planning.json y categories.json desde el servidor">Resetear</button>
+              <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Forzar actualización">Actualizar</button>
             </div>
           </div>
-          <a href="#/plan" id="btnPlanSemanal" aria-pressed="false" aria-label="Plan semanal" title="Plan semanal" class="inline-flex flex-col items-center justify-center gap-0.5 self-stretch rounded-r-2xl px-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-semibold leading-none shrink-0"><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2" stroke-width="1.8"/><path stroke-linecap="round" stroke-width="1.8" d="M3.5 10h17M8 3.5v3M16 3.5v3"/></svg><span>Plan</span></a>
+          <a href="#/plan" id="btnPlanSemanal" aria-pressed="false" aria-label="Plan semanal" title="Plan semanal" class="inline-flex flex-col items-center justify-center gap-0.5 self-stretch rounded-r-2xl border-l border-slate-200 dark:border-slate-600 px-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-semibold leading-none shrink-0"><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2" stroke-width="1.8"/><path stroke-linecap="round" stroke-width="1.8" d="M3.5 10h17M8 3.5v3M16 3.5v3"/></svg><span>Plan</span></a>
         </div>
       </div>
       <div class="mt-3 pb-3">
@@ -117,7 +117,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.22';
+  const APP_VERSION = '1.10.23';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const CATEGORY_VIEW_KEY = 'mirecetario-cat-view';
@@ -1183,10 +1183,35 @@
 
   function categoryView() {
     var v = localStorage.getItem(CATEGORY_VIEW_KEY);
-    if (v === 'grid' || v === 'mini') return v;
+    if (v === 'grid' || v === 'mini' || v === 'list') return v;
     return 'extended';
   }
 
+  function recipesInCategory(slug) {
+    return state.recipes.filter(function (r) { return (r.category || 'varios') === slug; }).sort(function (a, b) {
+      return String(a.title || '').localeCompare(String(b.title || ''), 'es', { sensitivity: 'base' });
+    });
+  }
+
+  function recipeTitleList(items) {
+    if (!items.length) return '<p class="text-slate-600 dark:text-slate-400">No hay recetas.</p>';
+    var rows = items.map(function (r) {
+      return '<li><a href="#/receta/' + r.id + '" class="block px-4 py-2.5 text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700">' + escHtml(r.title || 'Sin título') + '</a></li>';
+    }).join('');
+    return '<ul class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700 overflow-hidden">' + rows + '</ul>';
+  }
+
+  function bindCategoryViewButtons() {
+    app.querySelectorAll('[data-cat-view]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var next = btn.getAttribute('data-cat-view');
+        if (next !== 'grid' && next !== 'mini' && next !== 'list') next = 'extended';
+        if (next === categoryView()) return;
+        localStorage.setItem(CATEGORY_VIEW_KEY, next);
+        renderHome();
+      });
+    });
+  }
   function categoryViewButton(id, label, icon, active) {
     var cls = 'inline-flex w-8 h-8 items-center justify-center rounded-md ';
     cls += active
@@ -1200,6 +1225,22 @@
     var iconExtended = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/></svg>';
     var iconGrid = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
     var iconMini = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="4" height="4" rx="0.5"/><rect x="10" y="3" width="4" height="4" rx="0.5"/><rect x="17" y="3" width="4" height="4" rx="0.5"/><rect x="3" y="10" width="4" height="4" rx="0.5"/><rect x="10" y="10" width="4" height="4" rx="0.5"/><rect x="17" y="10" width="4" height="4" rx="0.5"/><rect x="3" y="17" width="4" height="4" rx="0.5"/><rect x="10" y="17" width="4" height="4" rx="0.5"/><rect x="17" y="17" width="4" height="4" rx="0.5"/></svg>';
+    var iconList = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
+    var viewButtons = categoryViewButton('extended', 'Extendida', iconExtended, view === 'extended') +
+      categoryViewButton('grid', 'Cuadrícula', iconGrid, view === 'grid') +
+      categoryViewButton('mini', 'Reducida', iconMini, view === 'mini') +
+      categoryViewButton('list', 'Listado', iconList, view === 'list');
+    var body;
+    if (view === 'list') {
+      var groups = state.categories.map(function (c) {
+        return { name: c.name, items: recipesInCategory(c.slug) };
+      }).filter(function (g) { return g.items.length > 0; });
+      body = groups.length
+        ? '<div class="space-y-6">' + groups.map(function (g) {
+            return '<section class="space-y-2"><h2 class="text-lg font-semibold">' + escHtml(g.name) + '</h2>' + recipeTitleList(g.items) + '</section>';
+          }).join('') + '</div>'
+        : '<p class="text-slate-600 dark:text-slate-400">Aún no hay recetas. Usa los botones del menú para añadir o importar.</p>';
+    } else {
     var cards = await Promise.all(state.categories.map(async function (c) {
       var img = await imgOrPlaceholder(c.img);
       var safeName = String(c.name || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
@@ -1231,27 +1272,19 @@
       : view === 'grid'
         ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3'
         : 'grid grid-cols-1 sm:grid-cols-2 gap-6';
+    body = '<div class="' + gridClass + '">' + (cards.length ? cards.join('') : '<p class="text-slate-600 dark:text-slate-400 col-span-full">Aún no hay recetas. Usa los botones del menú para añadir o importar.</p>') + '</div>';
+    }
 
     app.innerHTML = '<section class="space-y-6">' +
       '<div class="flex items-center gap-3 flex-wrap">' +
-      '<h1 class="text-2xl md:text-3xl font-bold">Categorías</h1>' +
-      '<div class="inline-flex rounded-lg bg-slate-200 dark:bg-slate-800 p-1" role="group" aria-label="Vista de categorías">' +
-      categoryViewButton('extended', 'Extendida', iconExtended, view === 'extended') +
-      categoryViewButton('grid', 'Cuadrícula', iconGrid, view === 'grid') +
-      categoryViewButton('mini', 'Reducida', iconMini, view === 'mini') +
+      '<h1 class="text-2xl md:text-3xl font-bold">' + (view === 'list' ? 'Recetas' : 'Categorías') + '</h1>' +
+      '<div class="inline-flex rounded-lg bg-slate-200 dark:bg-slate-800 p-1" role="group" aria-label="Tipo de vista">' +
+      viewButtons +
       '</div></div>' +
-      '<div class="' + gridClass + '">' + (cards.length ? cards.join('') : '<p class="text-slate-600 dark:text-slate-400 col-span-full">Aún no hay recetas. Usa los botones del menú para añadir o importar.</p>') +
-      '</div></section>';
+      body +
+      '</section>';
 
-    app.querySelectorAll('[data-cat-view]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var next = btn.getAttribute('data-cat-view');
-        if (next !== 'grid' && next !== 'mini') next = 'extended';
-        if (next === categoryView()) return;
-        localStorage.setItem(CATEGORY_VIEW_KEY, next);
-        renderHome();
-      });
-    });
+    bindCategoryViewButtons();
   }
 
   function recipeActionCluster(r, size) {
@@ -1273,6 +1306,17 @@
     var list = state.recipes.filter(function (r) { return (r.category || 'varios') === slug; });
     var catRecord = loadCategoryRecords().find(function (c) { return c.slug === slug; });
     var name = escHtml((catRecord && catRecord.name) || CATEGORY_LABELS[slug] || slug);
+    if (view === 'list') {
+      app.innerHTML = '<section class="space-y-6">' +
+        '<div class="flex items-center justify-between flex-wrap gap-2">' +
+        '<h1 class="text-2xl md:text-3xl font-bold">' + name + '</h1>' +
+        '<a href="#/" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
+        '</div>' +
+        recipeTitleList(recipesInCategory(slug)) +
+        '</section>';
+      return;
+    }
 
     var cards = await Promise.all(list.map(async function (r) {
       var img = await imgOrPlaceholder(r.image || '');
