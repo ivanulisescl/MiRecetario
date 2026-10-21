@@ -1,4 +1,4 @@
-const CACHE = 'mirecetario-v23';
+const CACHE = 'mirecetario-v24';
 const CORE = [
   './',
   './index.html',
@@ -8,7 +8,7 @@ const CORE = [
 function isPlanningOrRecipesJson(url) {
   try {
     var u = new URL(url);
-    return u.pathname.endsWith('planning.json') || u.pathname.endsWith('recipes.json');
+    return u.pathname.endsWith('planning.json') || u.pathname.endsWith('recipes.json') || u.pathname.endsWith('categories.json');
   } catch (e) { return false; }
 }
 self.addEventListener('install', function (e) {

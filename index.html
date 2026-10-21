@@ -92,9 +92,9 @@
                   <a href="#/categorias" class="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700">Categorías</a>
                   <button type="button" id="btnImportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recetas desde recipes.json">Importar</button>
                   <button type="button" id="btnExportar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Descargar recetas como recipes.json">Exportar</button>
-                  <button type="button" id="btnSubirGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Subir recipes.json y planning.json al repositorio">Subir a GitHub</button>
+                  <button type="button" id="btnSubirGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Subir recipes.json, planning.json y categories.json al repositorio">Subir a GitHub</button>
                   <button type="button" id="btnConfigTokenGitHub" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Configurar token de GitHub para subir cambios">Configurar token GitHub</button>
-                  <button type="button" id="btnResetear" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recipes.json desde el servidor">Resetear</button>
+                  <button type="button" id="btnResetear" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700" title="Cargar recipes.json, planning.json y categories.json desde el servidor">Resetear</button>
                   <button type="button" id="btnActualizar" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg" title="Forzar actualización">Actualizar</button>
                 </div>
               </div>
@@ -117,7 +117,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.21';
+  const APP_VERSION = '1.10.22';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const CATEGORY_VIEW_KEY = 'mirecetario-cat-view';
@@ -472,6 +472,7 @@
     'guisos': 'Guisos', 'pescados': 'Pescados', 'postres': 'Postres', 'varios': 'Varios', 'salado': 'Salado'
   };
   const CATEGORY_STORAGE_KEY = 'mirecetario-categories';
+  const CATEGORY_DIRTY_KEY = 'mirecetario-categories-dirty';
 
   function escHtml(s) {
     return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
@@ -514,9 +515,49 @@
   }
 
   function saveCategoryRecords(list) {
+    writeCategoryRecords(list, true);
+  }
+
+  function writeCategoryRecords(list, dirty) {
     localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(list.map(function (c) {
       return { slug: c.slug, name: c.name };
     })));
+    localStorage.setItem(CATEGORY_DIRTY_KEY, dirty ? '1' : '0');
+  }
+
+  function categoriesAreDirty() {
+    if (localStorage.getItem(CATEGORY_DIRTY_KEY) === '1') return true;
+    if (localStorage.getItem(CATEGORY_DIRTY_KEY) === null && localStorage.getItem(CATEGORY_STORAGE_KEY)) {
+      localStorage.setItem(CATEGORY_DIRTY_KEY, '1');
+      return true;
+    }
+    return false;
+  }
+
+  function parseCategoryFile(data) {
+    if (!Array.isArray(data)) return null;
+    var list = [];
+    data.forEach(function (c) {
+      if (!c || typeof c.slug !== 'string') return;
+      var slug = c.slug.trim();
+      var name = String(c.name || '').trim();
+      if (!slug || !name) return;
+      list.push({ slug: slug, name: name });
+    });
+    return list.length ? list : null;
+  }
+
+  function fetchAndApplyCategories() {
+    if (categoriesAreDirty()) return Promise.resolve(false);
+    return fetch('categories.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) return false;
+      return r.json();
+    }).then(function (data) {
+      var list = parseCategoryFile(data);
+      if (!list) return false;
+      writeCategoryRecords(list, false);
+      return true;
+    }).catch(function () { return false; });
   }
 
   function categoryRecipeCount(slug) {
@@ -616,6 +657,15 @@
       planA.click();
       URL.revokeObjectURL(planA.href);
     }, 300);
+    var catJson = JSON.stringify(loadCategoryRecords(), null, 2);
+    var catBlob = new Blob([catJson], { type: 'application/json' });
+    setTimeout(function () {
+      var catA = document.createElement('a');
+      catA.href = URL.createObjectURL(catBlob);
+      catA.download = 'categories.json';
+      catA.click();
+      URL.revokeObjectURL(catA.href);
+    }, 600);
   }
 
   async function uploadRecipesAndPlanning() {
@@ -623,7 +673,10 @@
     var okRecipes = await uploadToGitHub('recipes.json', state.recipes, GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
     if (!okRecipes) return;
     var planData = buildPlanningJson();
-    await uploadToGitHub('planning.json', planData, GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+    var okPlan = await uploadToGitHub('planning.json', planData, GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+    if (!okPlan) return;
+    var okCategories = await uploadToGitHub('categories.json', loadCategoryRecords(), GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+    if (okCategories) localStorage.setItem(CATEGORY_DIRTY_KEY, '0');
   }
 
   function configureGitHubToken() {
@@ -642,16 +695,19 @@
   }
 
   function resetRecipes() {
-    if (!confirm('¿Restaurar recetas y plan desde el servidor? Se sustituirán las recetas actuales por recipes.json y el plan se restablecerá con planning.json (se quitarán semanas añadidas y ocultas).')) return;
+    if (!confirm('¿Restaurar recetas, plan y categorías desde el servidor? Se sustituirán por recipes.json, planning.json y categories.json.')) return;
     savePlanWeeks([]);
     saveHiddenPlanIds([]);
+    localStorage.setItem(CATEGORY_DIRTY_KEY, '0');
     fetch('recipes.json?t=' + Date.now()).then(function (r) { return r.ok ? r.json() : []; }).then(function (data) {
       var arr = Array.isArray(data) ? data : (data.recipes || []);
       state.recipes = arr.length > 0 ? arr : [];
       saveRecipes();
+      return fetchAndApplyCategories();
+    }).then(function () {
       location.hash = '#/';
       render();
-      alert('Recetas y plan restaurados desde el servidor.' + (arr.length > 0 ? ' ' + arr.length + ' recetas.' : ''));
+      alert('Recetas, plan y categorías restaurados desde el servidor.');
     }).catch(function () {
       alert('No se pudo cargar recipes.json. Comprueba la conexión o la URL.');
     });
@@ -2035,16 +2091,19 @@
   window.addEventListener('hashchange', render);
   window.addEventListener('load', function () {
     render();
-    if (state.recipes.length === 0) {
-      fetch('recipes.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (data) {
-        var arr = Array.isArray(data) ? data : (data.recipes || []);
-        if (arr.length > 0) {
-          state.recipes = arr;
-          saveRecipes();
-          render();
-        }
-      }).catch(function () {});
-    }
+    var hadRecipes = state.recipes.length > 0;
+    var recipesReady = hadRecipes
+      ? Promise.resolve()
+      : fetch('recipes.json').then(function (r) { return r.ok ? r.json() : []; }).then(function (data) {
+          var arr = Array.isArray(data) ? data : (data.recipes || []);
+          if (arr.length > 0) {
+            state.recipes = arr;
+            saveRecipes();
+          }
+        }).catch(function () {});
+    Promise.all([recipesReady, fetchAndApplyCategories()]).then(function (results) {
+      if (results[1] || (!hadRecipes && state.recipes.length > 0)) render();
+    });
   });
 
   function closeOperacionesMenu() {
