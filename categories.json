@@ -34,5 +34,13 @@
   {
     "slug": "salado",
     "name": "Salado"
+  },
+  {
+    "slug": "salsas-o-entradas",
+    "name": "Salsas o entradas"
+  },
+  {
+    "slug": "desayunos",
+    "name": "Desayunos"
   }
 ]
