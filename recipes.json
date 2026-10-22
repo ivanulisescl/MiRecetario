@@ -360,9 +360,23 @@
     "description": "Bastante laboriosa",
     "image": "assets/img/recetas/selva-negra.jpg",
     "ingredients": [
-      "Bizcocho: 100g harina repostería, 40g cacao, 2 cdta levadura química, 1 cdta azúcar vainillado, sal, 3 huevos, 150g azúcar, 100g mantequilla, 40g kirsch",
-      "Relleno: 250g cerezas al kirsch, 600g nata líquida muy fría, 1 cdta azúcar vainillado, 100g azúcar glas",
-      "Decoración: Virutas de chocolate"
+      "Para el bizcocho:",
+      "100g harina repostería",
+      "40g cacao",
+      "2 cdta levadura química",
+      "1 cdta azúcar vainillado",
+      "sal",
+      "3 huevos",
+      "150g azúcar",
+      "100g mantequilla",
+      "40g kirsch",
+      "Para el relleno:",
+      "250g cerezas al kirsch",
+      "600g nata líquida muy fría",
+      "1 cdta azúcar vainillado",
+      "100g azúcar glas",
+      "Para la decoración:",
+      "Virutas de chocolate"
     ],
     "steps": [
       "Bizcocho: Precalentar el horno a 180º",
