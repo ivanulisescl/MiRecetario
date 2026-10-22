@@ -117,7 +117,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.24';
+  const APP_VERSION = '1.10.25';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const CATEGORY_VIEW_KEY = 'mirecetario-cat-view';
@@ -1167,9 +1167,74 @@
     }
     y += 28;
 
-    if (photo && photo.width && photo.height) {
-      var photoH = 520;
-      ensure(photoH + 12);
+    var photoH = (photo && photo.width && photo.height) ? 520 : 0;
+    var gapAfterPhoto = photoH ? 40 : 0;
+
+    function measureItems(items, font, lineH, gap, textW) {
+      ctx.font = font;
+      return items.map(function (item) {
+        var lines = pdfWrap(ctx, item, textW);
+        return { lines: lines, h: lines.length * lineH + gap };
+      });
+    }
+
+    function splitColumns(measured) {
+      if (measured.length < 2) return [measured, []];
+      var total = 0;
+      measured.forEach(function (m) { total += m.h; });
+      var best = 1;
+      var bestDiff = Infinity;
+      var acc = 0;
+      for (var i = 0; i < measured.length - 1; i++) {
+        acc += measured[i].h;
+        var diff = Math.abs(acc - (total - acc));
+        if (diff < bestDiff) { bestDiff = diff; best = i + 1; }
+      }
+      return [measured.slice(0, best), measured.slice(best)];
+    }
+
+    function planIngredients(avail) {
+      var items = (rec.ingredients && rec.ingredients.length) ? rec.ingredients.slice() : ['Sin ingredientes.'];
+      var specs = [
+        { font: '400 28px Inter, sans-serif', lineH: 42, gap: 8, bullet: 6 },
+        { font: '400 24px Inter, sans-serif', lineH: 36, gap: 6, bullet: 5 },
+        { font: '400 22px Inter, sans-serif', lineH: 32, gap: 4, bullet: 4 }
+      ];
+      var sectionH = 64;
+      var gapX = 48;
+      var tightest = null;
+      for (var s = 0; s < specs.length; s++) {
+        var spec = specs[s];
+        for (var cols = 1; cols <= 2; cols++) {
+          var colW = cols === 1 ? contentW : (contentW - gapX) / 2;
+          var measured = measureItems(items, spec.font, spec.lineH, spec.gap, colW - 36);
+          var columns = cols === 1 ? [measured] : splitColumns(measured);
+          var colH = 0;
+          columns.forEach(function (col) {
+            var h = 0;
+            col.forEach(function (item) { h += item.h; });
+            if (h > colH) colH = h;
+          });
+          var plan = { spec: spec, columns: columns, colW: colW, gapX: gapX, total: sectionH + colH };
+          tightest = plan;
+          if (plan.total <= avail) return plan;
+        }
+      }
+      return tightest;
+    }
+
+    function spaceAfterPhoto(height) {
+      return bottom - (y + height + (height ? gapAfterPhoto : 0));
+    }
+
+    var ingredientPlan = planIngredients(spaceAfterPhoto(photoH));
+    if (photoH && ingredientPlan.total > spaceAfterPhoto(photoH)) {
+      var maxPhoto = bottom - y - gapAfterPhoto - ingredientPlan.total;
+      photoH = Math.max(320, Math.min(520, maxPhoto));
+      ingredientPlan = planIngredients(spaceAfterPhoto(photoH));
+    }
+
+    if (photoH) {
       var ix = margin;
       var iy = y;
       ctx.save();
@@ -1199,8 +1264,42 @@
       ctx.lineWidth = 2;
       roundRectPath(ctx, ix, iy, contentW, photoH, 28);
       ctx.stroke();
-      y += photoH + 40;
+      y += photoH + gapAfterPhoto;
     }
+
+    y += 8;
+    ctx.fillStyle = '#0ea5e9';
+    roundRectPath(ctx, margin, y + 6, 8, 28, 4);
+    ctx.fill();
+    ctx.fillStyle = '#0369a1';
+    ctx.font = '700 24px Inter, sans-serif';
+    ctx.fillText('INGREDIENTES', margin + 22, y + 30);
+    y += 56;
+    var ingredientTop = y;
+    var ingredientEnd = y;
+    var ingredientBaseline = Math.round(ingredientPlan.spec.lineH * 0.62);
+    ingredientPlan.columns.forEach(function (col, c) {
+      if (!col.length) return;
+      var x = margin + c * (ingredientPlan.colW + ingredientPlan.gapX);
+      var cy = ingredientTop;
+      col.forEach(function (item) {
+        item.lines.forEach(function (line, lineIndex) {
+          if (lineIndex === 0) {
+            ctx.fillStyle = '#0ea5e9';
+            ctx.beginPath();
+            ctx.arc(x + 10, cy + ingredientBaseline - 10, ingredientPlan.spec.bullet, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.font = ingredientPlan.spec.font;
+          ctx.fillStyle = '#0f172a';
+          ctx.fillText(line, x + 36, cy + ingredientBaseline);
+          cy += ingredientPlan.spec.lineH;
+        });
+        cy += ingredientPlan.spec.gap;
+      });
+      if (cy > ingredientEnd) ingredientEnd = cy;
+    });
+    y = ingredientEnd;
 
     function drawSection(label) {
       ensure(88);
@@ -1247,9 +1346,7 @@
       });
     }
 
-    drawSection('INGREDIENTES');
-    drawRows(rec.ingredients || [], false);
-    y += 16;
+    newPage(true);
     drawSection('ELABORACIÓN');
     drawRows(rec.steps || [], true);
 
@@ -1841,7 +1938,19 @@
 
   var categoryUi = { error: '', draft: '', pendingFile: null };
 
-  function renderCategorias() {
+  function rememberCategoryNameDrafts() {
+    var drafts = {};
+    app.querySelectorAll('[data-cat-name]').forEach(function (input) {
+      var row = input.closest('[data-cat-slug]');
+      if (!row) return;
+      drafts[row.getAttribute('data-cat-slug')] = input.value;
+    });
+    if (Object.keys(drafts).length) categoryUi.draftNames = drafts;
+  }
+
+  function renderCategorias(options) {
+    if (options && options.keepDrafts) rememberCategoryNameDrafts();
+    else categoryUi.draftNames = null;
     var list = loadCategoryRecords();
     var rows = list.map(function (c) {
       var count = categoryRecipeCount(c.slug);
@@ -1850,17 +1959,23 @@
       var deleteBtn = canDelete
         ? '<button type="button" data-cat-delete="' + escHtml(c.slug) + '" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm hover:bg-red-600 hover:text-white shrink-0" title="Eliminar">Eliminar</button>'
         : '';
+      var shown = categoryUi.draftNames && Object.prototype.hasOwnProperty.call(categoryUi.draftNames, c.slug)
+        ? categoryUi.draftNames[c.slug]
+        : c.name;
       var thumbSrc = categoryUi.previews && categoryUi.previews[c.slug] ? categoryUi.previews[c.slug] : categoryImageUrl(c);
-      return '<form class="flex flex-wrap items-center gap-2" data-cat-slug="' + escHtml(c.slug) + '">' +
-        '<button type="button" data-cat-image class="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-200 dark:bg-slate-700" title="Cambiar imagen" aria-label="Cambiar imagen de ' + escHtml(c.name) + '">' +
+      return '<div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4" data-cat-slug="' + escHtml(c.slug) + '">' +
+        '<div class="flex items-center gap-4">' +
+        '<button type="button" data-cat-image class="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-200 dark:bg-slate-700" title="Cambiar imagen" aria-label="Cambiar imagen de ' + escHtml(shown || c.name) + '">' +
         '<img data-cat-thumb data-src="' + escHtml(thumbSrc) + '" alt="" class="h-full w-full object-cover"/>' +
         '</button>' +
-        '<input type="file" data-cat-file accept="image/*" class="hidden"/>' +
-        '<input type="text" name="name" value="' + escHtml(c.name) + '" required aria-label="Nombre de ' + escHtml(c.name) + '" class="flex-1 min-w-[12rem] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"/>' +
-        '<span class="text-sm text-slate-500 dark:text-slate-400 shrink-0">' + countLabel + '</span>' +
-        '<button type="submit" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm shrink-0">Guardar</button>' +
+        '<div class="min-w-0 flex-1 space-y-1">' +
+        '<input type="text" data-cat-name value="' + escHtml(shown) + '" required aria-label="Nombre de ' + escHtml(shown || c.name) + '" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900"/>' +
+        '<div class="flex items-center justify-between gap-3">' +
+        '<p class="text-sm text-slate-500 dark:text-slate-400">' + countLabel + '</p>' +
         deleteBtn +
-        '</form>';
+        '</div></div></div>' +
+        '<input type="file" data-cat-file accept="image/*" class="hidden"/>' +
+        '</div>';
     }).join('');
     var errorHtml = categoryUi.error
       ? '<p class="text-sm text-red-600 dark:text-red-400" role="alert">' + escHtml(categoryUi.error) + '</p>'
@@ -1876,15 +1991,20 @@
       '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
       '</div>' +
       '<p class="text-sm text-slate-500 dark:text-slate-400">Pulsa la miniatura para elegir la foto. Se sube a GitHub y queda como portada de esa categoría.</p>' +
-      '<form id="formNuevaCategoria" class="flex flex-wrap items-center gap-2">' +
-      '<input type="text" name="name" value="' + escHtml(categoryUi.draft) + '" required placeholder="Nueva categoría" aria-label="Nueva categoría" class="flex-1 min-w-[12rem] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"/>' +
+      '<form id="formNuevaCategoria" class="space-y-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">' +
+      '<input type="text" name="name" value="' + escHtml(categoryUi.draft) + '" required placeholder="Nueva categoría" aria-label="Nueva categoría" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900"/>' +
+      pendingLabel +
+      '<div class="flex flex-wrap gap-2">' +
       '<button type="button" id="btnNuevaCatImagen" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm">Imagen</button>' +
       '<input type="file" id="nuevaCatImagen" accept="image/*" class="hidden"/>' +
       '<button type="submit" class="px-4 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark">Añadir</button>' +
-      '</form>' +
-      pendingLabel +
+      '</div></form>' +
+      '<form id="formGuardarCategorias" class="space-y-4">' +
+      rows +
       errorHtml +
-      '<div class="space-y-2">' + rows + '</div>' +
+      '<div class="flex justify-end">' +
+      '<button type="submit" class="w-full sm:w-auto px-4 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark">Guardar</button>' +
+      '</div></form>' +
       '</section>';
 
     app.querySelectorAll('[data-cat-thumb]').forEach(function (img) {
@@ -1901,22 +2021,28 @@
     app.querySelector('#nuevaCatImagen').addEventListener('change', function (e) {
       var file = e.target.files && e.target.files[0];
       categoryUi.pendingFile = file || null;
-      renderCategorias();
+      renderCategorias({ keepDrafts: true });
     });
 
     app.querySelector('#formNuevaCategoria').addEventListener('submit', async function (e) {
       e.preventDefault();
       var name = (e.target.name.value || '').trim();
-      var listNow = loadCategoryRecords();
-      var err = categoryNameError(listNow, name, '');
+      var stored = loadCategoryRecords();
+      var visible = stored.map(function (c) {
+        var row = app.querySelector('[data-cat-slug="' + c.slug + '"]');
+        var input = row && row.querySelector('[data-cat-name]');
+        var shown = input ? input.value.trim() : c.name;
+        return { slug: c.slug, name: shown || c.name };
+      });
+      var err = categoryNameError(visible, name, '');
       var slug = slugifyTitle(name);
-      if (!err && listNow.some(function (c) { return c.slug === slug; })) err = 'Ya hay una categoría con ese nombre.';
+      if (!err && stored.some(function (c) { return c.slug === slug; })) err = 'Ya hay una categoría con ese nombre.';
       categoryUi.error = err;
       categoryUi.draft = err ? name : '';
-      if (err) { renderCategorias(); return; }
+      if (err) { renderCategorias({ keepDrafts: true }); return; }
       var file = categoryUi.pendingFile;
-      listNow.push(categoryRecord(slug, name));
-      saveCategoryRecords(listNow);
+      stored.push(categoryRecord(slug, name));
+      saveCategoryRecords(stored);
       loadRecipes();
       categoryUi.pendingFile = null;
       if (file) {
@@ -1930,34 +2056,51 @@
           showHeaderStatus(ex.message || 'No se pudo preparar la imagen.', true);
         }
       }
+      renderCategorias({ keepDrafts: true });
+    });
+
+    app.querySelector('#formGuardarCategorias').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var edits = [];
+      app.querySelectorAll('[data-cat-slug]').forEach(function (row) {
+        var input = row.querySelector('[data-cat-name]');
+        if (!input) return;
+        edits.push({ slug: row.getAttribute('data-cat-slug'), name: (input.value || '').trim() });
+      });
+      var err = '';
+      edits.some(function (edit) {
+        err = categoryNameError(edits, edit.name, edit.slug);
+        return !!err;
+      });
+      categoryUi.error = err;
+      categoryUi.draft = '';
+      if (err) { renderCategorias({ keepDrafts: true }); return; }
+      var listNow = loadCategoryRecords();
+      var changed = false;
+      listNow.forEach(function (c) {
+        var edit = edits.find(function (item) { return item.slug === c.slug; });
+        if (!edit || edit.name === c.name) return;
+        c.name = edit.name;
+        changed = true;
+      });
+      if (changed) {
+        saveCategoryRecords(listNow);
+        loadRecipes();
+        showHeaderStatus('Categorías guardadas.');
+      }
       renderCategorias();
     });
 
-    app.querySelectorAll('form[data-cat-slug]').forEach(function (form) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var slug = form.getAttribute('data-cat-slug');
-        var name = (form.name.value || '').trim();
-        var listNow = loadCategoryRecords();
-        var err = categoryNameError(listNow, name, slug);
-        categoryUi.error = err;
-        categoryUi.draft = '';
-        if (!err) {
-          listNow.forEach(function (c) { if (c.slug === slug) c.name = name; });
-          saveCategoryRecords(listNow);
-          loadRecipes();
-        }
-        renderCategorias();
-      });
-      var imageBtn = form.querySelector('[data-cat-image]');
-      var fileInput = form.querySelector('[data-cat-file]');
+    app.querySelectorAll('[data-cat-slug]').forEach(function (row) {
+      var imageBtn = row.querySelector('[data-cat-image]');
+      var fileInput = row.querySelector('[data-cat-file]');
       if (imageBtn && fileInput) {
         imageBtn.addEventListener('click', function () { fileInput.click(); });
         fileInput.addEventListener('change', async function () {
           var file = fileInput.files && fileInput.files[0];
           if (!file) return;
-          var slug = form.getAttribute('data-cat-slug');
-          var thumb = form.querySelector('[data-cat-thumb]');
+          var slug = row.getAttribute('data-cat-slug');
+          var thumb = row.querySelector('[data-cat-thumb]');
           if (thumb) thumb.src = URL.createObjectURL(file);
           imageBtn.disabled = true;
           try {
@@ -1969,7 +2112,7 @@
           } catch (ex) {
             showHeaderStatus(ex.message || 'No se pudo preparar la imagen.', true);
           }
-          renderCategorias();
+          renderCategorias({ keepDrafts: true });
         });
       }
     });
@@ -1977,15 +2120,17 @@
     app.querySelectorAll('[data-cat-delete]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var slug = btn.getAttribute('data-cat-delete');
+        var row = btn.closest('[data-cat-slug]');
+        var input = row && row.querySelector('[data-cat-name]');
         var current = loadCategoryRecords().find(function (c) { return c.slug === slug; });
-        var label = current ? current.name : slug;
+        var label = (input && input.value.trim()) || (current ? current.name : slug);
         if (!confirm('¿Eliminar la categoría "' + label + '"?')) return;
         if (isDefaultCategory(slug) || categoryRecipeCount(slug) > 0) return;
         var listNow = loadCategoryRecords().filter(function (c) { return c.slug !== slug; });
         saveCategoryRecords(listNow);
         loadRecipes();
         categoryUi.error = '';
-        renderCategorias();
+        renderCategorias({ keepDrafts: true });
       });
     });
   }
