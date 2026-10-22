@@ -117,7 +117,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.25';
+  const APP_VERSION = '1.10.26';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const CATEGORY_VIEW_KEY = 'mirecetario-cat-view';
@@ -1887,40 +1887,46 @@
       '<ul class="list-disc list-inside space-y-1">' + ing.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul></section>' +
       '<section class="md:col-span-2"><h2 class="text-lg font-semibold mb-2">Elaboración paso a paso</h2>' +
       '<ol class="space-y-3">' + steps.map(function (s, i) {
-        return '<li class="step-item flex items-start gap-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-800/60">' +
+        return '<li class="step-item flex items-start gap-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-800/60 cursor-pointer">' +
           '<span class="step-num inline-flex w-8 h-8 shrink-0 rounded-full bg-brand text-white items-center justify-center font-semibold">' + (i + 1) + '</span>' +
           '<div class="flex-1"><p class="step-text">' + s + '</p></div>' +
           '<label class="ml-auto inline-flex items-center shrink-0">' +
           '<input type="checkbox" class="rounded" data-step="' + i + '" aria-label="Hecho"/></label></li>';
       }).join('') + '</ol>' +
-      (steps.length ? '<div class="mt-4 flex items-center gap-3"><progress id="progress" max="' + steps.length + '" value="0" class="w-full"></progress><span id="progressText" class="text-sm text-slate-600">0 / ' + steps.length + '</span></div>' : '') +
       '</section></div></div></div></article>';
 
     var checks = app.querySelectorAll('input[type="checkbox"][data-step]');
-    var prog = app.querySelector('#progress');
-    var txt = app.querySelector('#progressText');
-    if (prog && txt) {
-      function updateProgress(scrollToCurrent) {
-        var done = Array.from(checks).filter(function (c) { return c.checked; }).length;
-        prog.value = done;
-        txt.textContent = done + ' / ' + steps.length;
-        var currentLi = null;
-        checks.forEach(function (c) {
-          var li = c.closest('li');
-          if (!li) return;
-          var isDone = c.checked;
-          var isCurrent = !isDone && !currentLi;
-          li.classList.toggle('step-done', isDone);
-          li.classList.toggle('step-current', isCurrent);
-          if (isCurrent) currentLi = li;
-        });
-        if (scrollToCurrent && currentLi) {
-          currentLi.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      }
-      checks.forEach(function (c) { c.addEventListener('change', function () { updateProgress(true); }); });
-      updateProgress(false);
+    var currentIndex = null;
+    function paintSteps(scroll) {
+      var target = null;
+      checks.forEach(function (c) {
+        var li = c.closest('li');
+        if (!li) return;
+        var index = Number(c.getAttribute('data-step'));
+        li.classList.toggle('step-done', c.checked);
+        var isCurrent = currentIndex === index;
+        li.classList.toggle('step-current', isCurrent);
+        if (isCurrent) target = li;
+      });
+      if (scroll && target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+    app.querySelectorAll('.step-item').forEach(function (li) {
+      li.addEventListener('click', function (e) {
+        if (e.target.closest('input, label')) return;
+        var input = li.querySelector('[data-step]');
+        if (!input) return;
+        currentIndex = Number(input.getAttribute('data-step'));
+        paintSteps(true);
+      });
+    });
+    checks.forEach(function (c) {
+      c.addEventListener('change', function () {
+        var index = Number(c.getAttribute('data-step'));
+        if (c.checked) currentIndex = index + 1 < checks.length ? index + 1 : null;
+        else currentIndex = index;
+        paintSteps(true);
+      });
+    });
 
     app.querySelector('#btnLeer').addEventListener('click', function () {
       if (recipeSpeaking) stopRecipeSpeech();
