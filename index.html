@@ -117,7 +117,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = '1.10.23';
+  const APP_VERSION = '1.10.24';
   const STORAGE_KEY = 'mirecetario-recetas';
   const THEME_KEY = 'mirecetario-theme';
   const CATEGORY_VIEW_KEY = 'mirecetario-cat-view';
@@ -498,7 +498,7 @@
       var slug = c.slug.trim();
       var name = String(c.name || '').trim();
       if (!slug || !name) return;
-      bySlug.set(slug, { slug: slug, name: name });
+      bySlug.set(slug, categoryRecord(slug, name, c.imageRev));
     });
     (state.recipes || []).forEach(function (r) {
       var slug = r.category || 'varios';
@@ -518,9 +518,15 @@
     writeCategoryRecords(list, true);
   }
 
+  function categoryRecord(slug, name, imageRev) {
+    var rec = { slug: slug, name: name };
+    if (imageRev) rec.imageRev = String(imageRev);
+    return rec;
+  }
+
   function writeCategoryRecords(list, dirty) {
     localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(list.map(function (c) {
-      return { slug: c.slug, name: c.name };
+      return categoryRecord(c.slug, c.name, c.imageRev);
     })));
     localStorage.setItem(CATEGORY_DIRTY_KEY, dirty ? '1' : '0');
   }
@@ -542,7 +548,7 @@
       var slug = c.slug.trim();
       var name = String(c.name || '').trim();
       if (!slug || !name) return;
-      list.push({ slug: slug, name: name });
+      list.push(categoryRecord(slug, name, c.imageRev));
     });
     return list.length ? list : null;
   }
@@ -558,6 +564,36 @@
       writeCategoryRecords(list, false);
       return true;
     }).catch(function () { return false; });
+  }
+
+  function categoryImagePath(slug) {
+    return 'assets/img/categorias/' + slug + '.jpg';
+  }
+
+  function categoryImageUrl(c) {
+    var path = categoryImagePath(c.slug);
+    if (c.imageRev) return githubRawUrl(path) + '?v=' + encodeURIComponent(c.imageRev);
+    return path;
+  }
+
+  async function uploadCategoryImage(slug, file) {
+    var bytes = await prepareRecipeImage(file);
+    var path = categoryImagePath(slug);
+    var ok = await uploadToGitHub(path, bytes, GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+    if (!ok) return false;
+    var list = loadCategoryRecords();
+    var found = false;
+    list.forEach(function (c) {
+      if (c.slug !== slug) return;
+      c.imageRev = String(Date.now());
+      found = true;
+    });
+    if (!found) return false;
+    saveCategoryRecords(list);
+    var okCats = await uploadToGitHub('categories.json', loadCategoryRecords(), GITHUB_TOKEN_STORAGE_KEY, GITHUB_REPO, showHeaderStatus);
+    if (okCats) localStorage.setItem(CATEGORY_DIRTY_KEY, '0');
+    loadRecipes();
+    return true;
   }
 
   function categoryRecipeCount(slug) {
@@ -611,7 +647,7 @@
       return {
         slug: c.slug,
         name: c.name,
-        img: 'assets/img/categorias/' + c.slug + '.jpg'
+        img: categoryImageUrl(c)
       };
     });
     return state.recipes;
@@ -762,41 +798,111 @@
     return lines.join('\n');
   }
 
+  function pdfFileName(rec) {
+    var base = String(rec.title || 'receta').replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim();
+    return (base || 'receta') + '.pdf';
+  }
+
+  function downloadBlob(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+  }
+
+  function shareFilePayload(blob, filename, title, text) {
+    var file = new File([blob], filename, { type: 'application/pdf' });
+    return { files: [file], title: title || 'Receta', text: text || title || 'Receta' };
+  }
+
+  function chooseSharePayload(blob, filename, title, text) {
+    var filePayload = shareFilePayload(blob, filename, title, text);
+    var textPayload = { title: title || 'Receta', text: text || title || 'Receta' };
+    if (typeof navigator.share !== 'function') return null;
+    if (!navigator.canShare) return filePayload;
+    try {
+      if (navigator.canShare(filePayload)) return filePayload;
+      if (navigator.canShare(textPayload)) return textPayload;
+    } catch (e) {}
+    return textPayload;
+  }
+
+  function openExternalShare(blob, filename, title, text) {
+    var root = document.getElementById('shareReady');
+    if (!root) return;
+    var box = root.querySelector('[data-share-box]');
+    if (!box) return;
+    var message = (title ? title + '\n\n' : '') + (text || '');
+    box.innerHTML = '<h2 id="shareReadyTitle" class="text-lg font-semibold">Enviar receta</h2>' +
+      '<p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Elige WhatsApp o el correo. Descargar solo guarda el PDF.</p>' +
+      '<div class="mt-4 flex flex-col gap-2">' +
+      '<button type="button" data-share-wa class="px-4 py-2.5 rounded-lg bg-[#25D366] text-white font-semibold">WhatsApp</button>' +
+      '<button type="button" data-share-mail class="px-4 py-2.5 rounded-lg bg-brand text-white font-semibold">Correo</button>' +
+      '<button type="button" data-share-dl class="px-4 py-2.5 rounded-lg bg-slate-200 dark:bg-slate-700">Descargar PDF</button>' +
+      '</div>';
+    box.querySelector('[data-share-wa]').addEventListener('click', function () {
+      window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank', 'noopener');
+      root.remove();
+    });
+    box.querySelector('[data-share-mail]').addEventListener('click', function () {
+      window.open('mailto:?subject=' + encodeURIComponent(title || 'Receta') + '&body=' + encodeURIComponent(message), '_blank', 'noopener');
+      root.remove();
+    });
+    box.querySelector('[data-share-dl]').addEventListener('click', function () {
+      downloadBlob(blob, filename);
+      root.remove();
+    });
+  }
+
+  function openShareReady(blob, filename, title, text) {
+    var old = document.getElementById('shareReady');
+    if (old) old.remove();
+    var root = document.createElement('div');
+    root.id = 'shareReady';
+    root.className = 'fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 p-4';
+    root.innerHTML = '<div data-share-box class="w-full max-w-sm rounded-2xl bg-white dark:bg-slate-800 p-5 shadow-xl" role="dialog" aria-labelledby="shareReadyTitle">' +
+      '<h2 id="shareReadyTitle" class="text-lg font-semibold">PDF listo</h2>' +
+      '<p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Compartir abre WhatsApp, el correo u otras apps. Descargar solo guarda el archivo.</p>' +
+      '<div class="mt-4 flex gap-2">' +
+      '<button type="button" data-share-go class="flex-1 px-4 py-2.5 rounded-lg bg-brand text-white font-semibold">Compartir</button>' +
+      '<button type="button" data-share-dl class="px-4 py-2.5 rounded-lg bg-slate-200 dark:bg-slate-700">Descargar</button>' +
+      '</div></div>';
+    document.body.appendChild(root);
+    function close() { if (root.parentNode) root.remove(); }
+    root.addEventListener('click', function (e) { if (e.target === root) close(); });
+    root.querySelector('[data-share-dl]').addEventListener('click', function () {
+      downloadBlob(blob, filename);
+      close();
+    });
+    root.querySelector('[data-share-go]').addEventListener('click', function () {
+      var payload = chooseSharePayload(blob, filename, title, text);
+      if (!payload || typeof navigator.share !== 'function') {
+        openExternalShare(blob, filename, title, text);
+        return;
+      }
+      navigator.share(payload).catch(function (err) {
+        if (err && err.name === 'AbortError') return;
+        openExternalShare(blob, filename, title, text);
+      });
+    });
+  }
+
   function shareRecipe(id) {
     var rec = state.recipes.find(function (x) { return String(x.id) === String(id); });
-    if (!rec) return;
-    generateRecipeImage(rec).then(function (blob) {
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = (rec.title || 'receta').replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.png';
-      a.click();
-      setTimeout(function () {
-        URL.revokeObjectURL(url);
-        if (navigator.clipboard && navigator.clipboard.write) {
-          blob.arrayBuffer().then(function (buffer) {
-            return navigator.clipboard.write([
-              new ClipboardItem({ 'image/png': new Blob([buffer], { type: 'image/png' }) })
-            ]);
-          }).then(function () {
-            alert('Imagen descargada y copiada al portapapeles.');
-          }).catch(function () {
-            alert('Imagen descargada. No se pudo copiar al portapapeles.');
-          });
-        } else {
-          alert('Imagen descargada.');
-        }
-      }, 100);
+    if (!rec || shareRecipe.busy) return;
+    shareRecipe.busy = true;
+    showHeaderStatus('Preparando el PDF…', false);
+    var filename = pdfFileName(rec);
+    var title = rec.title || 'Receta';
+    var text = formatRecipeForShare(rec);
+    generateRecipePdf(rec).then(function (blob) {
+      openShareReady(blob, filename, title, text);
     }).catch(function (err) {
-      console.error('Error generando imagen:', err);
-      var text = formatRecipeForShare(rec);
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () {
-          alert('No se pudo generar la imagen. Texto copiado al portapapeles.');
-        }).catch(function () { fallbackCopy(text); });
-      } else {
-        fallbackCopy(text);
-      }
+      showHeaderStatus((err && err.message) || 'No se pudo preparar el PDF.', true);
+    }).then(function () {
+      shareRecipe.busy = false;
     });
   }
 
@@ -843,139 +949,322 @@
     return lines;
   }
 
-  function generateRecipeImage(rec) {
-    return new Promise(function (resolve, reject) {
-      try {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var padding = 40;
-        var lineHeight = 28;
-        var titleSize = 36;
-        var sectionSize = 24;
-        var textSize = 18;
-        var maxWidth = 800;
-        canvas.width = maxWidth;
-        var x = padding;
-        var y = padding;
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0ea5e9';
-        ctx.fillRect(0, 0, canvas.width, 8);
-        ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold ' + titleSize + 'px Inter, sans-serif';
-        var title = rec.title || 'Sin título';
-        var titleLines = wrapText(ctx, title, maxWidth - 2 * padding);
-        titleLines.forEach(function (line) {
-          ctx.fillText(line, x, y);
-          y += lineHeight + 8;
+  function loadShareImage(src) {
+    if (!src) return Promise.resolve(null);
+    var urls = [src];
+    var raw = githubRawUrl(src);
+    if (raw) urls.push(raw);
+    function tryOne(i) {
+      if (i >= urls.length) return Promise.resolve(null);
+      return fetch(urls[i]).then(function (res) {
+        if (!res.ok) throw new Error('no');
+        return res.blob();
+      }).then(function (blob) {
+        if (typeof createImageBitmap === 'function') return createImageBitmap(blob);
+        return new Promise(function (resolve) {
+          var img = new Image();
+          var url = URL.createObjectURL(blob);
+          img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+          img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+          img.src = url;
         });
-        y += 10;
-        if (rec.description && rec.description.trim()) {
-          ctx.fillStyle = '#64748b';
-          ctx.font = textSize + 'px Inter, sans-serif';
-          var descLines = wrapText(ctx, rec.description.trim(), maxWidth - 2 * padding);
-          descLines.forEach(function (line) {
-            ctx.fillText(line, x, y);
-            y += lineHeight;
-          });
-          y += 20;
-        }
-        if (rec.ingredients && rec.ingredients.length > 0) {
-          ctx.fillStyle = '#0ea5e9';
-          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
-          ctx.fillText('Ingredientes:', x, y);
-          y += lineHeight + 10;
-          ctx.fillStyle = '#1e293b';
-          ctx.font = textSize + 'px Inter, sans-serif';
-          rec.ingredients.forEach(function (ing) {
-            var ingLines = wrapText(ctx, '• ' + ing, maxWidth - 2 * padding, x + 20);
-            ingLines.forEach(function (line) {
-              ctx.fillText(line, x + 20, y);
-              y += lineHeight;
-            });
-          });
-          y += 20;
-        }
-        if (rec.steps && rec.steps.length > 0) {
-          ctx.fillStyle = '#0ea5e9';
-          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
-          ctx.fillText('Elaboración:', x, y);
-          y += lineHeight + 10;
-          ctx.fillStyle = '#1e293b';
-          ctx.font = textSize + 'px Inter, sans-serif';
-          rec.steps.forEach(function (step, idx) {
-            var stepText = (idx + 1) + '. ' + step;
-            var stepLines = wrapText(ctx, stepText, maxWidth - 2 * padding, x + 20);
-            stepLines.forEach(function (line) {
-              ctx.fillText(line, x + 20, y);
-              y += lineHeight;
-            });
-            y += 8;
-          });
-        }
-        canvas.height = y + padding;
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0ea5e9';
-        ctx.fillRect(0, 0, canvas.width, 8);
-        y = padding;
-        ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold ' + titleSize + 'px Inter, sans-serif';
-        titleLines.forEach(function (line) {
-          ctx.fillText(line, x, y);
-          y += lineHeight + 8;
+      }).catch(function () { return tryOne(i + 1); });
+    }
+    return tryOne(0);
+  }
+
+  function pdfWrap(ctx, text, maxWidth) {
+    var words = String(text || '').split(/\s+/).filter(Boolean);
+    var lines = [];
+    var line = '';
+    words.forEach(function (word) {
+      if (ctx.measureText(word).width > maxWidth) {
+        if (line) { lines.push(line); line = ''; }
+        var chunk = '';
+        word.split('').forEach(function (ch) {
+          if (ctx.measureText(chunk + ch).width > maxWidth && chunk) {
+            lines.push(chunk);
+            chunk = ch;
+          } else chunk += ch;
         });
-        y += 10;
-        if (rec.description && rec.description.trim()) {
-          ctx.fillStyle = '#64748b';
-          ctx.font = textSize + 'px Inter, sans-serif';
-          var descLines2 = wrapText(ctx, rec.description.trim(), maxWidth - 2 * padding);
-          descLines2.forEach(function (line) {
-            ctx.fillText(line, x, y);
-            y += lineHeight;
-          });
-          y += 20;
-        }
-        if (rec.ingredients && rec.ingredients.length > 0) {
-          ctx.fillStyle = '#0ea5e9';
-          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
-          ctx.fillText('Ingredientes:', x, y);
-          y += lineHeight + 10;
-          ctx.fillStyle = '#1e293b';
-          ctx.font = textSize + 'px Inter, sans-serif';
-          rec.ingredients.forEach(function (ing) {
-            var ingLines2 = wrapText(ctx, '• ' + ing, maxWidth - 2 * padding, x + 20);
-            ingLines2.forEach(function (line) {
-              ctx.fillText(line, x + 20, y);
-              y += lineHeight;
-            });
-          });
-          y += 20;
-        }
-        if (rec.steps && rec.steps.length > 0) {
-          ctx.fillStyle = '#0ea5e9';
-          ctx.font = 'bold ' + sectionSize + 'px Inter, sans-serif';
-          ctx.fillText('Elaboración:', x, y);
-          y += lineHeight + 10;
-          ctx.fillStyle = '#1e293b';
-          ctx.font = textSize + 'px Inter, sans-serif';
-          rec.steps.forEach(function (step, idx) {
-            var stepText2 = (idx + 1) + '. ' + step;
-            var stepLines2 = wrapText(ctx, stepText2, maxWidth - 2 * padding, x + 20);
-            stepLines2.forEach(function (line) {
-              ctx.fillText(line, x + 20, y);
-              y += lineHeight;
-            });
-            y += 8;
-          });
-        }
-        canvas.toBlob(function (blob) {
-          if (blob) resolve(blob); else reject(new Error('Error generando imagen'));
-        }, 'image/png');
-      } catch (e) {
-        reject(e);
+        line = chunk;
+        return;
       }
+      var test = line ? line + ' ' + word : word;
+      if (line && ctx.measureText(test).width > maxWidth) {
+        lines.push(line);
+        line = word;
+      } else line = test;
     });
+    if (line) lines.push(line);
+    return lines.length ? lines : [''];
+  }
+
+  function roundRectPath(ctx, x, y, w, h, r) {
+    var radius = Math.max(0, Math.min(r, w / 2, h / 2));
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  }
+
+  function pdfBytes(text) {
+    var out = new Uint8Array(text.length);
+    for (var i = 0; i < text.length; i++) out[i] = text.charCodeAt(i) & 255;
+    return out;
+  }
+
+  function concatBytes(parts) {
+    var len = 0;
+    parts.forEach(function (p) { len += p.length; });
+    var out = new Uint8Array(len);
+    var offset = 0;
+    parts.forEach(function (p) { out.set(p, offset); offset += p.length; });
+    return out;
+  }
+
+  function buildJpegPdf(jpegs, width, height) {
+    var pageW = 595.28;
+    var pageH = 841.89;
+    var parts = [];
+    var size = 0;
+    function push(bytes) { parts.push(bytes); size += bytes.length; }
+    function pushStr(text) { push(pdfBytes(text)); }
+    var offsets = [];
+    var n = jpegs.length;
+    var pagesId = 2;
+    var pageIds = [];
+    var contentIds = [];
+    var imageIds = [];
+    var next = 3;
+    for (var i = 0; i < n; i++) {
+      pageIds.push(next++);
+      contentIds.push(next++);
+      imageIds.push(next++);
+    }
+    var total = next;
+    function startObj(id) {
+      offsets[id] = size;
+      pushStr(id + ' 0 obj\n');
+    }
+    pushStr('%PDF-1.4\n');
+    startObj(1);
+    pushStr('<< /Type /Catalog /Pages ' + pagesId + ' 0 R >>\nendobj\n');
+    startObj(pagesId);
+    pushStr('<< /Type /Pages /Kids [' + pageIds.map(function (id) { return id + ' 0 R'; }).join(' ') + '] /Count ' + n + ' >>\nendobj\n');
+    var content = 'q\n' + pageW + ' 0 0 ' + pageH + ' 0 0 cm\n/Im0 Do\nQ\n';
+    for (var p = 0; p < n; p++) {
+      startObj(pageIds[p]);
+      pushStr('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 ' + pageW + ' ' + pageH + '] /Contents ' + contentIds[p] + ' 0 R /Resources << /XObject << /Im0 ' + imageIds[p] + ' 0 R >> >> >>\nendobj\n');
+      startObj(contentIds[p]);
+      pushStr('<< /Length ' + content.length + ' >>\nstream\n' + content + 'endstream\nendobj\n');
+      startObj(imageIds[p]);
+      pushStr('<< /Type /XObject /Subtype /Image /Width ' + width + ' /Height ' + height + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jpegs[p].length + ' >>\nstream\n');
+      push(jpegs[p]);
+      pushStr('\nendstream\nendobj\n');
+    }
+    var xref = size;
+    pushStr('xref\n0 ' + total + '\n');
+    pushStr('0000000000 65535 f \n');
+    for (var id = 1; id < total; id++) {
+      var off = String(offsets[id] || 0);
+      while (off.length < 10) off = '0' + off;
+      pushStr(off + ' 00000 n \n');
+    }
+    pushStr('trailer\n<< /Size ' + total + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF');
+    return new Blob([concatBytes(parts)], { type: 'application/pdf' });
+  }
+
+  function canvasToJpeg(canvas) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (blob) {
+        if (!blob) { reject(new Error('No se pudo crear el PDF.')); return; }
+        blob.arrayBuffer().then(function (buf) { resolve(new Uint8Array(buf)); }).catch(reject);
+      }, 'image/jpeg', 0.88);
+    });
+  }
+
+  async function generateRecipePdf(rec) {
+    if (document.fonts && document.fonts.load) {
+      try {
+        await document.fonts.load('700 64px Inter');
+        await document.fonts.load('400 28px Inter');
+      } catch (e) {}
+    }
+    var photo = null;
+    try { photo = await loadShareImage(rec.image || ''); } catch (e) { photo = null; }
+
+    var W = 1240;
+    var H = 1754;
+    var margin = 80;
+    var contentW = W - margin * 2;
+    var bottom = H - 96;
+    var pages = [];
+    var ctx = null;
+    var y = 0;
+    var title = rec.title || 'Sin título';
+
+    function newPage(continued) {
+      var canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f7f8fa';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#0ea5e9';
+      ctx.fillRect(0, 0, W, 16);
+      y = 64;
+      if (continued) {
+        ctx.fillStyle = '#64748b';
+        ctx.font = '600 26px Inter, sans-serif';
+        var head = title;
+        while (head.length > 3 && ctx.measureText(head).width > contentW) head = head.slice(0, -2);
+        if (head !== title) head = head.slice(0, -1) + '…';
+        ctx.fillText(head, margin, y + 28);
+        y += 52;
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(margin, y);
+        ctx.lineTo(W - margin, y);
+        ctx.stroke();
+        y += 36;
+      }
+      pages.push(canvas);
+    }
+
+    function ensure(height) {
+      if (y + height > bottom) newPage(true);
+    }
+
+    newPage(false);
+    ctx.fillStyle = '#0369a1';
+    ctx.font = '700 22px Inter, sans-serif';
+    ctx.fillText('MI RECETARIO', margin, y + 8);
+    y += 48;
+    ctx.fillStyle = '#0f172a';
+    ctx.font = '700 58px Inter, sans-serif';
+    pdfWrap(ctx, title, contentW).forEach(function (line) {
+      ensure(72);
+      ctx.font = '700 58px Inter, sans-serif';
+      ctx.fillStyle = '#0f172a';
+      ctx.fillText(line, margin, y + 52);
+      y += 70;
+    });
+    if (rec.description && String(rec.description).trim()) {
+      y += 8;
+      ctx.font = '400 28px Inter, sans-serif';
+      pdfWrap(ctx, String(rec.description).trim(), contentW).slice(0, 3).forEach(function (line) {
+        ensure(40);
+        ctx.font = '400 28px Inter, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(line, margin, y + 28);
+        y += 38;
+      });
+    }
+    y += 28;
+
+    if (photo && photo.width && photo.height) {
+      var photoH = 520;
+      ensure(photoH + 12);
+      var ix = margin;
+      var iy = y;
+      ctx.save();
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
+      roundRectPath(ctx, ix, iy + 8, contentW, photoH, 28);
+      ctx.fill();
+      ctx.restore();
+      ctx.save();
+      roundRectPath(ctx, ix, iy, contentW, photoH, 28);
+      ctx.clip();
+      var ir = photo.width / photo.height;
+      var box = contentW / photoH;
+      var sx = 0;
+      var sy = 0;
+      var sw = photo.width;
+      var sh = photo.height;
+      if (ir > box) {
+        sw = photo.height * box;
+        sx = (photo.width - sw) / 2;
+      } else {
+        sh = photo.width / box;
+        sy = (photo.height - sh) / 2;
+      }
+      ctx.drawImage(photo, sx, sy, sw, sh, ix, iy, contentW, photoH);
+      ctx.restore();
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2;
+      roundRectPath(ctx, ix, iy, contentW, photoH, 28);
+      ctx.stroke();
+      y += photoH + 40;
+    }
+
+    function drawSection(label) {
+      ensure(88);
+      y += 8;
+      ctx.fillStyle = '#0ea5e9';
+      roundRectPath(ctx, margin, y + 6, 8, 28, 4);
+      ctx.fill();
+      ctx.fillStyle = '#0369a1';
+      ctx.font = '700 24px Inter, sans-serif';
+      ctx.fillText(label, margin + 22, y + 30);
+      y += 56;
+    }
+
+    function drawRows(items, numbered) {
+      var list = items && items.length ? items : [numbered ? 'Sin pasos.' : 'Sin ingredientes.'];
+      var lineH = 42;
+      list.forEach(function (item, index) {
+        ctx.font = '400 28px Inter, sans-serif';
+        var textX = margin + (numbered ? 68 : 36);
+        var lines = pdfWrap(ctx, item, W - margin - textX);
+        lines.forEach(function (line, lineIndex) {
+          ensure(lineH + 6);
+          if (lineIndex === 0 && numbered) {
+            ctx.fillStyle = '#0ea5e9';
+            ctx.beginPath();
+            ctx.arc(margin + 22, y + 16, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            var num = String(index + 1);
+            ctx.font = num.length > 1 ? '700 18px Inter, sans-serif' : '700 22px Inter, sans-serif';
+            ctx.fillText(num, margin + 22 - ctx.measureText(num).width / 2, y + 24);
+          } else if (lineIndex === 0) {
+            ctx.fillStyle = '#0ea5e9';
+            ctx.beginPath();
+            ctx.arc(margin + 10, y + 16, 6, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.font = '400 28px Inter, sans-serif';
+          ctx.fillStyle = '#0f172a';
+          ctx.fillText(line, textX, y + 26);
+          y += lineH;
+        });
+        y += 8;
+      });
+    }
+
+    drawSection('INGREDIENTES');
+    drawRows(rec.ingredients || [], false);
+    y += 16;
+    drawSection('ELABORACIÓN');
+    drawRows(rec.steps || [], true);
+
+    pages.forEach(function (canvas, index) {
+      var c = canvas.getContext('2d');
+      c.fillStyle = '#94a3b8';
+      c.font = '400 22px Inter, sans-serif';
+      c.fillText('Mi Recetario', margin, H - 46);
+      var label = (index + 1) + ' / ' + pages.length;
+      c.fillText(label, W - margin - c.measureText(label).width, H - 46);
+    });
+
+    var jpegs = [];
+    for (var i = 0; i < pages.length; i++) jpegs.push(await canvasToJpeg(pages[i]));
+    return buildJpegPdf(jpegs, W, H);
   }
 
   function generateWeekImage(w, dayLabels) {
@@ -1550,7 +1839,7 @@
     });
   }
 
-  var categoryUi = { error: '', draft: '' };
+  var categoryUi = { error: '', draft: '', pendingFile: null };
 
   function renderCategorias() {
     var list = loadCategoryRecords();
@@ -1561,7 +1850,12 @@
       var deleteBtn = canDelete
         ? '<button type="button" data-cat-delete="' + escHtml(c.slug) + '" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm hover:bg-red-600 hover:text-white shrink-0" title="Eliminar">Eliminar</button>'
         : '';
+      var thumbSrc = categoryUi.previews && categoryUi.previews[c.slug] ? categoryUi.previews[c.slug] : categoryImageUrl(c);
       return '<form class="flex flex-wrap items-center gap-2" data-cat-slug="' + escHtml(c.slug) + '">' +
+        '<button type="button" data-cat-image class="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-200 dark:bg-slate-700" title="Cambiar imagen" aria-label="Cambiar imagen de ' + escHtml(c.name) + '">' +
+        '<img data-cat-thumb data-src="' + escHtml(thumbSrc) + '" alt="" class="h-full w-full object-cover"/>' +
+        '</button>' +
+        '<input type="file" data-cat-file accept="image/*" class="hidden"/>' +
         '<input type="text" name="name" value="' + escHtml(c.name) + '" required aria-label="Nombre de ' + escHtml(c.name) + '" class="flex-1 min-w-[12rem] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"/>' +
         '<span class="text-sm text-slate-500 dark:text-slate-400 shrink-0">' + countLabel + '</span>' +
         '<button type="submit" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm shrink-0">Guardar</button>' +
@@ -1571,6 +1865,9 @@
     var errorHtml = categoryUi.error
       ? '<p class="text-sm text-red-600 dark:text-red-400" role="alert">' + escHtml(categoryUi.error) + '</p>'
       : '';
+    var pendingLabel = categoryUi.pendingFile
+      ? '<p class="text-sm text-slate-500 dark:text-slate-400">' + escHtml(categoryUi.pendingFile.name) + '</p>'
+      : '';
 
     app.innerHTML = '<section class="max-w-2xl space-y-6">' +
       '<div class="flex items-center justify-between gap-2">' +
@@ -1578,29 +1875,60 @@
       '<a href="#/" class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700" title="Volver">' +
       '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>' +
       '</div>' +
-      '<form id="formNuevaCategoria" class="flex flex-wrap gap-2">' +
+      '<p class="text-sm text-slate-500 dark:text-slate-400">Pulsa la miniatura para elegir la foto. Se sube a GitHub y queda como portada de esa categoría.</p>' +
+      '<form id="formNuevaCategoria" class="flex flex-wrap items-center gap-2">' +
       '<input type="text" name="name" value="' + escHtml(categoryUi.draft) + '" required placeholder="Nueva categoría" aria-label="Nueva categoría" class="flex-1 min-w-[12rem] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"/>' +
+      '<button type="button" id="btnNuevaCatImagen" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm">Imagen</button>' +
+      '<input type="file" id="nuevaCatImagen" accept="image/*" class="hidden"/>' +
       '<button type="submit" class="px-4 py-2 rounded-lg bg-brand text-white hover:bg-brand-dark">Añadir</button>' +
       '</form>' +
+      pendingLabel +
       errorHtml +
       '<div class="space-y-2">' + rows + '</div>' +
       '</section>';
 
-    app.querySelector('#formNuevaCategoria').addEventListener('submit', function (e) {
+    app.querySelectorAll('[data-cat-thumb]').forEach(function (img) {
+      var src = img.getAttribute('data-src');
+      imgOrPlaceholder(src).then(function (url) {
+        if (!img.isConnected || !url || url === placeholder) return;
+        img.src = url;
+      });
+    });
+
+    app.querySelector('#btnNuevaCatImagen').addEventListener('click', function () {
+      app.querySelector('#nuevaCatImagen').click();
+    });
+    app.querySelector('#nuevaCatImagen').addEventListener('change', function (e) {
+      var file = e.target.files && e.target.files[0];
+      categoryUi.pendingFile = file || null;
+      renderCategorias();
+    });
+
+    app.querySelector('#formNuevaCategoria').addEventListener('submit', async function (e) {
       e.preventDefault();
       var name = (e.target.name.value || '').trim();
       var listNow = loadCategoryRecords();
       var err = categoryNameError(listNow, name, '');
-      if (!err) {
-        var slug = slugifyTitle(name);
-        if (listNow.some(function (c) { return c.slug === slug; })) err = 'Ya hay una categoría con ese nombre.';
-      }
+      var slug = slugifyTitle(name);
+      if (!err && listNow.some(function (c) { return c.slug === slug; })) err = 'Ya hay una categoría con ese nombre.';
       categoryUi.error = err;
       categoryUi.draft = err ? name : '';
-      if (!err) {
-        listNow.push({ slug: slugifyTitle(name), name: name });
-        saveCategoryRecords(listNow);
-        loadRecipes();
+      if (err) { renderCategorias(); return; }
+      var file = categoryUi.pendingFile;
+      listNow.push(categoryRecord(slug, name));
+      saveCategoryRecords(listNow);
+      loadRecipes();
+      categoryUi.pendingFile = null;
+      if (file) {
+        try {
+          var uploaded = await uploadCategoryImage(slug, file);
+          if (uploaded) {
+            if (!categoryUi.previews) categoryUi.previews = {};
+            categoryUi.previews[slug] = URL.createObjectURL(file);
+          }
+        } catch (ex) {
+          showHeaderStatus(ex.message || 'No se pudo preparar la imagen.', true);
+        }
       }
       renderCategorias();
     });
@@ -1621,6 +1949,29 @@
         }
         renderCategorias();
       });
+      var imageBtn = form.querySelector('[data-cat-image]');
+      var fileInput = form.querySelector('[data-cat-file]');
+      if (imageBtn && fileInput) {
+        imageBtn.addEventListener('click', function () { fileInput.click(); });
+        fileInput.addEventListener('change', async function () {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          var slug = form.getAttribute('data-cat-slug');
+          var thumb = form.querySelector('[data-cat-thumb]');
+          if (thumb) thumb.src = URL.createObjectURL(file);
+          imageBtn.disabled = true;
+          try {
+            var uploaded = await uploadCategoryImage(slug, file);
+            if (uploaded) {
+              if (!categoryUi.previews) categoryUi.previews = {};
+              categoryUi.previews[slug] = URL.createObjectURL(file);
+            }
+          } catch (ex) {
+            showHeaderStatus(ex.message || 'No se pudo preparar la imagen.', true);
+          }
+          renderCategorias();
+        });
+      }
     });
 
     app.querySelectorAll('[data-cat-delete]').forEach(function (btn) {

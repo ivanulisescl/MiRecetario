@@ -1,14 +1,14 @@
-const CACHE = 'mirecetario-v25';
+const CACHE = 'mirecetario-v26';
 const CORE = [
   './',
   './index.html',
   './manifest.webmanifest',
   'https://cdn.tailwindcss.com'
 ];
-function isPlanningOrRecipesJson(url) {
+function isNetworkFirst(url) {
   try {
-    var u = new URL(url);
-    return u.pathname.endsWith('planning.json') || u.pathname.endsWith('recipes.json') || u.pathname.endsWith('categories.json');
+    var path = new URL(url).pathname;
+    return path.endsWith('planning.json') || path.endsWith('recipes.json') || path.endsWith('categories.json') || path.indexOf('/assets/img/categorias/') !== -1;
   } catch (e) { return false; }
 }
 self.addEventListener('install', function (e) {
@@ -29,7 +29,7 @@ self.addEventListener('activate', function (e) {
 });
 self.addEventListener('fetch', function (e) {
   var url = e.request.url;
-  if (isPlanningOrRecipesJson(url)) {
+  if (isNetworkFirst(url)) {
     e.respondWith(
       fetch(e.request).then(function (res) {
         var clone = res.clone();
