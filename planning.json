@@ -33,6 +33,42 @@
       ]
     },
     {
+      "id": "2026-10-26",
+      "label": "26 oct",
+      "comidas": [
+        "Lentejas",
+        "La Felguera",
+        "Lentejas",
+        "Macarrones al horno",
+        "Sobras"
+      ],
+      "cenas": [
+        "Ensalada de merluza",
+        "Cumple Ceci",
+        "Revuelto espinacas y pollo plancha",
+        "Verduras salteadas con pescado",
+        ""
+      ]
+    },
+    {
+      "id": "2026-10-19",
+      "label": "19 oct",
+      "comidas": [
+        "Fréjoles con patatas",
+        "La Felguera",
+        "Fabes con verdura",
+        "Arroz tres delicias",
+        ""
+      ],
+      "cenas": [
+        "Salmón con verduras soja",
+        "Ensalada mixta",
+        "Puré de calabacín y pollo plancha",
+        "Puré calabacín y barbada",
+        ""
+      ]
+    },
+    {
       "id": "2026-10-19",
       "label": "19 oct",
       "comidas": [
